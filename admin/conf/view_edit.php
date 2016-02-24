@@ -20,11 +20,10 @@
 			
 			if ( mysqli_query($conn, $abfrage) )
 			{
-				echo '<p class="gruen">Der eintrag wurde erfolgreich gel&ouml;scht!</p>';
+				echo '<p class="alert alert-success">Der eintrag wurde erfolgreich gel&ouml;scht!</p>';
 			}else{
 				die('Ung&uuml;ltige Abfrage: ' . mysqli_error($conn));
 			}
-			echo '<hr>';
 		}else{
 			$name = $_POST['name'];
 			$email = htmlentities($_POST['email']);
@@ -50,11 +49,10 @@
 			
 			if ( mysqli_query($conn, $abfrage) )
 			{
-				echo '<p class="gruen">Der eintrag wurde erfolgreich bearbeitet!</p>';
+				echo '<p class="alert alert-success">Der Eintrag wurde erfolgreich bearbeitet!</p>';
 			}else{
 				die('Ung&uuml;ltige Abfrage: ' . mysqli_error($conn));
 			}
-			echo '<hr>';
 		}
 	}
 	$abfrage = sprintf("SELECT * FROM hh_gbook WHERE id = %s",$id);
@@ -68,7 +66,7 @@
 	while ($zeile = mysqli_fetch_array( $abfrage_antwort, MYSQL_ASSOC))
 	{	$zeile['public']=="1" ? $checked = "checked" : $checked = "";
 		$zeile['admin'] = 1;
-		showForm($zeile, basename(__File__ . '?id='.$id));
+		showForm($zeile, '?page=edit&id='.$id);
 	}
 	 
 	mysqli_free_result( $abfrage_antwort );
