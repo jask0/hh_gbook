@@ -14,5 +14,5 @@ Installation:
   1. Nach dem herunterladen der Datein, öffnet man die Datei admin/conf/connect.php und trägt dort die Verbindungsdaten ein.
   2. Hochladen aller Dateien zum Server (Webhosting).
   3. Aufrufen der Datein admin/install.php
-  4. Zum Backend des GBs gehen (admin/) und alle Einstellungen setzen, beim ersten einstellen ganz wichtig, Beiträge pro Seite und Passwort setzen.
+  4. Zum Backend des GBs gehen (admin/) und alle Einstellungen setzen, beim ersten einstellen ganz wichtig Passwort setzen.
   5. Zum GB wechseln und ersten Beitrag schreiben, fertig!
