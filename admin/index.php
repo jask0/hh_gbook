@@ -86,9 +86,11 @@ if($update_settings){
 							<li class="message-preview">
 								<a href="?page=edit&id=<?php echo $zeile['id']; ?>" title="Die letzten 3 Nachrichten">
 									<div class="media">
-										<span class="pull-left">
-											<img class="media-object" src="<?php echo $zeile['bild_url']; ?>" alt="">
-										</span>
+										<?php if($zeile['bild_url'] != '') {; ?>
+											<span class="pull-left">
+												<img class="media-object" style="width:64px;height:64px;" src="<?php echo $zeile['bild_url']; ?>" alt="">
+											</span>
+										<?php } ?>
 										<div class="media-body">
 											<h5 class="media-heading">
 												<strong><?php echo $zeile['name']; ?></strong>
@@ -139,9 +141,11 @@ if($update_settings){
 							<li class="message-preview">
 								<a href="?page=edit&id=<?php echo $zeile['id']; ?>">
 									<div class="media">
-										<span class="pull-left">
-											<img class="media-object" src="<?php echo $zeile['bild_url']; ?>" alt="">
-										</span>
+										<?php if($zeile['bild_url'] != '') {; ?>
+											<span class="pull-left">
+												<img class="media-object" style="width:64px;height:64px;" src="<?php echo $zeile['bild_url']; ?>" alt="">
+											</span>
+										<?php } ?>
 										<div class="media-body">
 											<h5 class="media-heading">
 												<strong><?php echo $zeile['name']; ?></strong>
