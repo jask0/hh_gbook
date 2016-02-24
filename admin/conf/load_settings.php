@@ -167,7 +167,7 @@ function showGBookForm($file){
 				$nachricht = htmlentities($_POST['nachricht']);
 				$public = $_POST['public'];
 				$gbid = $_POST['gbid'];
-				foreach ($smiliesList as $key => $value) {
+				foreach ($smilie['list'] as $key => $value) {
 					$nachricht = str_replace(':'.$value.':', '<img src="admin/smilies/'.$smilie['set'].'/icon_'.$value.'.'.$smilie['ext'].'" alt=":'.$value.':">', $nachricht);
 				}
 				$nachricht = str_replace("'", "\'", str_replace('"', '\"',$nachricht));

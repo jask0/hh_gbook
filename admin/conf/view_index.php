@@ -9,7 +9,7 @@
 	<div class="raw">
 		<div class="col-md-12">
 		<?php if($_POST) {echo $info;} ?>
-	<form class="form-horizontal" action="<?php echo basename(__FILE__); ?>" method="post" autocomplete="off">
+	<form class="form-horizontal" action="index.php" method="post" autocomplete="off">
 		<div class="form-group">
 			<label for="gb_title" class="col-sm-4 control-label hh_form">G&auml;stebuch Titel</label>
 			<div class="col-sm-8">
@@ -93,9 +93,9 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="pword_v" class="col-sm-4 control-label hh_form">Passwort (wiederhollen)</label>
+			<label for="pwordv" class="col-sm-4 control-label hh_form">Passwort (wiederhollen)</label>
 			<div class="col-sm-8">
-				<input type="password" class="form-control" id="pword_v" name="pword_v" placeholder="Passwort" value="" disabled>
+				<input type="password" class="form-control" id="pwordv" name="pwordv" placeholder="Passwort" value="">
 				<p>Nur beim &auml;ndern des Passwortes n&ouml;tig</p>
 			</div>
 		</div>
