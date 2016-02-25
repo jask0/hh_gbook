@@ -93,7 +93,7 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="pwordv" class="col-sm-4 control-label hh_form">Passwort (wiederhollen)</label>
+			<label for="pwordv" class="col-sm-4 control-label hh_form">Passwort (wiederholen)</label>
 			<div class="col-sm-8">
 				<input type="password" class="form-control" id="pwordv" name="pwordv" placeholder="Passwort" value="">
 				<p>Nur beim &auml;ndern des Passwortes n&ouml;tig</p>
