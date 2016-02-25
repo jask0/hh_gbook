@@ -25,7 +25,7 @@ if($_POST){
 			setcookie("username",session_id(),time() + (86400*10), "/"); // = 10 Days
 		}
 		$info = '<p class="alert alert-success">Login erfolgreich!<b><a href="../">Zum G&auml;stebuch</a><b></p>';
-		$info .= '<center><a class="btn btn-success" href="index.php">Admin-Berreich</a>  <a class="btn btn-danger" href="login.php?logout=1">Ausloggen</a></center>';
+		$info .= '<center><a class="btn btn-success" href="index.php">Adminbereich</a>  <a class="btn btn-danger" href="login.php?logout=1">Ausloggen</a></center>';
 	} else {
 		$info = '<p class="alert alert-danger">Login nicht erfolgreich!<br><b>Bitte nochmal versuchen!</b></p>';
 	}
