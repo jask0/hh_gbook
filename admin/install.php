@@ -34,8 +34,6 @@ posts INT(3) DEFAULT 5,
 public TINYINT(1) DEFAULT 0,
 msg VARCHAR(400),
 error VARCHAR(400),
-username VARCHAR(200),
-password VARCHAR(200)
 );";
 
 if (mysqli_query($conn, $q2)) {

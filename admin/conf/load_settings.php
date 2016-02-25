@@ -1,7 +1,7 @@
 <?php
 // connection to database
 include ('connect.php');
-
+include ('user.php');
 /* placeholder array,
 #	@info:
 #		input field values of the GB, by default ''
@@ -150,7 +150,7 @@ window.opener.insertTheSmiley(input);
 # 		$file ->  	url to the file where the GB is displayed
 */
 function showGBookForm($file){
-	global $sgs,$form,$conn,$smilie; 
+	global $sgs,$form,$conn,$smilie,$user; 
 	$cond = getCondition();
 	if(!isset($_POST['submit'])){
 		
@@ -178,6 +178,9 @@ function showGBookForm($file){
 			
 				if (mysqli_query($conn, $query)) {
 					echo '<p class="alert alert-success">Die Nachricht wurde erfolgreich gesendet!</p>';
+					if($user['mail_msg'] == 1){
+						mail($user['email'], "Neue GB Nachricht", $nachricht);
+					}
 					showForm($form, $file);
 				} else {
 					echo '<p class="alert alert-danger">FEHLER: Die Nachricht konnte nicht gespeichert werden!</p>';

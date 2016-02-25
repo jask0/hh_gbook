@@ -5,27 +5,6 @@ if(!isset($_SESSION['username'])){
 }
 include('conf/load_settings.php');
 $sgs = getGBsettings($conn);
-if($_POST && $_POST['beitraege_pro_seite'] >0){
-	$update_settings = 1;
-	$new_pword = $sgs['password'];
-	if($_POST['pword'] != ''){
-		if($_POST['pword'] == $_POST['pwordv']){
-			$new_pword = md5($_POST['pwordv']);
-		}else {
-			$update_settings = 0;
-			$info = '<p class="alert alert-danger">Passwort Fehler! Einstellungen nicht gespeichert!</p>';
-		}
-	} 
-if($update_settings){
-	$q = "UPDATE hh_gbsettings SET title='".$_POST['gb_title']."', email='".$_POST['show_email'];
-	$q .="', homepage='".$_POST['show_homepage']."', image='".$_POST['show_image']."', subject='".$_POST['show_subject'];
-	$q .="', posts='".$_POST['beitraege_pro_seite']."', public='".$_POST['public']."', msg='".$_POST['msg']."',";
-	$q .=" error='".$_POST['fehler']."', username='".$_POST['uname']."', password='".$new_pword."' WHERE id = 1;";
-	
-	$r = mysqli_query($conn, $q);
-	$info = '<p class="alert alert-success">Erfolgreich gespeichert</p>';
-}
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -169,7 +148,7 @@ if($update_settings){
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo $sgs['username']; ?> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="index.php"><i class="fa fa-fw fa-user"></i> Startseite</a>
+                            <a href="index.php?page=profile"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
                         <li>
                             <a href="?page=offline&id=0"><i class="fa fa-fw fa-envelope"></i> <?php echo $count[0]; ?> neue Posts</a>

@@ -19,7 +19,7 @@ if(isset($_GET['logout']) && $_GET['logout'] == 1) {
 if($_POST){
 	$username = $_POST['username'];
 	$passwort = md5($_POST['password']);
-	if(($username == $sgs['username']) and ($passwort == $sgs['password'])){
+	if(($username == $user['username']) and ($passwort == $user['password'])){
 		$_SESSION['username'] = $username;
 		if(isset($_POST['cookie'])){
 			setcookie("username",session_id(),time() + (86400*10), "/"); // = 10 Days

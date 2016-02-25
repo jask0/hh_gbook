@@ -1,3 +1,15 @@
+<?php
+if($_POST && $_POST['beitraege_pro_seite'] >0){
+	
+	$q = "UPDATE hh_gbsettings SET title='".$_POST['gb_title']."', email='".$_POST['show_email'];
+	$q .="', homepage='".$_POST['show_homepage']."', image='".$_POST['show_image']."', subject='".$_POST['show_subject'];
+	$q .="', posts='".$_POST['beitraege_pro_seite']."', public='".$_POST['public']."', msg='".$_POST['msg']."',";
+	$q .=" error='".$_POST['fehler']."' WHERE id = 1;";
+	
+	$r = mysqli_query($conn, $q);
+	$info = '<p class="alert alert-success">Erfolgreich gespeichert</p>';
+}
+?>
 <div class="row">
 				<div class="col-lg-12">
 					<h1 class="page-header">
@@ -77,26 +89,6 @@
 			<label for="fehler" class="col-sm-4 control-label hh_form">Fehler Meldung</label>
 			<div class="col-sm-8">
 				<input type="text" class="form-control" id="fehler" name="fehler" placeholder="Fehler" value="<?php echo $sgs['error']; ?>">
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="uname" class="col-sm-4 control-label hh_form">Benutzername</label>
-			<div class="col-sm-8">
-				<input type="text" class="form-control" id="uname" name="uname" placeholder="Benutzername" value="<?php echo $sgs['username']; ?>">
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="pword" class="col-sm-4 control-label hh_form">Passwort</label>
-			<div class="col-sm-8">
-				<input type="password" name="password" value="" style="display: none" />
-				<input type="password" class="form-control" id="pword" name="pword" placeholder="Passwort" autocomplete="off">
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="pwordv" class="col-sm-4 control-label hh_form">Passwort (wiederholen)</label>
-			<div class="col-sm-8">
-				<input type="password" class="form-control" id="pwordv" name="pwordv" placeholder="Passwort" value="">
-				<p>Nur beim &auml;ndern des Passwortes n&ouml;tig</p>
 			</div>
 		</div>
 		<div class="form-group">
