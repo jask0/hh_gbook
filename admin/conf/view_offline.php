@@ -2,7 +2,7 @@
 	<div class="col-lg-12">
 		<h1 class="page-header">
 			Administration
-			<small>Unveröffentlichte Beitr&auml;ge</small>
+			<small>Unver&ouml;ffentlichte Beitr&auml;ge</small>
 		</h1>
 	</div>
 </div>
@@ -68,7 +68,7 @@
 	  die('Ung&uuml;ltige Abfrage: ' . mysqli_error($conn));
 	}
 	
-	while ($zeile = mysqli_fetch_array( $abfrage_antwort, MYSQL_ASSOC))
+	while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
 	{	$zeile['public']=="1" ? $checked = "checked" : $checked = "";
 		$zeile['admin'] = 1;
 		showPost($zeile, '?page=edit&id='.$zeile['id']);

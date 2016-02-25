@@ -42,7 +42,7 @@ if (mysqli_query($conn, $q2)) {
     echo "FEHLER beim erstellen der Tabelle: " . mysqli_error($conn);
 }
 
-$q3 = "INSERT INTO hh_gbsettings (title,email,homepage,image,subject,posts,public,msg,error,username) VALUES ('MyGB', 1, 1, 1, 1, 5, 0, 'Red fields required','Error: Message donÂ´t saved!','admin')";
+$q3 = "INSERT INTO hh_gbsettings (title,email,homepage,image,subject,posts,public,msg,error) VALUES ('MyGB', 1, 1, 1, 1, 5, 0, 'Red fields required','Error: Message don´t saved!')";
 if (mysqli_query($conn, $q3)) {
     echo "Guestbook 1 successful created!<br>";
 } else {

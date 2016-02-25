@@ -60,7 +60,7 @@ $sgs = getGBsettings($conn);
 						  die('Abfrage Fehler: ' . mysqli_error($conn));
 						} 
 						
-						while ($zeile = mysqli_fetch_array( $abfrage_antwort, MYSQL_ASSOC))
+						while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
 						{?>
 							<li class="message-preview">
 								<a href="?page=edit&id=<?php echo $zeile['id']; ?>" title="Die letzten 3 Nachrichten">
@@ -105,7 +105,7 @@ $sgs = getGBsettings($conn);
                     <a href="#" class="dropdown-toggle <?php $new_msg ? print 'new_msg': print '';?>" data-toggle="dropdown" title="<?php echo $count[0];?> unveröffentlichte Nachrichten"><i class="fa fa-bell" ></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu message-dropdown">
                        <li class="message-footer">
-                            <a href="#"><strong>Unveröffentlichte Nachrichten</strong></a>
+                            <a href="#"><strong>Unver&ouml;ffentlichte Nachrichten</strong></a>
                         </li>
 					<?php
 						$abfrage = "SELECT * FROM hh_gbook WHERE public = 0 ORDER BY id DESC";
@@ -115,7 +115,7 @@ $sgs = getGBsettings($conn);
 						  die('Abfrage Fehler: ' . mysqli_error($conn));
 						} 
 						
-						while ($zeile = mysqli_fetch_array( $abfrage_antwort, MYSQL_ASSOC))
+						while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
 						{?>
 							<li class="message-preview">
 								<a href="?page=edit&id=<?php echo $zeile['id']; ?>">

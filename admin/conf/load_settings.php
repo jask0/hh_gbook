@@ -215,7 +215,7 @@ function showGBookPosts(){
 	  die('Abfrage Fehler: ' . mysqli_error($conn));
 	} 
 	
-	while ($zeile = mysqli_fetch_array( $abfrage_antwort, MYSQL_ASSOC))
+	while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
 	{
 		showPost($zeile);
 	}
@@ -232,7 +232,7 @@ function showGBpageNavi(){
 	
 	$q = "SELECT count($sgs[id]) FROM hh_gbook $myCond";
     $count = mysqli_query( $conn, $q );
-	$count = mysqli_fetch_array($count);
+	$count = mysqli_fetch_assoc($count);
 	
 	$p=1;
 	if(isset($_GET['page']) && ((int)$_GET['page'] > 1)){
