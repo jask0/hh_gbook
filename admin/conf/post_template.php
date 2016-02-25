@@ -4,7 +4,7 @@
 		<div class="panel <?php $data['public'] == 1 ? print 'panel-primary panel-costum' : print 'panel-danger'; ?>">
 			<div class="panel-heading">
 				<?php if(isset($_SESSION['username'])){ ?>
-					<a class="btn btn-danger btn-xs pull-right" style="margin-left:5px;" href="admin/index.php?page=edit&id=<?php echo $data['id']; ?>"><i class="fa fa-pencil"></i> Bearbeiten</a> 
+					<a class="btn btn-danger btn-xs pull-right" style="margin-left:5px;" href="<?php echo $edit; ?>"><i class="fa fa-pencil"></i> Bearbeiten</a> 
 				<?php } ?>
 				Von: <?php echo $data['name']; ?>
 				<div class="pull-right">

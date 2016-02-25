@@ -71,7 +71,7 @@
 	while ($zeile = mysqli_fetch_array( $abfrage_antwort, MYSQL_ASSOC))
 	{	$zeile['public']=="1" ? $checked = "checked" : $checked = "";
 		$zeile['admin'] = 1;
-		showForm($zeile, basename(__File__ . '?id='.$id));
+		showPost($zeile, '?page=edit&id='.$zeile['id']);
 	}
 	 
 	mysqli_free_result( $abfrage_antwort );

@@ -70,8 +70,11 @@ function showForm($data, $action) {
 # @param:
 # 		$data ->  	posted data array to fill the value fields
 */
-function showPost($data) {
-	global $sgs,$form,$smilie; 
+function showPost($data, $edit=0) {
+	global $sgs,$form,$smilie;
+	if(is_numeric($edit)){
+		$edit='admin/index.php?page=edit&id='.$data['id'];
+	}
 	include('post_template.php');
 }
 
