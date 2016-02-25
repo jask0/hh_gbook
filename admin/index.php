@@ -172,7 +172,7 @@ if($update_settings){
                             <a href="index.php"><i class="fa fa-fw fa-user"></i> Startseite</a>
                         </li>
                         <li>
-                            <a href="../"><i class="fa fa-fw fa-envelope"></i> <?php echo $count[0]; ?> neue Posts</a>
+                            <a href="?page=offline&id=0"><i class="fa fa-fw fa-envelope"></i> <?php echo $count[0]; ?> neue Posts</a>
                         </li>
                         <li>
                             <a href="index.php"><i class="fa fa-fw fa-gear"></i> Einstellungen</a>
