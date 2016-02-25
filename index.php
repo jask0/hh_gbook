@@ -21,13 +21,16 @@
 	<h3 class="hh_form"><?php echo $sgs['title'];?></h3>
 	
 	<div class="raw">
+		<!-- Load the submit form -->
 		<?php showGBookForm(basename(__FILE__)) ?>
 	</div> <!-- END .raw -->
 	<div class="raw">
+		<!-- Load all Posts from database -->
 		<?php showGBookPosts() ?>
 	</div>
 	<div class="raw">
 		<div class="col-md-12">
+		<!-- Load page navigation for GB -->
 		<?php showGBpageNavi(); ?>
 		</div>
 	</div>
