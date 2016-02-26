@@ -47,8 +47,8 @@ function getGBsettings($conn, $gbid=1){
 # 		no param, use the session variable or cookie
 */
 function getCondition(){
-	global $sgs,$form; 
-	if(isset($_SESSION['username']) && $_SESSION['username'] == $sgs['username']){
+	global $user,$form; 
+	if(isset($_SESSION['username']) && $_SESSION['username'] == $user['username']){
 		return ' WHERE public*1 in (0,1) ';
 	} else {
 		return ' WHERE public = 1 ';
@@ -227,12 +227,12 @@ function showGBookPosts(){
 # 		no param needed
 */
 function showGBpageNavi(){
-	global $sgs,$form,$conn; 
+	global $sgs,$form,$conn,$user; 
 	$myCond = getCondition();
 	
 	$q = "SELECT count($sgs[id]) FROM hh_gbook $myCond";
     $count = mysqli_query( $conn, $q );
-	$count = mysqli_fetch_assoc($count);
+	$count = mysqli_fetch_row($count);
 	
 	$p=1;
 	if(isset($_GET['page']) && ((int)$_GET['page'] > 1)){
