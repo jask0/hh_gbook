@@ -2,7 +2,7 @@
 	if(!isset($_SESSION['username'])){
 		die('Direkter Zugang nicht erlaubt! Bitte einloggen!');
 	}
-	include 'user.php';
+	include 'conf/user.php';
 	if($_POST){
 		$new_pword = $user['password'];
 		if($_POST['pword'] != ''){
