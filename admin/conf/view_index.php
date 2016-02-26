@@ -8,6 +8,7 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 	
 	$r = mysqli_query($conn, $q);
 	$info = '<p class="alert alert-success">Erfolgreich gespeichert</p>';
+	$sgs = getGBsettings($conn,1);
 }
 ?>
 <div class="row">
