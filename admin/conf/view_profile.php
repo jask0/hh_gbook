@@ -18,7 +18,7 @@
 			$mail_msg = 0;
 		}
 		
-		$fp = fopen('user.php', 'w') or die($ERROR_CREATING_FILE);
+		$fp = fopen('conf/user.php', 'w') or die($ERROR_CREATING_FILE);
 		$write = '<?php $user = Array(';
 		$write .="'username' => '".$_POST['uname']."',";
 		$write .="'password' => '".$new_pword."',";
