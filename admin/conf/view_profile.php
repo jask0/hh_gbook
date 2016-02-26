@@ -27,7 +27,7 @@
 		fwrite($fp,$write);
 		fclose($fp);
 		$info = '<p class="alert alert-success">Daten gespeichert!</p>';
-		include 'user.php';
+		include 'conf/user.php';
 }
 ?>
 <div class="row">
