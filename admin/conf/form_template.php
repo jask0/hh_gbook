@@ -60,7 +60,7 @@
 				<div class="well well-sm">
 				<?php
 				for ($i = 0; $i < count($smilie['list']); $i++) {
-					if ($i % 12 == 0 && $i != 0) echo '<br">';
+					if ($i % 12 == 0 && $i != 0) echo '<br>';
 					echo '<a href="javascript:insertTheSmiley(\':'.$smilie['list'][$i].':\', \'nachricht\');void(0)"><img src="admin/smilies/'.$smilie['set'].'/icon_'.$smilie['list'][$i].'.'.$smilie['ext'].'" alt=":'.$smilie['list'][$i].':" ></a>&nbsp;&nbsp;';
 				}
 				?>
