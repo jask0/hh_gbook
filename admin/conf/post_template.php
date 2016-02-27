@@ -1,6 +1,6 @@
 <!-- This is the Template to display posts, shoud be loaded by showPost() -->
 <?php if ($data['public'] == 1 || isset($_SESSION['username']) || isset($_COOKIE['username'])) { ?>
-	<div class="col-md-12">
+	<div class="gb-overall col-md-12">
 		<div class="panel <?php $data['public'] == 1 ? print 'panel-primary panel-costum' : print 'panel-danger'; ?>">
 			<div class="panel-heading">
 				<?php if(isset($_SESSION['username'])){ ?>

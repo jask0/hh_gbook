@@ -1,7 +1,11 @@
 <?php
 // connection to database
 include ('connect.php');
-include ('user.php');
+if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
+	include ('conf/user.php');
+} else {
+	include ('admin/conf/user.php');
+}
 /* placeholder array,
 #	@info:
 #		input field values of the GB, by default ''
