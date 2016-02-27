@@ -58,7 +58,7 @@
 		<div class="form-group">
 			<div class="col-sm-12">
 				<div class="well well-sm">
-					<center></center>
+					<center>
 						<?php
 						for ($i = 0; $i < count($smilie['list']); $i++) {
 							if ($i % 12 == 0 && $i != 0) echo '<br>';
@@ -83,7 +83,7 @@
 					<div class="col-sm-3">
 						<img src="admin/captcha/captcha.php" class="img-thumbnail">
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-7">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
 							<input type="text" class="form-control" id="captcha" name="captcha" placeholder="Sicherheitscode">
