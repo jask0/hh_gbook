@@ -127,7 +127,7 @@ function showGBookForm($file){
 	} else {
 		if($_SESSION['captcha_code'] == md5($_POST['captcha'])){
 			if($_POST['name'] == "" or $_POST['nachricht'] == ""){
-				echo '<p class="alert alert-danger">'. $sgs['error'].'<br>'. $sgs['msg'] . '</p>';
+				$_POST['info_msg'] = '<p class="alert alert-danger">'. $sgs['error'].'<br>'. $sgs['msg'] . '</p>';
 				showForm($_POST, $file);
 			} else {
 				$name = htmlentities($_POST['name']);
@@ -145,14 +145,14 @@ function showGBookForm($file){
 				$query = sprintf('INSERT INTO hh_gbook (name,email,homepage,betreff,bild_url,nachricht,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s")',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$public,$gbid);
 			
 				if (mysqli_query($conn, $query)) {
-					$info_msg = '<p class="alert alert-success">Die Nachricht wurde erfolgreich gesendet!</p>';
+					$_POST['info_msg'] = '<p class="alert alert-success">Die Nachricht wurde erfolgreich gesendet!</p>';
 					if($user['mail_msg'] == 1){
 						mail($user['email'], "Neue GB Nachricht", $nachricht);
 					}
 					showForm($form, $file);
 				} else {
-					$info_msg = '<p class="alert alert-danger">FEHLER: Die Nachricht konnte nicht gespeichert werden!';
-					$info_msg .=  mysqli_error($conn).'</p>';
+					$_POST['info_msg'] = '<p class="alert alert-danger">FEHLER: Die Nachricht konnte nicht gespeichert werden!';
+					$_POST['info_msg'] .=  mysqli_error($conn).'</p>';
 				}
 			}
 		} else {
