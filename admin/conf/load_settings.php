@@ -206,8 +206,9 @@ function showGBpageNavi(){
 	if(isset($_GET['page']) && ((int)$_GET['page'] > 1)){
 		$p = ((int)$_GET['page'])-1;
 	}
-	echo '<center><nav><ul class="pagination pagination-custom">
-			<li><a href="?page='.$p.'" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+	echo '<div class="row"><div class="col-md-12">
+			<center><nav><ul class="pagination pagination-custom">
+				<li><a href="?page='.$p.'" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
 	$x = 0;
 	$last_page = (($count[0]/$sgs['posts'])+1);
 	for ($x = 1; $x < $last_page; $x++){
@@ -227,6 +228,6 @@ function showGBpageNavi(){
 	} else {
 		$p = $x-1;
 	}
-	echo '<li><a href="?page='.$p.'" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li></ul></nav></center>';
+	echo '<li><a href="?page='.$p.'" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li></ul></nav></center></div></div>';
 }
 ?>

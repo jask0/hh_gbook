@@ -17,25 +17,20 @@
 
 <body>
 <!-- Dieser Teil kommt in den Textbereich der Seite oft auch Content-Bereich genannt. ANFANG GB Body. Von hier -->
-<div class="container">
 	<h3 class="hh_form"><?php echo $sgs['title'];?></h3>
 	
+	<!-- Load the submit form -->
+	<?php showGBookForm(basename(__FILE__)) ?>
+	
+	<!-- Load all Posts from database -->
+	<?php showGBookPosts() ?>
+
+	<!-- Load page navigation for GB -->
+	<?php showGBpageNavi(); ?>
+		
 	<div class="raw">
-		<!-- Load the submit form -->
-		<?php showGBookForm(basename(__FILE__)) ?>
-	</div> <!-- END .raw -->
-	<div class="raw">
-		<!-- Load all Posts from database -->
-		<?php showGBookPosts() ?>
+		<p><center><a href="admin/">Administration</a></center></p>
 	</div>
-	<div class="raw">
-		<div class="col-md-12">
-		<!-- Load page navigation for GB -->
-		<?php showGBpageNavi(); ?>
-		</div>
-	</div>
-</div> <!-- END .container -->
-<p><center><a href="admin/">Administration</a></center></p>
 <!-- bis hier. ENDE GB Body -->
 </body>
 
