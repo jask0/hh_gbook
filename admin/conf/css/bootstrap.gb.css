@@ -2649,6 +2649,7 @@ button.list-group-item-danger.active:focus {
 .affix {
   position: fixed;
 }
+
 /*-----------------------*/
 .form-horizontal .form-group {
     margin-right: -15px;
@@ -2950,7 +2951,12 @@ a {
     max-width: 100%;
     height: auto;
 }
-
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
 .gb-overall {
 	box-sizing: border-box;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;

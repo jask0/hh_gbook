@@ -1,6 +1,7 @@
 <!-- This is the Template for the submit form, shoud be loaded by showForm() -->
 <div class="row">
 	<div class="gb-overall col-md-8 col-md-offset-2">
+		<?=(isset($_POST['info_msg']))? $_POST['info_msg'] : ''?>
 		<form class="form-horizontal" action="<?php echo $data['action']; ?>" method="post" id="myForm">
 			<div class="form-group has-success ">
 				<label for="name" class="col-sm-2 control-label sr-only hh_form">Name*</label>

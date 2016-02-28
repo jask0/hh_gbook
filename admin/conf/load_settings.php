@@ -145,18 +145,18 @@ function showGBookForm($file){
 				$query = sprintf('INSERT INTO hh_gbook (name,email,homepage,betreff,bild_url,nachricht,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s")',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$public,$gbid);
 			
 				if (mysqli_query($conn, $query)) {
-					echo '<p class="alert alert-success">Die Nachricht wurde erfolgreich gesendet!</p>';
+					$info_msg = '<p class="alert alert-success">Die Nachricht wurde erfolgreich gesendet!</p>';
 					if($user['mail_msg'] == 1){
 						mail($user['email'], "Neue GB Nachricht", $nachricht);
 					}
 					showForm($form, $file);
 				} else {
-					echo '<p class="alert alert-danger">FEHLER: Die Nachricht konnte nicht gespeichert werden!</p>';
-					echo  mysqli_error($conn);
+					$info_msg = '<p class="alert alert-danger">FEHLER: Die Nachricht konnte nicht gespeichert werden!';
+					$info_msg .=  mysqli_error($conn).'</p>';
 				}
 			}
 		} else {
-			echo '<p class="alert alert-danger">FEHLER: Sicherheitscode falsch, bitte noch einmal versuchen!</p>';
+			$_POST['info_msg'] = '<p class="alert alert-danger">FEHLER: Sicherheitscode falsch, bitte noch einmal versuchen!</p>';
 			showForm($_POST, $file);
 		}
 	}
