@@ -90,7 +90,7 @@ function showPost($data, $edit=0) {
 */
 function loadMeta(){
 	global $user;
-	echo '<meta name="viewport" content="width=device-width, initial-scale=1">
+	echo '
 <!-- Font-Awesome CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <!-- Bootstrap CSS -->
