@@ -5,17 +5,17 @@
 			<div class="panel <?=($data['public'] == 1) ? 'panel-primary costum-panel' : 'panel-danger'; ?>">
 				<div class="panel-heading <?=($data['public'] == 1) ? 'custom-heading' : ''; ?>">
 					<?php if(isset($_SESSION['username'])){ ?>
-						<a class="btn btn-danger btn-xs pull-right" style="margin-left:5px;" href="<?php echo $edit; ?>"><i class="fa fa-pencil"></i> Bearbeiten</a> 
+						<a class="btn btn-danger btn-xs pull-right" style="margin-left:5px;" href="<?php echo $edit; ?>"><i class="fa fa-pencil"></i> <?=$l['edit']?></a> 
 					<?php } ?>
 					Von: <?php echo $data['name']; ?>
 					<div class="pull-right">
 						<?php if ($sgs['email'] && $data['email'] != '') { ?>
-							<a href="mailto:<?php echo $data['email']; ?>" class="btn btn-default btn-xs" title="E-Mail">
+							<a href="mailto:<?php echo $data['email']; ?>" class="btn btn-default btn-xs" title="<?=$l['email']?>">
 								<i class="fa fa-envelope-o"></i>
 							</a>
 						<?php }
 						if ($sgs['homepage'] && $data['homepage'] != '') { ?>
-							<a href="<?php echo $data['homepage']; ?>" class="btn btn-default btn-xs" title="Homepage">
+							<a href="<?php echo $data['homepage']; ?>" class="btn btn-default btn-xs" title="<?=$l['homepage']?>">
 								<i class="fa fa-home"></i>
 							</a>
 						<?php } ?>

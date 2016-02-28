@@ -46,6 +46,21 @@ function getGBsettings($conn, $gbid=1){
 	return $data;
 }
 
+/*load language of the GB
+# @param:
+# 		$conn, connection to database
+#		$$gdid, load the settings of GB with id=1 (needed by multiple GB)
+*/
+function getLanguage(){
+	global $user;
+	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
+		$lang = "conf/lang/".$user['language'].".php";
+	} else {
+		$lang = "admin/conf/lang/".$user['language'].".php";
+	}
+	include($lang);
+	return $l;
+}
 /*pruf is the admin loged in
 # @param:
 # 		no param, use the session variable or cookie
@@ -66,6 +81,7 @@ function getCondition(){
 */
 function showForm($data, $action) {
 	global $sgs,$form,$smilie; 
+	$l = getLanguage();
 	$data['action'] = $action;
 	include('form_template.php');
 }
@@ -76,6 +92,7 @@ function showForm($data, $action) {
 */
 function showPost($data, $edit=0) {
 	global $sgs,$form,$smilie;
+	$l = getLanguage();
 	if(is_numeric($edit)){
 		$edit='admin/index.php?page=edit&id='.$data['id'];
 	}
@@ -120,6 +137,7 @@ window.opener.insertTheSmiley(input);
 function showGBookForm($file){
 	global $sgs,$form,$conn,$smilie,$user; 
 	$cond = getCondition();
+	$l = getLanguage();
 	if(!isset($_POST['submit'])){
 		
 		showForm($form, $file);
@@ -145,18 +163,18 @@ function showGBookForm($file){
 				$query = sprintf('INSERT INTO hh_gbook (name,email,homepage,betreff,bild_url,nachricht,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s")',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$public,$gbid);
 			
 				if (mysqli_query($conn, $query)) {
-					$_POST['info_msg'] = '<p class="alert alert-success">Die Nachricht wurde erfolgreich gesendet!</p>';
+					$_POST['info_msg'] = '<p class="alert alert-success">'.$l['msg_successful_send'].'</p>';
 					if($user['mail_msg'] == 1){
-						mail($user['email'], "Neue GB Nachricht", $nachricht);
+						mail($user['email'], $l['new_gb_msg'], $nachricht);
 					}
 					showForm($form, $file);
 				} else {
-					$_POST['info_msg'] = '<p class="alert alert-danger">FEHLER: Die Nachricht konnte nicht gespeichert werden!';
+					$_POST['info_msg'] = '<p class="alert alert-danger">'.$l['error_msg_dont_send'];
 					$_POST['info_msg'] .=  mysqli_error($conn).'</p>';
 				}
 			}
 		} else {
-			$_POST['info_msg'] = '<p class="alert alert-danger">FEHLER: Sicherheitscode falsch, bitte noch einmal versuchen!</p>';
+			$_POST['info_msg'] = '<p class="alert alert-danger">'.$l['error_wrong_captcha'].'</p>';
 			showForm($_POST, $file);
 		}
 	}
@@ -170,6 +188,7 @@ function showGBookPosts(){
 	global $sgs,$form,$conn; 
 	$page = 1;
 	$gbid = $sgs['id'];
+	$l = getLanguage();
 	$where = getCondition();
 	if(isset($_GET['page'])){
 		$page = (int)$_GET['page'];
@@ -180,7 +199,7 @@ function showGBookPosts(){
 	
 	if ( ! $abfrage_antwort )
 	{
-	  die('Abfrage Fehler: ' . mysqli_error($conn));
+	  die($l['bad_query'].': ' . mysqli_error($conn));
 	} 
 	
 	while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
@@ -197,7 +216,7 @@ function showGBookPosts(){
 function showGBpageNavi(){
 	global $sgs,$form,$conn,$user; 
 	$myCond = getCondition();
-	
+	$l = getLanguage();
 	$q = "SELECT count($sgs[id]) FROM hh_gbook $myCond";
     $count = mysqli_query( $conn, $q );
 	$count = mysqli_fetch_row($count);
@@ -224,7 +243,10 @@ function showGBpageNavi(){
 	if(isset($_GET['page']) && (((int)$_GET['page']) < ($x-1))){
 		$p = (int)$_GET['page']+1;
 	} elseif(!isset($_GET['page'])) {
-		$p = 2;
+		if($last_page < 2)
+			$p = 1;
+		else
+			$p = 2;
 	} else {
 		$p = $x-1;
 	}

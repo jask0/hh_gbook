@@ -4,13 +4,14 @@ if(!isset($_SESSION['username'])){
 		header('Location: login.php');
 }
 include('conf/load_settings.php');
+$l = getLanguage();
 $sgs = getGBsettings($conn);
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>G&auml;stebuch: HomepageHelfer</title>
+	<title><?=$l['gb']?> : <?=$sgs['title']?></title>
 	<?php loadMeta(); ?>
 	<!-- Bootstrap Core CSS -->
 	<link href="conf/css/bootstrap.min.css" rel="stylesheet">
@@ -37,7 +38,7 @@ $sgs = getGBsettings($conn);
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span>
+                    <span class="sr-only"><?=$l['toggle_navigation']?></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -50,7 +51,7 @@ $sgs = getGBsettings($conn);
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu message-dropdown">
 						<li class="message-footer">
-                            <a href="#"><strong>3 letzte Nachrichten</strong></a>
+                            <a href="#"><strong><?=$l['3_new_msg']?></strong></a>
                         </li>
 					<?php
 						$abfrage = "SELECT * FROM hh_gbook ORDER BY id DESC LIMIT 3";
@@ -64,7 +65,7 @@ $sgs = getGBsettings($conn);
 						while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
 						{?>
 							<li class="message-preview">
-								<a href="?page=edit&id=<?php echo $zeile['id']; ?>" title="Die letzten 3 Nachrichten">
+								<a href="?page=edit&id=<?php echo $zeile['id']; ?>" title="<?=$l['3_new_msg']?>">
 									<div class="media">
 										<?php if($zeile['bild_url'] != '') {; ?>
 											<span class="pull-left">
@@ -76,7 +77,7 @@ $sgs = getGBsettings($conn);
 												<strong><?php echo $zeile['name']; ?></strong>
 											</h5>
 											<p class="small text-muted"><i class="fa fa-clock-o"></i> <?php echo $zeile['datum']; ?></p>
-											<p><?php echo $zeile['nachricht']; ?></p>
+											<p><?php echo substr($zeile['nachricht'],0,200).'...'; ?></p>
 										</div>
 									</div>
 								</a>
@@ -87,7 +88,7 @@ $sgs = getGBsettings($conn);
                         
                        
                         <li class="message-footer">
-                            <a href="../">Alle Nachrichten lesen</a>
+                            <a href="../"><?=$l['read_all']?></a>
                         </li>
                     </ul>
                 </li>
@@ -103,10 +104,10 @@ $sgs = getGBsettings($conn);
 					mysqli_free_result( $abfrage_antwort );
 				?>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle <?php $new_msg ? print 'new_msg': print '';?>" data-toggle="dropdown" title="<?php echo $count[0];?> unveröffentlichte Nachrichten"><i class="fa fa-bell" ></i> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle <?php $new_msg ? print 'new_msg': print '';?>" data-toggle="dropdown" title="<?php echo $count[0];?> <?=$l['unpublished_msg']?>"><i class="fa fa-bell" ></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu message-dropdown">
                        <li class="message-footer">
-                            <a href="#"><strong>Unver&ouml;ffentlichte Nachrichten</strong></a>
+                            <a href="#"><strong><?=$l['unpublished_msg']?></strong></a>
                         </li>
 					<?php
 						$abfrage = "SELECT * FROM hh_gbook WHERE public = 0 ORDER BY id DESC";
@@ -131,7 +132,7 @@ $sgs = getGBsettings($conn);
 												<strong><?php echo $zeile['name']; ?></strong>
 											</h5>
 											<p class="small text-muted"><i class="fa fa-clock-o"></i> <?php echo $zeile['datum']; ?></p>
-											<p><?php echo htmlentities($zeile['nachricht']); ?></p>
+											<p><?php echo substr(htmlentities($zeile['nachricht']), 0, 200).'...'; ?></p>
 										</div>
 									</div>
 								</a>
@@ -141,7 +142,7 @@ $sgs = getGBsettings($conn);
 						?>
                         <li class="divider message-footer"></li>
                         <li>
-                            <a href="?page=offline&id=0">Alle sehen</a>
+                            <a href="?page=offline&id=0"><?=$l['see_all']?></a>
                         </li>
                     </ul>
                 </li>
@@ -149,17 +150,17 @@ $sgs = getGBsettings($conn);
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo $user['username']; ?> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="index.php?page=profile"><i class="fa fa-fw fa-user"></i> Profile</a>
+                            <a href="index.php?page=profile"><i class="fa fa-fw fa-user"></i> <?=$l['profile']?></a>
                         </li>
                         <li>
-                            <a href="?page=offline&id=0"><i class="fa fa-fw fa-envelope"></i> <?php echo $count[0]; ?> neue Posts</a>
+                            <a href="?page=offline&id=0"><i class="fa fa-fw fa-envelope"></i> <?php echo $count[0]; ?> <?=$l['new_msg']?></a>
                         </li>
                         <li>
-                            <a href="index.php"><i class="fa fa-fw fa-gear"></i> Einstellungen</a>
+                            <a href="index.php"><i class="fa fa-fw fa-gear"></i> <?=$l['settings']?></a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="login.php?logout=1"><i class="fa fa-fw fa-power-off"></i> Ausloggen</a>
+                            <a href="login.php?logout=1"><i class="fa fa-fw fa-power-off"></i> <?=$l['logout']?></a>
                         </li>
                     </ul>
                 </li>
@@ -168,17 +169,17 @@ $sgs = getGBsettings($conn);
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
 					<li>
-                        <a href="../"><i class="fa fa-fw fa-desktop"></i> Zum G&auml;stebuch</a>
+                        <a href="../"><i class="fa fa-fw fa-desktop"></i> <?=$l['to_gb']?></a>
                     </li>
                     <li>
-                        <a href="index.php"><i class="fa fa-fw fa-wrench"></i> Einstellungen</a>
+                        <a href="index.php"><i class="fa fa-fw fa-wrench"></i> <?=$l['settings']?></a>
                     </li><!--
                     <li>
                         <a href="#"><i class="fa fa-fw fa-edit"></i> Neues GB anlegen</a>
                     </li>
                     <li>-->
                     <li>
-                        <a href="?page=custom"><i class="fa fa-fw fa-file"></i> Eigenes CSS</a>
+                        <a href="?page=custom"><i class="fa fa-fw fa-file"></i> <?=$l['custom_css']?></a>
                     </li>
                 </ul>
             </div>

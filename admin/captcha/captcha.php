@@ -35,11 +35,11 @@ $Slika = imagecreatefrompng("pozadina.png");
 //stvaranje boje
 $fontBoja1 = imagecolorallocate($Slika, 0, 0, 0); //crna
 $fontBoja2 = imagecolorallocate($Slika, 127, 0, 0);  //tamno crvena
-$fontBoja3 = imagecolorallocate($Slika, 255, 0, 220);  //pink
+$fontBoja3 = imagecolorallocate($Slika, 1, 29, 127);  //pink
 
 //pisanje coda u sliku
 imagettftext($Slika, 18, 15, 3, 24, $fontBoja1, $fontArray[0], $podStr1);
-imagettftext($Slika, 16, 0, 35, 15, $fontBoja2, $fontArray[0], $podStr2);
+imagettftext($Slika, 16, 0, 33, 17, $fontBoja2, $fontArray[0], $podStr2);
 imagettftext($Slika, 14, -15, 63, 18, $fontBoja3, $fontArray[0], $podStr3);
 
 //pakovanje slike

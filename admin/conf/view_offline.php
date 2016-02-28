@@ -1,14 +1,14 @@
 <div class="row">
 	<div class="col-lg-12">
 		<h1 class="page-header">
-			Administration
-			<small>Unver&ouml;ffentlichte Beitr&auml;ge</small>
+			<?=$l['admin_area']?>
+			<small><?=$l['unpublished_msg']?></small>
 		</h1>
 	</div>
 </div>
 <?php
 	if(!isset($_SESSION['username'])){
-		die('Direkter Zugang nicht erlaubt! Bitte einloggen!');
+		die($l['prohibited_direct_access']);
 	}
 	//include('load_settings.php');
 	//$sgs = getGBsettings($conn, 1);
@@ -23,9 +23,9 @@
 			
 			if ( mysqli_query($conn, $abfrage) )
 			{
-				echo '<p class="gruen">Der eintrag wurde erfolgreich gel&ouml;scht!</p>';
+				echo '<p class="gruen">'.$l['msg_successful_deleted'].'</p>';
 			}else{
-				die('Ung&uuml;ltige Abfrage: ' . mysqli_error($conn));
+				die($l['bad_query'].': ' . mysqli_error($conn));
 			}
 			echo '<hr>';
 		}else{
@@ -53,9 +53,9 @@
 			
 			if ( mysqli_query($conn, $abfrage) )
 			{
-				echo '<p class="gruen">Der eintrag wurde erfolgreich bearbeitet!</p>';
+				echo '<p class="gruen">'.$l['msg_successful_edited'].'</p>';
 			}else{
-				die('Ung&uuml;ltige Abfrage: ' . mysqli_error($conn));
+				die($l['bad_query'].': ' . mysqli_error($conn));
 			}
 			echo '<hr>';
 		}
@@ -65,7 +65,7 @@
 	
 	if ( ! $abfrage_antwort )
 	{
-	  die('Ung&uuml;ltige Abfrage: ' . mysqli_error($conn));
+	  die($l['bad_query'].': ' . mysqli_error($conn));
 	}
 	
 	while ($zeile = mysqli_fetch_assoc($abfrage_antwort))

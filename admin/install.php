@@ -1,6 +1,6 @@
 <?php
 include('conf/load_settings.php');
-
+$l = getLanguage();
 if($_POST){
 	// sql to create post table
 	$q1 = "CREATE TABLE hh_gbook (
@@ -18,9 +18,9 @@ if($_POST){
 	);";
 
 	if (mysqli_query($conn, $q1)) {
-		$info = "<p class=\"alert alert-success\">Tabel 'hh_gbook' successful created!<br>";
+		$info = "<p class=\"alert alert-success\">$l[tabel_hh_gbook_successful_created]<br>";
 	} else {
-		$info= "<p class=\"alert alert-danger\">FEHLER beim erstellen der Tabelle: " . mysqli_error($conn) . "<br>";
+		$info= "<p class=\"alert alert-danger\">$l[error_table_not_created]: " . mysqli_error($conn) . "<br>";
 	}
 	 
 	// sql to create settings table
@@ -38,16 +38,16 @@ if($_POST){
 	);";
 
 	if (mysqli_query($conn, $q2)) {
-		$info .= "Tabel 'hh_gbsettings' successful created!<br>";
+		$info .= "$l[tabel_hh_gbsettings_successful_created]<br>";
 	} else {
-		$info .= "FEHLER beim erstellen der Tabelle: " . mysqli_error($conn) . "<br>";
+		$info .= "$l[error_table_not_created]: " . mysqli_error($conn) . "<br>";
 	}
 
-	$q3 = "INSERT INTO hh_gbsettings (title,email,homepage,image,subject,posts,public,msg,error) VALUES ('MyGB', 1, 1, 1, 1, 5, 0, 'Red fields required','Error: Message don´t saved!')";
+	$q3 = "INSERT INTO hh_gbsettings (title,email,homepage,image,subject,posts,public,msg,error) VALUES ('MyGB', 1, 1, 1, 1, 5, 0, 'Green fields required','ERROR: Message not saved!')";
 	if (mysqli_query($conn, $q3)) {
-		$info .= "Guestbook 1 successful created!<br></p>";
+		$info .= "$l[guestbook_1_successful_created]<br></p>";
 	} else {
-		$info = "FEHLER beim erstellen der Tabelle: " . mysqli_error($conn) . "</p>";
+		$info = "$l[error_table_not_created]: " . mysqli_error($conn) . "</p>";
 	}
 
 	mysqli_close($conn);
@@ -56,7 +56,7 @@ if($_POST){
 <!DOCTYPE html>
 <html>
 <head>
-<title>Login</title>
+<title><?=$l['install']?></title>
 <?php loadMeta(); ?>
 <!-- Extern Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -69,7 +69,7 @@ if($_POST){
             <div class="col-md-6 col-md-offset-3">
                 <div class="login-panel panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">GB installieren</h3>
+                        <h3 class="panel-title"><?=$l['gb']?> <?=$l['install']?></h3>
                     </div>
                     <div class="panel-body">
 						<?php if($_POST){ echo $info;} ?>
@@ -78,9 +78,9 @@ if($_POST){
                                 <!-- Change this to a button or input when using this as a form -->
 								<?php if(!$_POST){ ?>
 								
-								<button type="submit" name="submit" class="btn btn-lg btn-success btn-block">Installieren</button>
+								<button type="submit" name="submit" class="btn btn-lg btn-success btn-block"><?=$l['install']?></button>
 								<?php } else { ?>
-								<a href="../" class="btn btn-lg btn-info btn-block">Zur&uuml;ck zum GB</a>
+								<a href="../" class="btn btn-lg btn-info btn-block"><?=$l['to_gb']?></a>
 								<?php } ?>
                             </fieldset>
                         </form>
