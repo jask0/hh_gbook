@@ -39,6 +39,7 @@
 		$write .="'password' => '".$user['password']."',";
 		$write .="'email' => '".$user['email']."',";
 		$write .="'mail_msg' => ".$user['mail_msg'].",";
+		$write .="'language' => '".$user['language']."',";
 		$write .="'custom_css' => '".$use_css."'); ?>";
 		fwrite($fp,$write);
 		fclose($fp);

@@ -72,6 +72,8 @@ $l = array(
 'new_gb_msg' => 'Nova KG poruka',
 'error_msg_dont_send' => 'GRESKA: Poruku nije moguce bilo pohraniti!',
 'error_wrong_captcha' => 'GRESKA: Sigurnosni kod netacan, pokusajte ponovo!',
+'language' => 'Jezik',
+'reload_page_to_view_result' => ' Ponovo lodiraj stranicu kako bi vidio promjene.',
 '' => ''
 );
 ?>

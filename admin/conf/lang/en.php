@@ -72,6 +72,8 @@ $l = array(
 'new_gb_msg' => 'New GB Message',
 'error_msg_dont_send' => 'ERROR: Message not send!',
 'error_wrong_captcha' => 'ERROR: Security code wrong, please try again!',
+'language' => 'Language','language' => 'Language',
+'reload_page_to_view_result' => ' Reload page to view changes.',
 '' => ''
 );
 ?>

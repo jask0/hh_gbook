@@ -4,6 +4,7 @@
 	}
 	include 'conf/user.php';
 	if($_POST){
+		
 		$new_pword = $user['password'];
 		if($_POST['pword'] != ''){
 			if($_POST['pword'] == $_POST['pwordv']){
@@ -24,11 +25,13 @@
 		$write .="'password' => '".$new_pword."',";
 		$write .="'email' => '".$_POST['email']."',";
 		$write .="'mail_msg' => ".$mail_msg.",";
+		$write .="'language' => '".$_POST['language']."',";
 		$write .="'custom_css' => '".$user['custom_css']."'); ?>";
 		fwrite($fp,$write);
 		fclose($fp);
-		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
 		include 'conf/user.php';
+		$l = getLanguage();
+		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].$l['reload_page_to_view_result']'</p>';
 }
 ?>
 <div class="row">
@@ -56,6 +59,28 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<div class="col-md-8 col-md-offset-4">
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" value="1" name="mail_msg" <?php ($user['mail_msg']) ? print 'checked' : print ''; ?>> <?=$l['at_new_msg_send_email_to_me']?>
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="language" class="col-sm-4 control-label hh_form"><?=$l['language']?></label>
+				<div class="col-sm-8">
+					<select class="form-control" id="language" name="language">
+						<?php 
+							$lang_file = getLanguageFiles();
+							foreach($lang_file as $key => $value){
+						?>
+							<option value="<?=$value?>" <?=($user['language']==$value)? 'selected': ''?>><?=$value?></option>
+							<?php } ?>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
 				<label for="pword" class="col-sm-4 control-label hh_form"><?=$l['password']?></label>
 				<div class="col-sm-8">
 					<input type="password" name="password" value="" style="display: none" />
@@ -69,15 +94,7 @@
 					<p><?=$l['only_needed_to_change_password']?></p>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="col-md-8 col-md-offset-2">
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" value="1" name="mail_msg" <?php ($user['mail_msg']) ? print 'checked' : print ''; ?>> <?=$l['at_new_msg_send_email_to_me']?>
-						</label>
-					</div>
-				</div>
-			</div>
+			
 			<div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">
 					<button type="submit" class="btn btn-success" name="submit"><?=$l['save']?></button>

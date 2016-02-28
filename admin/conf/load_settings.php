@@ -46,10 +46,28 @@ function getGBsettings($conn, $gbid=1){
 	return $data;
 }
 
+function isFileExtension($file, $ext) {
+	 if(strtolower(substr($file, strrpos($file, '.') + 1))== $ext)
+		{return True;}
+	else
+		{return False;}
+}
+
+function getLanguageFiles(){
+	$page = scandir("conf/lang/");
+	$files = array();
+	foreach ($page as $key => $value){
+		if(isFileExtension($value,'php')){
+			echo $value;
+			$lang = explode('.php', $value);
+			array_push($files, $lang[0]);
+		}
+	}
+	return $files;
+}
 /*load language of the GB
 # @param:
-# 		$conn, connection to database
-#		$$gdid, load the settings of GB with id=1 (needed by multiple GB)
+# 		no param
 */
 function getLanguage(){
 	global $user;

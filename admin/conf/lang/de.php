@@ -72,6 +72,8 @@ $l = array(
 'new_gb_msg' => 'Neue GB Nachricht',
 'error_msg_dont_send' => 'FEHLER: Die Nachricht konnte nicht gespeichert werden!',
 'error_wrong_captcha' => 'FEHLER: Sicherheitscode falsch, bitte noch einmal versuchen!',
+'language' => 'Sprache',
+'reload_page_to_view_result' => ' Seite neu laden um die &auml;nderungen zu sehen.',
 '' => ''
 );
 ?>
