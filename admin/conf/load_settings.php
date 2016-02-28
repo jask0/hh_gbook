@@ -89,6 +89,7 @@ function showPost($data, $edit=0) {
 #		custom css is here
 */
 function loadMeta(){
+	global $user;
 	echo '<meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Font-Awesome CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -105,48 +106,11 @@ document.getElementById(\'nachricht\').value += input;
 function putTheSmiley(input) {
 window.opener.insertTheSmiley(input);
 }
-</script>
-<style><!--/*
-.panel-costum {
-	background-color: #fff;
-	border: 1px solid #8a6d3b;
-	border-radius: 4px;
-	-webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
-	box-shadow: 0 1px 1px rgba(0,0,0,.05);
-}
+</script>';
 
-.panel-costum > .panel-heading {
-    color: #8a6d3b;
-    background-color: #DECDAC;
-    border-color: #B7A98F;
-}
-.panel-costum > .panel-footer {
-	padding: 10px 15px;
-	background-color: #FFFF99;
-	border-top: 1px solid #ddd;
-	border-bottom-right-radius: 3px;
-	border-bottom-left-radius: 3px;
-}
-.pagination-custom > li > a{
-	color: #7F0000;
-	background-color: #eee;
-	border-color: #ddd;
-}
-.pagination-custom > li > a:hover{
-	color: #7F0000;
-	background-color: #ccc;
-}
-.pagination > .active-custom > a {
-	color: #fff;
-	cursor: default;
-	background-color: #8E6345;
-	border-color: #7F3300;
-}
-.pagination > .active-custom > a:hover {
-	background-color: #AD7854;
-	border-color: #7F3300;
-}*/-->
-</style>';
+	if ($user['custom_css']){
+		echo "\n".'<link rel="stylesheet" href="admin/conf/css/gb.custom.css">'."\n";
+	}
 }
 
 /* display submit form and save post to database

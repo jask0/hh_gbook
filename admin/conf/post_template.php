@@ -1,8 +1,8 @@
 <!-- This is the Template to display posts, shoud be loaded by showPost() -->
 <?php if ($data['public'] == 1 || isset($_SESSION['username']) || isset($_COOKIE['username'])) { ?>
 	<div class="gb-overall col-md-12">
-		<div class="panel <?php $data['public'] == 1 ? print 'panel-primary panel-costum' : print 'panel-danger'; ?>">
-			<div class="panel-heading">
+		<div class="panel <?=($data['public'] == 1) ? 'panel-primary costum-panel' : 'panel-danger'; ?>">
+			<div class="panel-heading <?=($data['public'] == 1) ? 'custom-heading' : ''; ?>">
 				<?php if(isset($_SESSION['username'])){ ?>
 					<a class="btn btn-danger btn-xs pull-right" style="margin-left:5px;" href="<?php echo $edit; ?>"><i class="fa fa-pencil"></i> Bearbeiten</a> 
 				<?php } ?>
@@ -20,7 +20,7 @@
 					<?php } ?>
 				</div>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body <?=($data['public'] == 1) ? 'custom-body' : ''; ?>">
 				<?php if($sgs['image'] && $data['bild_url'] != ''){ ?>
 					<div class="col-xs-6 col-md-3">
 						<a href="<?php echo $data['bild_url']; ?>" class="thumbnail">
@@ -32,7 +32,7 @@
 					<?php echo $data['nachricht']; ?>
 			</div>
 			<?php if($data['kommentar'] != ''){ ?>
-				<div class="panel-footer">
+				<div class="panel-footer <?=($data['public'] == 1) ? 'custom-footer' : ''; ?>">
 					<?php echo $data['kommentar']; ?>
 				</div>
 			<?php } ?>

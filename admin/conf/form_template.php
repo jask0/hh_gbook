@@ -6,7 +6,7 @@
 			<div class="col-sm-12">
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-user"></i></span>
-					<input type="text" class="form-control" id="name" name="name" placeholder="Name*" value="<?php echo $data['name']; ?>">
+					<input type="text" class="form-control jscolor" id="name" name="name" placeholder="Name*" value="<?php echo $data['name']; ?>">
 				</div>
 			</div>
 		</div>

@@ -22,8 +22,9 @@
 		$write = '<?php $user = Array(';
 		$write .="'username' => '".$_POST['uname']."',";
 		$write .="'password' => '".$new_pword."',";
+		$write .="'email' => '".$_POST['email']."',";
 		$write .="'mail_msg' => ".$mail_msg.",";
-		$write .="'email' => '".$_POST['email']."'); ?>";
+		$write .="'custom_css' => '".$user['custom_css']."'); ?>";
 		fwrite($fp,$write);
 		fclose($fp);
 		$info = '<p class="alert alert-success">Daten gespeichert!</p>';

@@ -26,6 +26,7 @@ $sgs = getGBsettings($conn);
 			color:white;
 		}
 	</style>
+	<?=(isset($_GET['page']) && $_GET['page'] == 'custom') ? '<script src="conf/js/jscolor.js"></script>':''?>
 </head>
 
 <body>
@@ -175,10 +176,10 @@ $sgs = getGBsettings($conn);
                     <li>
                         <a href="#"><i class="fa fa-fw fa-edit"></i> Neues GB anlegen</a>
                     </li>
+                    <li>-->
                     <li>
-                    <li class="active">
-                        <a href="#"><i class="fa fa-fw fa-file"></i> Bearbeiten</a>
-                    </li>-->
+                        <a href="?page=custom"><i class="fa fa-fw fa-file"></i> Eigenes CSS</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
