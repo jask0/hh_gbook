@@ -31,7 +31,7 @@
 		fclose($fp);
 		include 'conf/user.php';
 		$l = getLanguage();
-		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].$l['reload_page_to_view_result']'</p>';
+		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].$l['reload_page_to_view_result'].'</p>';
 }
 ?>
 <div class="row">
