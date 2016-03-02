@@ -75,7 +75,7 @@
 			<div class="form-group has-success ">
 				<label for="nachricht" class="col-sm-2 control-label sr-only hh_form"><?=$l['msg']?>*</label>
 				<div class="col-sm-12">
-					<textarea class="form-control" name="nachricht" id="nachricht" placeholder="<?=$l['msg']?>*"><?php echo $data['nachricht']; ?></textarea>
+					<pre><textarea class="form-control" name="nachricht" id="nachricht" placeholder="<?=$l['msg']?>*"><?php echo $data['nachricht']; ?></textarea></pre>
 				</div>
 			</div>
 			<?php if(!isset($_GET['id'])) { ?>

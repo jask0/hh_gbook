@@ -2,7 +2,7 @@
 <div class="row">
 	<?php if ($data['public'] == 1 || isset($_SESSION['username']) || isset($_COOKIE['username'])) { ?>
 		<div class="gb-overall col-md-12">
-			<div class="panel <?=($data['public'] == 1) ? 'panel-primary costum-panel' : 'panel-danger'; ?>">
+			<div class="panel <?=($data['public'] == 1) ? 'panel-primary custom-panel' : 'panel-danger'; ?>">
 				<div class="panel-heading <?=($data['public'] == 1) ? 'custom-heading' : ''; ?>">
 					<?php if(isset($_SESSION['username'])){ ?>
 						<a class="btn btn-danger btn-xs pull-right" style="margin-left:5px;" href="<?php echo $edit; ?>"><i class="fa fa-pencil"></i> <?=$l['edit']?></a> 

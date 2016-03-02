@@ -12,18 +12,29 @@
 	}
 	//include('load_settings.php');
 	//$sgs = getGBsettings($conn, 1);
-	
+
 	if(isset($_POST['use_css']) && $_POST['use_css'] == 1){
+		$jcss = getCustomCss();
+		$use_css = 1;
 		
 		$file = fopen('conf/css/gb.custom.css', 'w');
-		$css = '.custom-panel { border-color: #'. $_POST['custom-panel'].' !important;}'."\n";
-		$css .= '.custom-heading { background-color: #'. $_POST['custom-heading'].' !important;}'."\n";
+		$css = '.custom-panel { border-color: #'. $_POST['custom-panel'].';}'."\n";
+		$css .= '.panel-primary > .custom-heading { background-color: #'. $_POST['custom-heading'].';}'."\n";
 		$css .= '.custom-body { background-color: #'. $_POST['custom-body'].';}'."\n";
 		$css .= '.custom-footer { background-color: #'. $_POST['custom-footer'].';}';
-		
 		fwrite($file,$css);
 		fclose($file);
-		$use_css = 1;
+		
+		$jcss['use_custom_css'] = 1;
+		$jcss['.custom-panel']['border-color'] = $_POST['custom-panel'];
+		$jcss['.custom-heading']['background-color'] = $_POST['custom-heading'];
+		$jcss['.custom-body']['background-color'] = $_POST['custom-body'];
+		$jcss['.custom-footer']['background-color'] = $_POST['custom-footer'];
+		
+		$fp = fopen('conf/css/custom.css.json', 'w');
+		fwrite($fp, json_encode($jcss));
+		fclose($fp);
+		
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
 		
 	} else {
@@ -46,6 +57,7 @@
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
 	}
 	include 'conf/user.php';
+	$css = getCustomCss();
 ?>
 
 <div class="col-md-12">
@@ -55,21 +67,21 @@
 				<label for="name" class="control-label"><?=$l['header_bg']?></label>
 				<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-hashtag"></i></span>
-						<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueHeaderBG', styleElement:'styleHeaderBG', position:'right'}" id="valueHeaderBG" name="custom-heading" value="337ab7">
+						<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueHeaderBG', styleElement:'styleHeaderBG', position:'right'}" id="valueHeaderBG" name="custom-heading" value="<?=$css['.custom-heading']['background-color']?>">
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="name" class="control-label"><?=$l['text_bg']?></label>
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-hashtag"></i></span>
-					<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueTextBG',styleElement:'styleTextBG', position:'right'}" id="valueTextBG" name="custom-body" value="ffffff">
+					<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueTextBG',styleElement:'styleTextBG', position:'right'}" id="valueTextBG" name="custom-body" value="<?=$css['.custom-body']['background-color']?>">
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="name" class="control-label"><?=$l['comment_bg']?></label>
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-hashtag"></i></span>
-					<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueCommentBG',styleElement:'styleCommentBG', position:'right'}" id="valueCommentBG" name="custom-footer" value="f5f5f5">
+					<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueCommentBG',styleElement:'styleCommentBG', position:'right'}" id="valueCommentBG" name="custom-footer" value="<?=$css['.custom-footer']['background-color']?>">
 				</div>
 			</div>
 		
@@ -77,13 +89,13 @@
 				<label for="name" class="control-label"><?=$l['border_color']?></label>
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-hashtag"></i></span>
-					<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueBorder',styleElement:'styleBorder',onFineChange:'update(this)', position:'right'}" id="valueBorder" name="custom-panel" value="337ab7">
+					<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueBorder',styleElement:'styleBorder',onFineChange:'update(this)', position:'right'}" id="valueBorder" name="custom-panel" value="<?=$css['.custom-panel']['border-color']?>">
 				</div>
 			</div>
 			<div class="form-group">
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" value="1" name="use_css" <?=($user['custom_css']==1)? 'checked':''?>> <b><?=$l['use_custom_css']?></b>
+						<input type="checkbox" value="1" name="use_css" <?=($css['use_custom_css']==1)? 'checked':''?>> <b><?=$l['use_custom_css']?></b>
 					</label>
 				</div>
 			</div>
@@ -128,3 +140,6 @@ function update(jscolor) {
     document.getElementById('styleBorder').style.borderColor = '#' + jscolor
 }
 </script>
+<?php echo '<pre>' . print_r($css, true) . '</pre>'; ?>
+<?php $css['use_custom_css'] = 0; ?>
+<?php echo '<pre>' . print_r($css, true) . '</pre>'; ?>

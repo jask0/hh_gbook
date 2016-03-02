@@ -1,4 +1,4 @@
-.custom-panel { border-color: #46343B !important;}
-.custom-heading { background-color: #4CB77E !important;}
-.custom-body { background-color: #5548FF;}
-.custom-footer { background-color: #F59F30;}
+.custom-panel { border-color: #DFD327;}
+.panel-primary > .custom-heading { background-color: #162E8E;}
+.custom-body { background-color: #C3FFF3;}
+.custom-footer { background-color: #AAF5AF;}

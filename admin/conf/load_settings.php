@@ -46,6 +46,12 @@ function getGBsettings($conn, $gbid=1){
 	return $data;
 }
 
+function getCustomCss(){
+	$json_css = file_get_contents('conf/css/custom.css.json');
+	$data = json_decode($json_css, true);
+	return $data;
+}
+
 function isFileExtension($file, $ext) {
 	 if(strtolower(substr($file, strrpos($file, '.') + 1))== $ext)
 		{return True;}
