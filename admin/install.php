@@ -1,5 +1,5 @@
 <?php
-include('conf/load_settings.php');
+include('functions.php');
 $l = getLanguage();
 if($_POST){
 	// sql to create post table
