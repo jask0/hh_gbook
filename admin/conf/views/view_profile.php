@@ -2,9 +2,12 @@
 	if(!isset($_SESSION['username'])){
 		die($l['prohibited_direct_access']);
 	}
-	include 'conf/user.php';
+	//stored user data
+	global $user;
+	
 	if($_POST){
 		
+		//change user password
 		$new_pword = $user['password'];
 		if($_POST['pword'] != ''){
 			if($_POST['pword'] == $_POST['pwordv']){
@@ -13,23 +16,26 @@
 				$info = '<p class="alert alert-danger">'.$l['pasword_error'].' '.$l['settings_not_saved'].'</p>';
 			}
 		}
+		
+		//email me about new post if $mail_msg == 1
 		if(isset($_POST['mail_msg'])){
 			$mail_msg = 1;
 		} else {
 			$mail_msg = 0;
 		}
 		
-		$fp = fopen('conf/user.php', 'w') or die($ERROR_CREATING_FILE);
-		$write = '<?php $user = Array(';
-		$write .="'username' => '".$_POST['uname']."',";
-		$write .="'password' => '".$new_pword."',";
-		$write .="'email' => '".$_POST['email']."',";
-		$write .="'mail_msg' => ".$mail_msg.",";
-		$write .="'language' => '".$_POST['language']."',";
-		$write .="'custom_css' => '".$user['custom_css']."'); ?>";
-		fwrite($fp,$write);
+		//change user configuration
+		$user['username'] = $_POST['uname'];
+		$user['password'] = $new_pword;
+		$user['email'] = $_POST['email'];
+		$user['mail_msg'] = $mail_msg;
+		$user['language'] = $_POST['language'];
+
+		//write user configuration
+		$fp = fopen('conf/user.json', 'w');
+		fwrite($fp, json_encode($user));
 		fclose($fp);
-		include 'conf/user.php';
+		
 		$l = getLanguage();
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].$l['reload_page_to_view_result'].'</p>';
 }

@@ -1,7 +1,7 @@
 <?php
  # diser Code muss an erster stelle der Datei wo das GB erscheinen soll
  session_start();
- include('admin/conf/load_settings.php');
+ include('admin/functions.php');
  $sgs = getGBsettings($conn, 1);
 ?>
 <!DOCTYPE html>

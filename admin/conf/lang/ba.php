@@ -74,6 +74,9 @@ $l = array(
 'error_wrong_captcha' => 'GRESKA: Sigurnosni kod netacan, pokusajte ponovo!',
 'language' => 'Jezik',
 'reload_page_to_view_result' => ' Ponovo lodiraj stranicu kako bi vidio promjene.',
+'smilie_set' => 'Vrsta Smjlia',
+'smilies' => 'Smajli',
+'smilie_list' => 'Lista smajlia',
 '' => ''
 );
 ?>

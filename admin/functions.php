@@ -1,11 +1,9 @@
 <?php
 // connection to database
-include ('connect.php');
-if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
-	include ('conf/user.php');
-} else {
-	include ('admin/conf/user.php');
-}
+include ('conf/connect.php');
+$user = getUserConfig();
+$smilie = getSmilies();
+
 /* placeholder array,
 #	@info:
 #		input field values of the GB, by default ''
@@ -28,12 +26,39 @@ $form = Array(
 #		The smilies shoud be stored in admin/smilies/set_name, and all smilies shoud have names like icon_(xy).ext
 #
 */
-$smilie = Array (
-'list' => Array ('(1)','(2)','(3)','(4)','(5)','(6)','(7)','(8)','(9)','(10)','(11)','(12)','(13)','(14)','(15)','(16)','(17)','(18)','(19)','(20)','(21)','(22)','(23)','(24)'),
-'set' => 'yellow',
-'ext' => 'gif'
-);
 
+function getUserConfig(){
+	
+	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
+		$file = file_get_contents('conf/user.json');
+	} else {
+		$file = file_get_contents('admin/conf/user.json');
+	}
+	$data = json_decode($file, true);
+	return $data;
+}
+
+function getCustomCss(){
+	
+	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
+		$file = file_get_contents('conf/custom.css.json');
+	} else {
+		$file = file_get_contents('admin/conf/custom.css.json');
+	}
+	$data = json_decode($file, true);
+	return $data;
+}
+
+function getSmilies(){
+	
+	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
+		$file = file_get_contents('conf/smilies.json');
+	} else {
+		$file = file_get_contents('admin/conf/smilies.json');
+	}
+	$data = json_decode($file, true);
+	return $data;
+}
 /*load settings from database about the GB
 # @param:
 # 		$conn, connection to database
@@ -43,12 +68,6 @@ function getGBsettings($conn, $gbid=1){
 	$q = "SELECT * FROM hh_gbsettings WHERE id = $gbid";
 	$r = mysqli_query($conn, $q);
 	$data = mysqli_fetch_assoc($r);
-	return $data;
-}
-
-function getCustomCss(){
-	$json_css = file_get_contents('conf/css/custom.css.json');
-	$data = json_decode($json_css, true);
 	return $data;
 }
 
@@ -107,7 +126,7 @@ function showForm($data, $action) {
 	global $sgs,$form,$smilie; 
 	$l = getLanguage();
 	$data['action'] = $action;
-	include('form_template.php');
+	include('conf/templates/form_template.php');
 }
 
 /*display of one post
@@ -120,7 +139,7 @@ function showPost($data, $edit=0) {
 	if(is_numeric($edit)){
 		$edit='admin/index.php?page=edit&id='.$data['id'];
 	}
-	include('post_template.php');
+	include('conf/templates/post_template.php');
 }
 
 /*load meta data like css an javascript
@@ -130,7 +149,7 @@ function showPost($data, $edit=0) {
 #		custom css is here
 */
 function loadMeta(){
-	global $user;
+	$css = getCustomCss();
 	echo '
 <!-- Font-Awesome CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -149,7 +168,7 @@ window.opener.insertTheSmiley(input);
 }
 </script>';
 
-	if ($user['custom_css']){
+	if ($css['use_custom_css'] == 1){
 		echo "\n".'<link rel="stylesheet" href="admin/conf/css/gb.custom.css">'."\n";
 	}
 }
@@ -181,7 +200,7 @@ function showGBookForm($file){
 				$public = $_POST['public'];
 				$gbid = $_POST['gbid'];
 				foreach ($smilie['list'] as $key => $value) {
-					$nachricht = str_replace(':'.$value.':', '<img src="admin/smilies/'.$smilie['set'].'/icon_'.$value.'.'.$smilie['ext'].'" alt=":'.$value.':">', $nachricht);
+					$nachricht = str_replace(':'.$value.':', '<img src="admin/smilies/'.$smilie['set'].'/'.$value.'" alt=":'.$value.':">', $nachricht);
 				}
 				$nachricht = str_replace("'", "\'", str_replace('"', '\"',$nachricht));
 				$query = sprintf('INSERT INTO hh_gbook (name,email,homepage,betreff,bild_url,nachricht,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s")',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$public,$gbid);

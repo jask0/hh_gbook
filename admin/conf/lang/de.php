@@ -74,6 +74,9 @@ $l = array(
 'error_wrong_captcha' => 'FEHLER: Sicherheitscode falsch, bitte noch einmal versuchen!',
 'language' => 'Sprache',
 'reload_page_to_view_result' => ' Seite neu laden um die &auml;nderungen zu sehen.',
+'smilie_set' => 'Smilie Satz',
+'smilies' => 'Smilies',
+'smilie_list' => 'Smilie Liste',
 '' => ''
 );
 ?>

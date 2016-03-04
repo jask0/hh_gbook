@@ -3,7 +3,7 @@ session_start();
 if(!isset($_SESSION['username'])){
 		header('Location: login.php');
 }
-include('conf/load_settings.php');
+include('functions.php');
 $l = getLanguage();
 $sgs = getGBsettings($conn);
 ?>
@@ -27,6 +27,7 @@ $sgs = getGBsettings($conn);
 			color:white;
 		}
 	</style>
+	<?=(isset($_GET['page']) && $_GET['page'] == 'custom') ? '<link rel="stylesheet" href="conf/css/gb.custom.css">':''?>
 	<?=(isset($_GET['page']) && $_GET['page'] == 'custom') ? '<script src="conf/js/jscolor.js"></script>':''?>
 </head>
 
@@ -171,15 +172,22 @@ $sgs = getGBsettings($conn);
 					<li>
                         <a href="../"><i class="fa fa-fw fa-desktop"></i> <?=$l['to_gb']?></a>
                     </li>
+					<li>
+                        <a href="index.php?page=profile"><i class="fa fa-fw fa-user"></i> <?=$l['profile']?></a>
+                    </li>
                     <li>
                         <a href="index.php"><i class="fa fa-fw fa-wrench"></i> <?=$l['settings']?></a>
-                    </li><!--
+                    </li>
+					<!--
                     <li>
                         <a href="#"><i class="fa fa-fw fa-edit"></i> Neues GB anlegen</a>
                     </li>
-                    <li>-->
+					-->
                     <li>
-                        <a href="?page=custom"><i class="fa fa-fw fa-file"></i> <?=$l['custom_css']?></a>
+                        <a href="?page=custom"><i class="fa fa-fw fa-css3"></i> <?=$l['custom_css']?></a>
+                    </li>
+					<li>
+                        <a href="?page=smilies"><i class="fa fa-fw fa-smile-o"></i> <?=$l['smilies']?></a>
                     </li>
                 </ul>
             </div>
@@ -191,9 +199,9 @@ $sgs = getGBsettings($conn);
             <div class="container-fluid">
 			<?php
 			if(isset($_GET['page'])){
-				include('conf/view_'.$_GET['page'].'.php');
+				include('conf/views/view_'.$_GET['page'].'.php');
 			} else {
-				include('conf/view_index.php');
+				include('conf/views/view_index.php');
 			}
 			?>
 	

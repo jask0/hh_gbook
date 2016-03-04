@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('conf/load_settings.php');
+include('functions.php');
 $l = getLanguage();
 
 $sgs = getGBsettings($conn);

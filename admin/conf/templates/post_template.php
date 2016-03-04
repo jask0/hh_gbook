@@ -24,7 +24,7 @@
 				<div class="panel-body <?=($data['public'] == 1) ? 'custom-body' : ''; ?>">
 					<?php if($sgs['image'] && $data['bild_url'] != ''){ ?>
 						<div class="col-xs-6 col-md-3">
-							<a href="<?php echo $data['bild_url']; ?>" class="thumbnail">
+							<a href="<?php echo $data['bild_url']; ?>" class="thumbnail custom-thumbnail">
 								<img src="<?php echo $data['bild_url']; ?>" alt="Thumbnail">
 							</a>
 						</div>

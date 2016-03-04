@@ -74,6 +74,9 @@ $l = array(
 'error_wrong_captcha' => 'ERROR: Security code wrong, please try again!',
 'language' => 'Language','language' => 'Language',
 'reload_page_to_view_result' => ' Reload page to view changes.',
+'smilie_set' => 'Smilie Set',
+'smilies' => 'Smilies',
+'smilie_list' => 'Smilie List',
 '' => ''
 );
 ?>

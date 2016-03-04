@@ -64,7 +64,7 @@
 							<?php
 							for ($i = 0; $i < count($smilie['list']); $i++) {
 								if ($i % 12 == 0 && $i != 0) echo '<!--<br>-->';
-								echo '<a href="javascript:insertTheSmiley(\':'.$smilie['list'][$i].':\', \'nachricht\');void(0)"><img src="admin/smilies/'.$smilie['set'].'/icon_'.$smilie['list'][$i].'.'.$smilie['ext'].'" alt=":'.$smilie['list'][$i].':" ></a>&nbsp;&nbsp;';
+								echo '<a href="javascript:insertTheSmiley(\':'.$smilie['list'][$i].':\', \'nachricht\');void(0)"><img src="admin/smilies/'.$smilie['set'].'/'.$smilie['list'][$i].'" alt=":'.$smilie['set'].$i.':" ></a>&nbsp;&nbsp;';
 							}
 							?>
 						</center>
@@ -75,7 +75,7 @@
 			<div class="form-group has-success ">
 				<label for="nachricht" class="col-sm-2 control-label sr-only hh_form"><?=$l['msg']?>*</label>
 				<div class="col-sm-12">
-					<pre><textarea class="form-control" name="nachricht" id="nachricht" placeholder="<?=$l['msg']?>*"><?php echo $data['nachricht']; ?></textarea></pre>
+					<textarea class="form-control" name="nachricht" id="nachricht" placeholder="<?=$l['msg']?>*"><?php echo $data['nachricht']; ?></textarea>
 				</div>
 			</div>
 			<?php if(!isset($_GET['id'])) { ?>

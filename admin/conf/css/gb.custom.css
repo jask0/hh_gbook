@@ -1,4 +1,14 @@
-.custom-panel { border-color: #DFD327;}
-.panel-primary > .custom-heading { background-color: #162E8E;}
-.custom-body { background-color: #C3FFF3;}
-.custom-footer { background-color: #AAF5AF;}
+.custom-panel {
+	border-color: #DF5417;}
+.custom-thumbnail {
+	background-color: #8B3308;
+	border: 0px solid #8B3308 !important;}
+.panel-primary > .custom-heading {
+	background-color: #5B121B;
+	color: #FF6810;}
+.custom-body {
+	background-color: #8B3308;
+	color: #FFF679;}
+.custom-footer {
+	background-color: #5B121B;
+	color: #FF6810;}
