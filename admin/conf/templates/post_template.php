@@ -10,12 +10,12 @@
 					Von: <?php echo $data['name']; ?>
 					<div class="pull-right">
 						<?php if ($sgs['email'] && $data['email'] != '') { ?>
-							<a href="mailto:<?php echo $data['email']; ?>" class="btn btn-default btn-xs" title="<?=$l['email']?>">
+							<a href="mailto:<?php echo $data['email']; ?>" target="_blank" class="btn btn-default btn-xs" title="<?=$l['email']?>">
 								<i class="fa fa-envelope-o"></i>
 							</a>
 						<?php }
 						if ($sgs['homepage'] && $data['homepage'] != '') { ?>
-							<a href="<?php echo $data['homepage']; ?>" class="btn btn-default btn-xs" title="<?=$l['homepage']?>">
+							<a href="<?php echo $data['homepage']; ?>" target="_blank" class="btn btn-default btn-xs" title="<?=$l['homepage']?>">
 								<i class="fa fa-home"></i>
 							</a>
 						<?php } ?>
