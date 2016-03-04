@@ -47,26 +47,17 @@
 		
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
 		
-	} else {
-		$use_css = 0;
 	}
-	
-	if(isset($_POST['submit'])){
-		include 'conf/user.php';
-		
-		$fp = fopen('conf/user.php', 'w') or die($ERROR_CREATING_FILE);
-		$write = '<?php $user = Array(';
-		$write .="'username' => '".$user['username']."',";
-		$write .="'password' => '".$user['password']."',";
-		$write .="'email' => '".$user['email']."',";
-		$write .="'mail_msg' => ".$user['mail_msg'].",";
-		$write .="'language' => '".$user['language']."',";
-		$write .="'custom_css' => '".$use_css."'); ?>";
-		fwrite($fp,$write);
+	if(isset($_POST['submit']) && !isset($_POST['use_css'])){
+		$jcss = getCustomCss();
+		$use_css = 0;
+		$jcss['use_custom_css'] = 0;
+		$fp = fopen('conf/custom.css.json', 'w');
+		fwrite($fp, json_encode($jcss));
 		fclose($fp);
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
 	}
-	include 'conf/user.php';
+	
 	$css = getCustomCss();
 ?>
 <form class="form-horizontal" action="?page=custom" method="post">
