@@ -77,6 +77,10 @@ $l = array(
 'smilie_set' => 'Smilie Set',
 'smilies' => 'Smilies',
 'smilie_list' => 'Smilie List',
+'at_date' => 'At',
+'at_time' => '-',
+'a_clock' => '',
+'wrote' => 'wrote',
 '' => ''
 );
 ?>

@@ -77,6 +77,10 @@ $l = array(
 'smilie_set' => 'Vrsta Smjlia',
 'smilies' => 'Smajli',
 'smilie_list' => 'Lista smajlia',
+'at_date' => 'Dana',
+'at_time' => 'u',
+'a_clock' => 'h',
+'wrote' => 'poslao(la) je',
 '' => ''
 );
 ?>
