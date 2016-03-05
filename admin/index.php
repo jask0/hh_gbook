@@ -5,13 +5,13 @@ if(!isset($_SESSION['username'])){
 }
 include('functions.php');
 $l = getLanguage();
-$sgs = getGBsettings($conn);
+$gbs = getGBsettings();
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title><?=$l['gb']?> : <?=$sgs['title']?></title>
+	<title><?=$l['gb']?> : <?=$gbs['title']?></title>
 	<?php loadMeta(); ?>
 	<!-- Bootstrap Core CSS -->
 	<link href="conf/css/bootstrap.min.css" rel="stylesheet">
@@ -44,7 +44,7 @@ $sgs = getGBsettings($conn);
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../"><?php echo $sgs['title']; ?></a>
+                <a class="navbar-brand" href="../"><?php echo $gbs['title']; ?></a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">

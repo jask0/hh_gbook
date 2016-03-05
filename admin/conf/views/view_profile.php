@@ -74,7 +74,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="language" class="col-sm-4 control-label hh_form"><?=$l['language']?></label>
+				<label for="language" class="col-sm-4 control-label hh_form"><?=$l['language']?> <?=$l['admin_area']?></label>
 				<div class="col-sm-8">
 					<select class="form-control" id="language" name="language">
 						<?php 

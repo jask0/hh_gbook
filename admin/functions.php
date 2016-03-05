@@ -1,8 +1,13 @@
 <?php
 // connection to database
 include ('conf/connect.php');
-$user = getUserConfig();
-$smilie = getSmilies();
+
+//set gloabl variables
+$user = getUserConfig(); // user configuration
+$gbs = getGBsettings(); // gestbook settings / configuration
+$smilie = getSmilies(); // load smilies
+$l = getLanguage(); // load language
+
 
 /* placeholder array,
 #	@info:
@@ -17,58 +22,42 @@ $form = Array(
 'nachricht' => '',
 'public'=>'');
 
-/* smilie array, 
-#	@key:
-#		lsit: 24 smilies 
-#		set:  silie set name, and either the folder where the smilies are stored (admin/smilies/{set}/)
-#		ext:  extension of the smilie files 
-#	@info:
-#		The smilies shoud be stored in admin/smilies/set_name, and all smilies shoud have names like icon_(xy).ext
-#
+/* loads a json file from config/ directory
+*	@param:
+*		$json_file, the exact file name of the json file
 */
 
-function getUserConfig(){
-	
+function loadJson($json_file){
 	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
-		$file = file_get_contents('conf/user.json');
+		$file = file_get_contents('conf/'.$json_file);
 	} else {
-		$file = file_get_contents('admin/conf/user.json');
+		$file = file_get_contents('admin/conf/'.$json_file);
 	}
 	$data = json_decode($file, true);
+	return $data;
+}
+
+function getUserConfig(){
+	$data = loadJson('user.json');
 	return $data;
 }
 
 function getCustomCss(){
-	
-	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
-		$file = file_get_contents('conf/custom.css.json');
-	} else {
-		$file = file_get_contents('admin/conf/custom.css.json');
-	}
-	$data = json_decode($file, true);
+	$data = loadJson('custom.css.json');
 	return $data;
 }
 
 function getSmilies(){
-	
-	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
-		$file = file_get_contents('conf/smilies.json');
-	} else {
-		$file = file_get_contents('admin/conf/smilies.json');
-	}
-	$data = json_decode($file, true);
+	$data = loadJson('smilies.json');
 	return $data;
 }
-/*load settings from database about the GB
+/*load settings from gb.json file about the GB
 # @param:
-# 		$conn, connection to database
-#		$$gdid, load the settings of GB with id=1 (needed by multiple GB)
+#		$gdid -> load the settings of GB with id=1 (needed by multiple GB)
 */
-function getGBsettings($conn, $gbid=1){
-	$q = "SELECT * FROM hh_gbsettings WHERE id = $gbid";
-	$r = mysqli_query($conn, $q);
-	$data = mysqli_fetch_assoc($r);
-	return $data;
+function getGBsettings($gbid=1){
+	$data = loadJson('gb.json');
+	return $data[(string)$gbid];
 }
 
 function isFileExtension($file, $ext) {
@@ -90,18 +79,46 @@ function getLanguageFiles(){
 	}
 	return $files;
 }
-/*load language of the GB
+
+function setLanguage($lnag){
+	global $l;
+	$l = getLanguage($lnag);
+}
+
+function fallBackLanguage($l_new){
+	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
+		$lang = "conf/lang/en.php";
+	} else {
+		$lang = "admin/conf/lang/en.php";
+	}
+	include($lang);
+	foreach($l as $key => $value){
+		if (!array_key_exists($key, $l_new)) {
+			$l_new[$key] = $value;
+		}
+	}
+	return $l_new;
+}
+/*load language file for the GB
 # @param:
-# 		no param
+# 		$file, if given it will load this specific language
 */
-function getLanguage(){
-	global $user;
+function getLanguage($file=NULL){
+	global $user,$gbs;
+	if(isset($file)){
+		$lang = "admin/conf/lang/".$file.".php";
+		include($lang);
+		$l = fallBackLanguage($l);
+		return $l;
+	}
+	
 	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
 		$lang = "conf/lang/".$user['language'].".php";
 	} else {
-		$lang = "admin/conf/lang/".$user['language'].".php";
+		$lang = "admin/conf/lang/".$gbs['language'].".php";
 	}
 	include($lang);
+	$l = fallBackLanguage($l);
 	return $l;
 }
 /*pruf is the admin loged in
@@ -123,8 +140,7 @@ function getCondition(){
 #		$action ->	url for the action atributt
 */
 function showForm($data, $action) {
-	global $sgs,$form,$smilie; 
-	$l = getLanguage();
+	global $gbs,$form,$smilie,$l; 
 	$data['action'] = $action;
 	include('conf/templates/form_template.php');
 }
@@ -134,8 +150,7 @@ function showForm($data, $action) {
 # 		$data ->  	posted data array to fill the value fields
 */
 function showPost($data, $edit=0) {
-	global $sgs,$form,$smilie;
-	$l = getLanguage();
+	global $gbs,$form,$smilie,$l;
 	if(is_numeric($edit)){
 		$edit='admin/index.php?page=edit&id='.$data['id'];
 	}
@@ -178,7 +193,7 @@ window.opener.insertTheSmiley(input);
 # 		$file ->  	url to the file where the GB is displayed
 */
 function showGBookForm($file){
-	global $sgs,$form,$conn,$smilie,$user; 
+	global $gbs,$form,$conn,$smilie,$user; 
 	$cond = getCondition();
 	$l = getLanguage();
 	if(!isset($_POST['submit'])){
@@ -188,7 +203,7 @@ function showGBookForm($file){
 	} else {
 		if($_SESSION['captcha_code'] == md5($_POST['captcha'])){
 			if($_POST['name'] == "" or $_POST['nachricht'] == ""){
-				$_POST['info_msg'] = '<p class="alert alert-danger">'. $sgs['error'].'<br>'. $sgs['msg'] . '</p>';
+				$_POST['info_msg'] = '<p class="alert alert-danger">'. $gbs['error'].'<br>'. $gbs['msg'] . '</p>';
 				showForm($_POST, $file);
 			} else {
 				$name = htmlentities($_POST['name']);
@@ -228,16 +243,16 @@ function showGBookForm($file){
 # 		no param
 */
 function showGBookPosts(){
-	global $sgs,$form,$conn; 
+	global $gbs,$form,$conn; 
 	$page = 1;
-	$gbid = $sgs['id'];
+	$gbid = $gbs['id'];
 	$l = getLanguage();
 	$where = getCondition();
 	if(isset($_GET['page'])){
 		$page = (int)$_GET['page'];
 	}
-	$offset = ($page - 1) * $sgs['posts'];
-	$abfrage = "SELECT * FROM hh_gbook $where AND gb = $gbid ORDER BY id DESC LIMIT $sgs[posts] OFFSET $offset";
+	$offset = ($page - 1) * $gbs['posts'];
+	$abfrage = "SELECT * FROM hh_gbook $where AND gb = $gbid ORDER BY id DESC LIMIT $gbs[posts] OFFSET $offset";
 	$abfrage_antwort = mysqli_query($conn, $abfrage);
 	
 	if ( ! $abfrage_antwort )
@@ -258,10 +273,10 @@ function showGBookPosts(){
 # 		no param needed
 */
 function showGBpageNavi(){
-	global $sgs,$form,$conn,$user; 
+	global $gbs,$form,$conn,$user; 
 	$myCond = getCondition();
 	$l = getLanguage();
-	$q = "SELECT count($sgs[id]) FROM hh_gbook $myCond";
+	$q = "SELECT count($gbs[id]) FROM hh_gbook $myCond";
     $count = mysqli_query( $conn, $q );
 	$count = mysqli_fetch_row($count);
 	
@@ -273,7 +288,7 @@ function showGBpageNavi(){
 			<center><nav><ul class="pagination pagination-custom">
 				<li><a href="?page='.$p.'" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
 	$x = 0;
-	$last_page = (($count[0]/$sgs['posts'])+1);
+	$last_page = (($count[0]/$gbs['posts'])+1);
 	for ($x = 1; $x < $last_page; $x++){
 			$active ='';
 			$sr_info='';

@@ -9,12 +9,12 @@
 					<?php } ?>
 					<?php echo $l['at_date'].' '.date_format($data['datum'], 'd.m.y').' '.$l['at_time'].' '.date_format($data['datum'], 'H:m').' '.$l['a_clock'].' '.$l['wrote'].' '.$data['name'].':'; ?>
 					<div class="pull-right">
-						<?php if ($sgs['email'] && $data['email'] != '') { ?>
+						<?php if ($gbs['email'] && $data['email'] != '') { ?>
 							<a href="mailto:<?php echo $data['email']; ?>" target="_blank" class="btn btn-default btn-xs" title="<?=$l['email']?>">
 								<i class="fa fa-envelope-o"></i>
 							</a>
 						<?php }
-						if ($sgs['homepage'] && $data['homepage'] != '') { ?>
+						if ($gbs['homepage'] && $data['homepage'] != '') { ?>
 							<a href="<?php echo $data['homepage']; ?>" target="_blank" class="btn btn-default btn-xs" title="<?=$l['homepage']?>">
 								<i class="fa fa-home"></i>
 							</a>
@@ -22,7 +22,7 @@
 					</div>
 				</div>
 				<div class="panel-body <?=($data['public'] == 1) ? 'custom-body' : ''; ?>">
-					<?php if($sgs['image'] && $data['bild_url'] != ''){ ?>
+					<?php if($gbs['image'] && $data['bild_url'] != ''){ ?>
 						<div class="col-xs-6 col-md-3">
 							<a href="<?php echo $data['bild_url']; ?>" class="thumbnail custom-thumbnail">
 								<img src="<?php echo $data['bild_url']; ?>" alt="Thumbnail">

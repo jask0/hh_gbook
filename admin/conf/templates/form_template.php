@@ -12,7 +12,7 @@
 					</div>
 				</div>
 			</div>
-			<?php if ($sgs['email']) { ?>
+			<?php if ($gbs['email']) { ?>
 				<div class="form-group">
 					<label for="email" class="col-sm-2 control-label sr-only hh_form"><?=$l['email']?></label>
 					<div class="col-sm-12">
@@ -23,7 +23,7 @@
 					</div>
 				</div>
 			<?php }
-			if ($sgs['homepage']) { ?>
+			if ($gbs['homepage']) { ?>
 				<div class="form-group">
 					<label for="homepage" class="col-sm-2 control-label sr-only hh_form"><?=$l['homepage']?></label>
 					<div class="col-sm-12">
@@ -34,7 +34,7 @@
 					</div>
 				</div>
 			<?php }
-			if ($sgs['image']) { ?>
+			if ($gbs['image']) { ?>
 				<div class="form-group">
 					<label for="bild" class="col-sm-2 control-label sr-only hh_form"><?=$l['image']?></label>
 					<div class="col-sm-12">
@@ -45,7 +45,7 @@
 					</div>
 				</div>
 			<?php }
-			if ($sgs['subject']) { ?>
+			if ($gbs['subject']) { ?>
 				<div class="form-group">
 					<label for="betreff" class="col-sm-2 control-label sr-only hh_form"><?=$l['subject']?></label>
 					<div class="col-sm-12">
@@ -120,9 +120,9 @@
 			<div class="form-group">
 				<div class="col-sm-12">
 					<?php if(!isset($data['admin'])) { ?>
-						<input type="hidden" value="<?php echo $sgs['public']; ?>" name="public">
-						<input type="hidden" value="<?php echo $sgs['id']; ?>" name="gbid">
-						<p class="text-success"><?php echo $sgs['msg']; ?></p>
+						<input type="hidden" value="<?php echo $gbs['public']; ?>" name="public">
+						<input type="hidden" value="<?php echo $gbs['id']; ?>" name="gbid">
+						<p class="text-success"><?php echo $l['note_msg']; ?></p>
 					<?php } ?>
 					<button type="submit" class="btn btn-success" id="submit" name="submit"><?=$l['send']?></button>
 				</div>

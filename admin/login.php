@@ -1,9 +1,12 @@
 <?php
 session_start();
 include('functions.php');
+if ($db['installed']=="no") {
+    header('Location: install.php');
+}
 $l = getLanguage();
+$sgs = getGBsettings();
 
-$sgs = getGBsettings($conn);
 $info = '<p class="alert alert-success">'.$l['you_are_alredy_loged_in'].'</p><br>';
 $info .= '<center><a class="btn btn-success" href="index.php">'.$l['admin_area'].'</a>  <a class="btn btn-danger" href="login.php?logout=1">'.$l['logout'].'</a></center>';
 if(isset($_GET['logout']) && $_GET['logout'] == 1) {

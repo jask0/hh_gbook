@@ -74,6 +74,8 @@ $l = array(
 'error_wrong_captcha' => 'GRESKA: Sigurnosni kod netacan, pokusajte ponovo!',
 'language' => 'Jezik',
 'reload_page_to_view_result' => ' Ponovo lodiraj stranicu kako bi vidio promjene.',
+'note_msg' => 'Sva polja, oznacena bojom, moraju biti popunjena!',
+'error_note_msg' => 'Greska: Nisu sva potrebna polja popunjena!',
 'smilie_set' => 'Vrsta Smjlia',
 'smilies' => 'Smajli',
 'smilie_list' => 'Lista smajlia',
@@ -81,6 +83,11 @@ $l = array(
 'at_time' => 'u',
 'a_clock' => 'h',
 'wrote' => 'poslao(la) je',
+'header_txt_color' => 'Boja teksta u zaglavlju',
+'body_txt_color' => 'Boja teksta',
+'comment_txt_color' => 'Boja teksta u kommentaru',
+'thumb_border_color' => 'Boja ruba kod slike',
+'dbc_data_successful_saved' => 'Podaci za pozvezivanje sa bazom podataka uspjesno snimljeni.',
 '' => ''
 );
 ?>

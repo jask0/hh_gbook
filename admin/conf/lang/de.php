@@ -74,6 +74,8 @@ $l = array(
 'error_wrong_captcha' => 'FEHLER: Sicherheitscode falsch, bitte noch einmal versuchen!',
 'language' => 'Sprache',
 'reload_page_to_view_result' => ' Seite neu laden um die &auml;nderungen zu sehen.',
+'note_msg' => 'Alle farblich markierten Felder m&uuml;ssen ausgef&uuml;llt werden!',
+'error_note_msg' => 'Fehler: Nicht alle ben&ouml;tigten Felder sind ausgef&uuml;llt!',
 'smilie_set' => 'Smilie Satz',
 'smilies' => 'Smilies',
 'smilie_list' => 'Smilie Liste',
@@ -81,6 +83,11 @@ $l = array(
 'at_time' => 'um',
 'a_clock' => 'Uhr',
 'wrote' => 'schrieb',
+'header_txt_color' => 'Header Textfarbe',
+'body_txt_color' => 'Body Textfarbe',
+'comment_txt_color' => 'Kommentar Textfarbe',
+'thumb_border_color' => 'Thumbnail Rahmenfarbe',
+'dbc_data_successful_saved' => 'Datenbank Verbindungsdaten erfolgreich gespeichert.',
 '' => ''
 );
 ?>

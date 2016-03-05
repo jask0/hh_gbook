@@ -74,6 +74,8 @@ $l = array(
 'error_wrong_captcha' => 'ERROR: Security code wrong, please try again!',
 'language' => 'Language','language' => 'Language',
 'reload_page_to_view_result' => ' Reload page to view changes.',
+'note_msg' => 'All color-marked fields must be filled!',
+'error_note_msg' => 'Error: Not all required fields are filled!',
 'smilie_set' => 'Smilie Set',
 'smilies' => 'Smilies',
 'smilie_list' => 'Smilie List',
@@ -81,6 +83,11 @@ $l = array(
 'at_time' => '-',
 'a_clock' => '',
 'wrote' => 'wrote',
+'header_txt_color' => 'Header Text Color',
+'body_txt_color' => 'Content Text Color',
+'comment_txt_color' => 'Comment Text Color',
+'thumb_border_color' => 'Thumbnail Border Color',
+'dbc_data_successful_saved' => 'Database connection data successful saved.',
 '' => ''
 );
 ?>

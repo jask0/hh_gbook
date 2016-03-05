@@ -10,8 +10,6 @@
 	if(!isset($_SESSION['username'])){
 		die($l['prohibited_direct_access']);
 	}
-	//include('load_settings.php');
-	//$sgs = getGBsettings($conn, 1);
 	$id=0;
 	if(isset($_GET['id'])){
 		$id = (int)$_GET['id'];

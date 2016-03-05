@@ -72,7 +72,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="name" class="control-label">Header Textfarbe</label>
+					<label for="name" class="control-label"><?=$l['header_txt_color']?></label>
 					<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-hashtag"></i></span>
 							<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueHeaderTXT', styleElement:'style001', onFineChange:'update(this,1)', position:'right'}" id="valueHeaderTXT" name="custom-heading-txt" value="<?=$css['.custom-heading']['color']?>">
@@ -86,7 +86,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="name" class="control-label">Body Textfarbe</label>
+					<label for="name" class="control-label"><?=$l['body_txt_color']?></label>
 					<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-hashtag"></i></span>
 							<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueTextTXT', styleElement:'style001', onFineChange:'update(this,2)', position:'right'}" id="valueTextTXT" name="custom-body-txt" value="<?=$css['.custom-body']['color']?>">
@@ -147,7 +147,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="name" class="control-label">Kommentar Textfarbe</label>
+				<label for="name" class="control-label"><?=$l['comment_txt_color']?></label>
 				<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-hashtag"></i></span>
 						<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueCommentTXT',styleElement:'style001', onFineChange:'update(this,3)', position:'right'}" id="valueCommentTXT" name="custom-footer-txt" value="<?=$css['.custom-footer']['color']?>">
@@ -161,7 +161,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="valueThumbBorder" class="control-label">Thumbnail Rahmenfarbe</label>
+				<label for="valueThumbBorder" class="control-label"><?=$l['thumb_border_color']?></label>
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-hashtag"></i></span>
 					<input type="text" class="form-control jscolor" data-jscolor="{valueElement:'valueThumbBorder',styleElement:'styleThumbBorder', onFineChange:'update(this,4)', position:'right'}" id="valueThumbBorder" name="custom-thumbnail" value="<?=$css['.custom-thumbnail']['border-color']?>">

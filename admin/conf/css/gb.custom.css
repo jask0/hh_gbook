@@ -4,11 +4,12 @@
 	background-color: #8B3308;
 	border: 0px solid #8B3308 !important;}
 .panel-primary > .custom-heading {
+	color: #FF6810;
 	background-color: #5B121B;
-	color: #FF6810;}
+	border-color: #DF5417;}
 .custom-body {
 	background-color: #8B3308;
 	color: #FFF679;}
 .custom-footer {
-	background-color: #5B121B;
-	color: #FF6810;}
+	color: #FF6810;
+	background-color: #5B121B;	border-top: 1px solid #DF5417 !important;}

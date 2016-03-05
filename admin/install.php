@@ -1,9 +1,29 @@
 <?php
 include('functions.php');
-$l = getLanguage();
-if($_POST){
+$set_dbc = 0;
+
+if(isset($_POST['install']) && $_POST['install']=="dbc" && $_GET['dbc']==1){
+	//change user configuration
+	$db['servername'] = $_POST['servername'];
+	$db['username'] = $_POST['username'];
+	$db['password'] = $_POST['password'];
+	$db['dbname'] = $_POST['dbname'];
+	$db['installed'] = "yes";
+
+	//write user configuration
+	$fp = fopen('conf/dbc.json', 'w');
+	fwrite($fp, json_encode($db));
+	fclose($fp);
+	$info = "<p class=\"alert alert-success\">$l[dbc_data_successful_saved]<br>";
+}
+
+if ($db['installed'] == "no" or !$conn) {
+    $set_dbc = 1;
+}
+
+if(isset($_POST['install']) && $_POST['install']=="db" && $_GET['db']==1){
 	// sql to create post table
-	$q1 = "CREATE TABLE hh_gbook (
+	$q = "CREATE TABLE hh_gbook (
 	id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	datum TIMESTAMP,
 	name VARCHAR(30) NOT NULL,
@@ -17,40 +37,12 @@ if($_POST){
 	gb TINYINT(1)
 	);";
 
-	if (mysqli_query($conn, $q1)) {
+	if (mysqli_query($conn, $q)) {
 		$info = "<p class=\"alert alert-success\">$l[tabel_hh_gbook_successful_created]<br>";
 	} else {
 		$info= "<p class=\"alert alert-danger\">$l[error_table_not_created]: " . mysqli_error($conn) . "<br>";
 	}
 	 
-	// sql to create settings table
-	$q2 = "CREATE TABLE hh_gbsettings (
-	id INT(3) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	title VARCHAR(100),
-	email TINYINT(1),
-	homepage TINYINT(1),
-	image TINYINT(1),
-	subject TINYINT(1),
-	posts INT(3) DEFAULT 5,
-	public TINYINT(1) DEFAULT 0,
-	msg VARCHAR(400),
-	error VARCHAR(400)
-	);";
-
-	if (mysqli_query($conn, $q2)) {
-		$info .= "$l[tabel_hh_gbsettings_successful_created]<br>";
-	} else {
-		$info .= "$l[error_table_not_created]: " . mysqli_error($conn) . "<br>";
-	}
-
-	$q3 = "INSERT INTO hh_gbsettings (title,email,homepage,image,subject,posts,public,msg,error) VALUES ('MyGB', 1, 1, 1, 1, 5, 0, 'Green fields required','ERROR: Message not saved!')";
-	if (mysqli_query($conn, $q3)) {
-		$info .= "$l[guestbook_1_successful_created]<br></p>";
-	} else {
-		$info = "$l[error_table_not_created]: " . mysqli_error($conn) . "</p>";
-	}
-
-	mysqli_close($conn);
 }
 ?>
 <!DOCTYPE html>
@@ -72,18 +64,42 @@ if($_POST){
                         <h3 class="panel-title"><?=$l['gb']?> <?=$l['install']?></h3>
                     </div>
                     <div class="panel-body">
-						<?php if($_POST){ echo $info;} ?>
-                        <form role="form" action="install.php" method="post" >
-                            <fieldset>
-                                <!-- Change this to a button or input when using this as a form -->
-								<?php if(!$_POST){ ?>
-								
-								<button type="submit" name="submit" class="btn btn-lg btn-success btn-block"><?=$l['install']?></button>
-								<?php } else { ?>
-								<a href="../" class="btn btn-lg btn-info btn-block"><?=$l['to_gb']?></a>
-								<?php } ?>
-                            </fieldset>
-                        </form>
+						<?php
+							if($set_dbc){
+								if(isset($_POST['install']) && $_POST['install']=="dbc"){ echo $info;}
+						?>
+							<form role="form" action="install.php?dbc=1" method="post" >
+								<fieldset>
+									<!-- Change this to a button or input when using this as a form -->
+									<b>Servername:</b>
+									<input type="text" name="servername" value="localhost" class="form-control"><br>
+									<b>Username:</b>
+									<input type="text" name="username" placeholder="root" class="form-control"><br>
+									<b>Password:</b>
+									<input type="password" name="password" class="form-control"><br>
+									<b>Database Name:</b>
+									<input type="text" name="dbname" class="form-control"><br>
+									<br>
+									<input type="hidden" name="install" value="dbc" >
+									<button type="submit" name="submit" class="btn btn-success"><?=$l['save']?></button>
+								</fieldset>
+							</form>
+						
+						<?php } else {
+							if(isset($_POST['install']) && $_POST['install']=="db"){ echo $info;} ?>
+							<form role="form" action="install.php?db=1" method="post" >
+								<fieldset>
+									<!-- Change this to a button or input when using this as a form -->
+									<?php if(!isset($_GET['db'])){ ?>
+									
+									<button type="submit" name="submit" class="btn btn-lg btn-success btn-block"><?=$l['install']?></button>
+									<input type="hidden" name="install" value="db" >
+									<?php } else { ?>
+									<a href="../" class="btn btn-lg btn-info btn-block"><?=$l['to_gb']?></a>
+									<?php } ?>
+								</fieldset>
+							</form>
+						<?php } ?>
                     </div>
                 </div>
             </div>
