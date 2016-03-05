@@ -247,6 +247,7 @@ function showGBookPosts(){
 	
 	while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
 	{
+		$zeile['datum'] = date_create($zeile['datum']);
 		showPost($zeile);
 	}
 	mysqli_free_result( $abfrage_antwort );
