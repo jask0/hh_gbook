@@ -71,6 +71,7 @@
 	while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
 	{	$zeile['public']=="1" ? $checked = "checked" : $checked = "";
 		$zeile['admin'] = 1;
+		$zeile['datum'] = date_create($zeile['datum']);
 		showPost($zeile, '?page=edit&id='.$zeile['id']);
 	}
 	 
