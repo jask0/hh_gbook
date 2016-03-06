@@ -1,4 +1,5 @@
 <?php
+$gbs = getGBsettings();
 if($_POST && $_POST['beitraege_pro_seite'] >0){
 	$gb = array();
 	$id = $gbs['id'];
@@ -34,7 +35,7 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 <div class="raw">
 	<div class="col-md-12">
 		<?php if($_POST) {echo $info;} ?>
-		<form class="form-horizontal" action="index.php" method="post" autocomplete="off">
+		<form class="form-horizontal" action="?page=settings" method="post" autocomplete="off">
 			<div class="form-group">
 				<label for="gb_title" class="col-sm-4 control-label hh_form"><?=$l['gb_title']?></label>
 				<div class="col-sm-8">
