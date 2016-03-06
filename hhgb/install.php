@@ -17,7 +17,7 @@ if(isset($_POST['install']) && $_POST['install']=="dbc" && $_GET['dbc']==1){
 	$info = "<p class=\"alert alert-success\">$l[dbc_data_successful_saved]</p>";
 }
 
-if ($db['installed'] == "no" or !$conn) {
+if ($db['installed'] == "no") {
     $set_dbc = 1;
 }
 

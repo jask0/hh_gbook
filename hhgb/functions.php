@@ -1,11 +1,13 @@
 <?php
 include_once('conf/path.php');
+$gbs = getGBsettings(); // gestbook settings / configuration
+$db = loadJson('dbc.json'); // database info
+
 // connection to database
 include ('conf/connect.php');
 
 //set gloabl variables
 $user = getUserConfig(); // user configuration
-$gbs = getGBsettings(); // gestbook settings / configuration
 $smilie = getSmilies(); // load smilies
 $l = getLanguage(); // load language
 
