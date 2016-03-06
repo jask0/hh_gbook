@@ -16,7 +16,7 @@ $l = array(
 'please_try_again' => 'Bitte nochmal versuchen!',
 'login_successful' => 'Login erfolgreich!',
 'toggle_navigation' => 'Toggle-Navigation',
-'3_new_msg' => '3 neuste Nachrichten',
+'3_new_msg' => 'Die 3 letzten Nachrichten',
 'read_all' => 'Alle Nachrichten lesen',
 'unpublished_msg' => 'Unver&ouml;ffentlichte Nachrichten',
 'see_all' => 'Alle sehen',
@@ -88,6 +88,9 @@ $l = array(
 'comment_txt_color' => 'Kommentar Textfarbe',
 'thumb_border_color' => 'Thumbnail Rahmenfarbe',
 'dbc_data_successful_saved' => 'Datenbank Verbindungsdaten erfolgreich gespeichert.',
+'home' => 'Startseite',
+'post_count' => 'Insgesamt Beitr&auml;ge',
+'change' => 'Ver&auml;ndern',
 '' => ''
 );
 ?>

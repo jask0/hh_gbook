@@ -44,7 +44,7 @@ $gbs = getGBsettings();
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../"><?php echo $gbs['title']; ?></a>
+                <a class="navbar-brand" href="../"><i class="fa fa-fw fa-desktop"></i> <?=$l['to_gb']?></a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -106,10 +106,11 @@ $gbs = getGBsettings();
 				?>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle <?php $new_msg ? print 'new_msg': print '';?>" data-toggle="dropdown" title="<?php echo $count[0];?> <?=$l['unpublished_msg']?>"><i class="fa fa-bell" ></i> <b class="caret"></b></a>
-                    <ul class="dropdown-menu message-dropdown">
+                    <ul class="dropdown-menu alert-dropdown">
                        <li class="message-footer">
                             <a href="#"><strong><?=$l['unpublished_msg']?></strong></a>
                         </li>
+						<li class="divider"></li>
 					<?php
 						$abfrage = "SELECT * FROM hh_gbook WHERE public = 0 ORDER BY id DESC";
 						$abfrage_antwort = mysqli_query($conn, $abfrage);
@@ -119,24 +120,9 @@ $gbs = getGBsettings();
 						} 
 						
 						while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
-						{?>
-							<li class="message-preview">
-								<a href="?page=edit&id=<?php echo $zeile['id']; ?>">
-									<div class="media">
-										<?php if($zeile['bild_url'] != '') {; ?>
-											<span class="pull-left">
-												<img class="media-object" style="width:64px;height:64px;" src="<?php echo $zeile['bild_url']; ?>" alt="">
-											</span>
-										<?php } ?>
-										<div class="media-body">
-											<h5 class="media-heading">
-												<strong><?php echo $zeile['name']; ?></strong>
-											</h5>
-											<p class="small text-muted"><i class="fa fa-clock-o"></i> <?php echo $zeile['datum']; ?></p>
-											<p><?php echo substr(htmlentities($zeile['nachricht']), 0, 200).'...'; ?></p>
-										</div>
-									</div>
-								</a>
+						{?>	
+							<li>
+								<a href="?page=edit&id=<?php echo $zeile['id']; ?>"><?php echo $zeile['name']; ?> <span class="label label-warning" style="float:right;"><?=$l['edit']?></span></a>
 							</li>
 						<?php	}
 							mysqli_free_result( $abfrage_antwort );
@@ -170,25 +156,28 @@ $gbs = getGBsettings();
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
 					<li>
-                        <a href="../"><i class="fa fa-fw fa-desktop"></i> <?=$l['to_gb']?></a>
+                        <a href="index.php"><i class="fa fa-fw fa-home"></i> <?=$l['home']?></a>
                     </li>
 					<li>
-                        <a href="index.php?page=profile"><i class="fa fa-fw fa-user"></i> <?=$l['profile']?></a>
+                        <a href="?page=settings"><i class="fa fa-fw fa-wrench"></i> <?=$l['settings']?></a>
                     </li>
-                    <li>
-                        <a href="index.php"><i class="fa fa-fw fa-wrench"></i> <?=$l['settings']?></a>
-                    </li>
-					<!--
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-edit"></i> Neues GB anlegen</a>
-                    </li>
-					-->
                     <li>
                         <a href="?page=custom"><i class="fa fa-fw fa-css3"></i> <?=$l['custom_css']?></a>
                     </li>
 					<li>
                         <a href="?page=smilies"><i class="fa fa-fw fa-smile-o"></i> <?=$l['smilies']?></a>
                     </li>
+					<!--
+					<li>
+                        <a href="../"><i class="fa fa-fw fa-desktop"></i> <?=$l['to_gb']?></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-fw fa-edit"></i> Neues GB anlegen</a>
+                    </li>
+					<li>
+                        <a href="index.php?page=profile"><i class="fa fa-fw fa-user"></i> <?=$l['profile']?></a>
+                    </li>
+					-->
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

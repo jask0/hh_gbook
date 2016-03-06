@@ -10,7 +10,7 @@ $l = array(
 'login_form' => 'Prijavite se',
 'remember_me' => 'Zapamti me',
 'gb' => 'Knjiga gostiju',
-'to_gb' => 'Idi na KG',
+'to_gb' => 'Otvori Knjigu Gostiju',
 'you_are_alredy_loged_in' => 'Vec ste prijavljeni!',
 'login_failed' => 'Prijave nije uspjela!',
 'please_try_again' => 'Molimo pokusajte ponovo!',
@@ -49,7 +49,7 @@ $l = array(
 'text_bg' => 'Pozdaina teksta',
 'comment_bg' => 'Pozadina komentara',
 'border_color' => 'Okvir',
-'save' => 'Pohraniti',
+'save' => 'Spremiti',
 'msg_successful_deleted' => 'Poruka uspjesno izbrisana!',
 'bad_query' => 'Nevazeci upit',
 'msg_successful_edited' => 'Poruka uspjesno obradjena!',
@@ -88,6 +88,9 @@ $l = array(
 'comment_txt_color' => 'Boja teksta u kommentaru',
 'thumb_border_color' => 'Boja ruba kod slike',
 'dbc_data_successful_saved' => 'Podaci za pozvezivanje sa bazom podataka uspjesno snimljeni.',
+'home' => 'Home',
+'post_count' => 'Ukupnih poruka',
+'change' => 'Promjeniti',
 '' => ''
 );
 ?>

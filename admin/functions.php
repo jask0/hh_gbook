@@ -268,17 +268,28 @@ function showGBookPosts(){
 	mysqli_free_result( $abfrage_antwort );
 }
 
+function getPostCount($and=''){
+	global $gbs,$conn;
+	$myCond = getCondition();
+	if($and==''){
+		$q = "SELECT count($gbs[id]) FROM hh_gbook $myCond";
+	}else{
+		$q = "SELECT count($gbs[id]) FROM hh_gbook WHERE public = 0";
+	}
+    $count = mysqli_query( $conn, $q );
+	$count = mysqli_fetch_row($count);
+	return $count[0];
+}
+
+
 /* display page navigation of GB
 # @param:
 # 		no param needed
 */
 function showGBpageNavi(){
 	global $gbs,$form,$conn,$user; 
-	$myCond = getCondition();
 	$l = getLanguage();
-	$q = "SELECT count($gbs[id]) FROM hh_gbook $myCond";
-    $count = mysqli_query( $conn, $q );
-	$count = mysqli_fetch_row($count);
+	$count = getPostCount();
 	
 	$p=1;
 	if(isset($_GET['page']) && ((int)$_GET['page'] > 1)){
@@ -288,7 +299,7 @@ function showGBpageNavi(){
 			<center><nav><ul class="pagination pagination-custom">
 				<li><a href="?page='.$p.'" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
 	$x = 0;
-	$last_page = (($count[0]/$gbs['posts'])+1);
+	$last_page = (($count/$gbs['posts'])+1);
 	for ($x = 1; $x < $last_page; $x++){
 			$active ='';
 			$sr_info='';
