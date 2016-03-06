@@ -91,6 +91,8 @@ $l = array(
 'home' => 'Home',
 'post_count' => 'Post Count',
 'change' => 'Change',
+'std_user_warning' => 'You are using standard username. It is recommended to change it!',
+'std_pwd_danger' => 'You are using standard password. This is very unsafe, please change it!',
 '' => ''
 );
 ?>

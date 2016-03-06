@@ -91,6 +91,8 @@ $l = array(
 'home' => 'Startseite',
 'post_count' => 'Insgesamt Beitr&auml;ge',
 'change' => 'Ver&auml;ndern',
+'std_user_warning' => 'Du verwendest den Standard-Benutzernamen. Es ist empfohlen das zu &auml;ndern',
+'std_pwd_danger' => 'Du verwendest das Standard-Passwort. Das ist sehr unsicher, <a href="?page=profile">bitte &auml;ndern</a>!',
 '' => ''
 );
 ?>

@@ -91,6 +91,8 @@ $l = array(
 'home' => 'Home',
 'post_count' => 'Ukupnih poruka',
 'change' => 'Promjeniti',
+'std_user_warning' => 'Koristite standardno korisnicko ime. Preporuceno je da ga promjenite',
+'std_pwd_danger' => 'Koristite standardnu lozinku. To je jako nesigurno, molimo promjenite lozinku!',
 '' => ''
 );
 ?>
