@@ -50,6 +50,14 @@
 </div>
 <div class="raw">
 	<div class="col-md-12">
+		<?php 
+			if($user['username'] == 'admin'){
+				echo '<p class="alert alert-warning">'.$l['std_user_warning'].'</p>';
+			}
+			if ($user['password'] == md5('123456')){
+				echo '<p class="alert alert-danger">'.$l['std_pwd_danger'].'</p>';
+			}
+		?>
 		<?php if($_POST) {echo $info;} ?>
 		<form class="form-horizontal" action="index.php?page=profile" method="post" autocomplete="off">
 			<div class="form-group">

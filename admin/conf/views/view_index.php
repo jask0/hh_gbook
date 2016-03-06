@@ -27,6 +27,11 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 			<?=$l['admin_area']?>
 			<small><?=$l['home']?></small>
 		</h1>
+		<?php
+			if ($user['password'] == md5('123456')){
+				echo '<p class="alert alert-danger">'.$l['std_pwd_danger'].'</p>';
+			}
+		?>
 	</div>
 </div><!-- END .row -->
 <div class="row">
