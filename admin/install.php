@@ -14,7 +14,7 @@ if(isset($_POST['install']) && $_POST['install']=="dbc" && $_GET['dbc']==1){
 	$fp = fopen('conf/dbc.json', 'w');
 	fwrite($fp, json_encode($db));
 	fclose($fp);
-	$info = "<p class=\"alert alert-success\">$l[dbc_data_successful_saved]<br>";
+	$info = "<p class=\"alert alert-success\">$l[dbc_data_successful_saved]</p>";
 }
 
 if ($db['installed'] == "no" or !$conn) {
@@ -38,9 +38,9 @@ if(isset($_POST['install']) && $_POST['install']=="db" && $_GET['db']==1){
 	);";
 
 	if (mysqli_query($conn, $q)) {
-		$info = "<p class=\"alert alert-success\">$l[tabel_hh_gbook_successful_created]<br>";
+		$info = "<p class=\"alert alert-success\">$l[tabel_hh_gbook_successful_created]</p><p>Login Info:</p><ul><li>Username: admin</li><li>Password: 123456</li></p>";
 	} else {
-		$info= "<p class=\"alert alert-danger\">$l[error_table_not_created]: " . mysqli_error($conn) . "<br>";
+		$info= "<p class=\"alert alert-danger\">$l[error_table_not_created]: " . mysqli_error($conn) . "</p>>";
 	}
 	 
 }
