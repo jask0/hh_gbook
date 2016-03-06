@@ -64,7 +64,7 @@
 							<?php
 							for ($i = 0; $i < count($smilie['list']); $i++) {
 								if ($i % 12 == 0 && $i != 0) echo '<!--<br>-->';
-								echo '<a href="javascript:insertTheSmiley(\':'.$smilie['list'][$i].':\', \'nachricht\');void(0)"><img src="admin/smilies/'.$smilie['set'].'/'.$smilie['list'][$i].'" alt=":'.$smilie['set'].$i.':" ></a>&nbsp;&nbsp;';
+								echo '<a href="javascript:insertTheSmiley(\':'.$smilie['list'][$i].':\', \'nachricht\');void(0)"><img src="hhgb/smilies/'.$smilie['set'].'/'.$smilie['list'][$i].'" alt=":'.$smilie['set'].$i.':" ></a>&nbsp;&nbsp;';
 							}
 							?>
 						</center>
@@ -83,7 +83,7 @@
 					<label for="captcha" class="col-sm-2 control-label sr-only hh_form"><?=$l['captcha']?></label>
 					<div class="col-sm-12">
 						<div class="col-sm-3">
-							<img src="admin/captcha/captcha.php" class="img-thumbnail">
+							<img src="hhgb/captcha/captcha.php" class="img-thumbnail">
 						</div>
 						<div class="col-sm-7">
 							<div class="input-group">

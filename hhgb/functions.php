@@ -28,10 +28,10 @@ $form = Array(
 */
 
 function loadJson($json_file){
-	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
+	if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){
 		$file = file_get_contents('conf/'.$json_file);
 	} else {
-		$file = file_get_contents('admin/conf/'.$json_file);
+		$file = file_get_contents('hhgb/conf/'.$json_file);
 	}
 	$data = json_decode($file, true);
 	return $data;
@@ -86,10 +86,10 @@ function setLanguage($lnag){
 }
 
 function fallBackLanguage($l_new){
-	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
+	if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){
 		$lang = "conf/lang/en.php";
 	} else {
-		$lang = "admin/conf/lang/en.php";
+		$lang = "hhgb/conf/lang/en.php";
 	}
 	include($lang);
 	foreach($l as $key => $value){
@@ -106,16 +106,16 @@ function fallBackLanguage($l_new){
 function getLanguage($file=NULL){
 	global $user,$gbs;
 	if(isset($file)){
-		$lang = "admin/conf/lang/".$file.".php";
+		$lang = "hhgb/conf/lang/".$file.".php";
 		include($lang);
 		$l = fallBackLanguage($l);
 		return $l;
 	}
 	
-	if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
+	if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){
 		$lang = "conf/lang/".$user['language'].".php";
 	} else {
-		$lang = "admin/conf/lang/".$gbs['language'].".php";
+		$lang = "hhgb/conf/lang/".$gbs['language'].".php";
 	}
 	include($lang);
 	$l = fallBackLanguage($l);
@@ -152,7 +152,7 @@ function showForm($data, $action) {
 function showPost($data, $edit=0) {
 	global $gbs,$form,$smilie,$l;
 	if(is_numeric($edit)){
-		$edit='admin/index.php?page=edit&id='.$data['id'];
+		$edit='hhgb/index.php?page=edit&id='.$data['id'];
 	}
 	include('conf/templates/post_template.php');
 }
@@ -169,7 +169,7 @@ function loadMeta(){
 <!-- Font-Awesome CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="admin/conf/css/bootstrap.gb.css">
+<link rel="stylesheet" href="hhgb/conf/css/bootstrap.gb.css">
 <!-- Bootstrap JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <!-- Smilies JavaScript -->
@@ -184,7 +184,7 @@ window.opener.insertTheSmiley(input);
 </script>';
 
 	if ($css['use_custom_css'] == 1){
-		echo "\n".'<link rel="stylesheet" href="admin/conf/css/gb.custom.css">'."\n";
+		echo "\n".'<link rel="stylesheet" href="hhgb/conf/css/gb.custom.css">'."\n";
 	}
 }
 
@@ -215,7 +215,7 @@ function showGBookForm($file){
 				$public = $_POST['public'];
 				$gbid = $_POST['gbid'];
 				foreach ($smilie['list'] as $key => $value) {
-					$nachricht = str_replace(':'.$value.':', '<img src="admin/smilies/'.$smilie['set'].'/'.$value.'" alt=":'.$value.':">', $nachricht);
+					$nachricht = str_replace(':'.$value.':', '<img src="hhgb/smilies/'.$smilie['set'].'/'.$value.'" alt=":'.$value.':">', $nachricht);
 				}
 				$nachricht = str_replace("'", "\'", str_replace('"', '\"',$nachricht));
 				$query = sprintf('INSERT INTO hh_gbook (name,email,homepage,betreff,bild_url,nachricht,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s")',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$public,$gbid);

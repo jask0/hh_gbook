@@ -1,12 +1,9 @@
 <?php
-# diser Code muss an erster stelle der Datei wo das GB erscheinen soll
-session_start();
-include('hhgb/functions.php');
-$sgs = getGBsettings();
-/* man kann eine bestimmte Sprache einem GB aufzwingen 
-* in dem man folgende funktion verwendet:
-* setLanguage('de');
-*/
+ # diser Code muss an erster stelle der Datei wo das GB erscheinen soll
+ session_start();
+ include('admin/functions.php');
+ $sgs = getGBsettings();
+ setLanguage('de');
 ?>
 <!DOCTYPE html>
 <html>
@@ -34,7 +31,7 @@ $sgs = getGBsettings();
 	<?php showGBpageNavi(); ?>
 		
 	<div class="raw">
-		<p><center><a href="hhgb/">Administration</a></center></p>
+		<p><center><a href="admin/">Administration</a></center></p>
 	</div>
 <!-- bis hier. ENDE GB Body -->
 </body>
