@@ -1,11 +1,11 @@
 <?php
-	
-if(strpos($_SERVER['REQUEST_URI'], 'admin/') !== false){
+global $db,$path;
+if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){
 	$file = file_get_contents('conf/dbc.json');
 } else {
-	$file = file_get_contents('admin/conf/dbc.json');
+	$file = file_get_contents($path.'hhgb/conf/dbc.json');
 }
-global $db;
+
 $db = json_decode($file, true);
 
 // Create connection

@@ -1,11 +1,12 @@
 <!-- This is the Template to display posts, shoud be loaded by showPost() -->
+<?php global $path; ?>
 <div class="row">
 	<?php if ($data['public'] == 1 || isset($_SESSION['username']) || isset($_COOKIE['username'])) { ?>
 		<div class="gb-overall col-md-12">
 			<div class="panel <?=($data['public'] == 1) ? 'panel-primary custom-panel' : 'panel-danger'; ?>">
 				<div class="panel-heading <?=($data['public'] == 1) ? 'custom-heading' : ''; ?>">
 					<?php if(isset($_SESSION['username'])){ ?>
-						<a class="btn btn-danger btn-xs pull-right" style="margin-left:5px;" href="<?php echo $edit; ?>"><i class="fa fa-pencil"></i> <?=$l['edit']?></a> 
+						<a class="btn btn-danger btn-xs pull-right" style="margin-left:5px;" href="<?php echo $path.$edit; ?>"><i class="fa fa-pencil"></i> <?=$l['edit']?></a> 
 					<?php } ?>
 					<?php echo $l['at_date'].' '.date_format($data['datum'], 'd.m.y').' '.$l['at_time'].' '.date_format($data['datum'], 'H:m').' '.$l['a_clock'].' '.$l['wrote'].' '.$data['name'].':'; ?>
 					<div class="pull-right">

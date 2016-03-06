@@ -1,4 +1,5 @@
 <?php
+include_once('conf/path.php');
 // connection to database
 include ('conf/connect.php');
 
@@ -22,17 +23,19 @@ $form = Array(
 'nachricht' => '',
 'public'=>'');
 
+
 /* loads a json file from config/ directory
 *	@param:
 *		$json_file, the exact file name of the json file
 */
-
 function loadJson($json_file){
+	global $path;
 	if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){
 		$file = file_get_contents('conf/'.$json_file);
-	} else {
-		$file = file_get_contents('hhgb/conf/'.$json_file);
+	}else {
+		$file = file_get_contents($path.'hhgb/conf/'.$json_file);
 	}
+
 	$data = json_decode($file, true);
 	return $data;
 }
@@ -86,11 +89,13 @@ function setLanguage($lnag){
 }
 
 function fallBackLanguage($l_new){
+	global $path;
 	if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){
 		$lang = "conf/lang/en.php";
 	} else {
-		$lang = "hhgb/conf/lang/en.php";
+		$lang = $path."hhgb/conf/lang/en.php";
 	}
+
 	include($lang);
 	foreach($l as $key => $value){
 		if (!array_key_exists($key, $l_new)) {
@@ -104,7 +109,7 @@ function fallBackLanguage($l_new){
 # 		$file, if given it will load this specific language
 */
 function getLanguage($file=NULL){
-	global $user,$gbs;
+	global $user,$gbs,$path;
 	if(isset($file)){
 		$lang = "hhgb/conf/lang/".$file.".php";
 		include($lang);
@@ -115,8 +120,9 @@ function getLanguage($file=NULL){
 	if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){
 		$lang = "conf/lang/".$user['language'].".php";
 	} else {
-		$lang = "hhgb/conf/lang/".$gbs['language'].".php";
+		$lang = $path."hhgb/conf/lang/".$gbs['language'].".php";
 	}
+
 	include($lang);
 	$l = fallBackLanguage($l);
 	return $l;
@@ -164,12 +170,13 @@ function showPost($data, $edit=0) {
 #		custom css is here
 */
 function loadMeta(){
+	global $path;
 	$css = getCustomCss();
 	echo '
 <!-- Font-Awesome CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="hhgb/conf/css/bootstrap.gb.css">
+<link rel="stylesheet" href="'.$path.'hhgb/conf/css/bootstrap.gb.css">
 <!-- Bootstrap JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <!-- Smilies JavaScript -->
@@ -193,7 +200,7 @@ window.opener.insertTheSmiley(input);
 # 		$file ->  	url to the file where the GB is displayed
 */
 function showGBookForm($file){
-	global $gbs,$form,$conn,$smilie,$user; 
+	global $gbs,$form,$conn,$smilie,$user,$path; 
 	$cond = getCondition();
 	$l = getLanguage();
 	if(!isset($_POST['submit'])){
@@ -215,7 +222,7 @@ function showGBookForm($file){
 				$public = $_POST['public'];
 				$gbid = $_POST['gbid'];
 				foreach ($smilie['list'] as $key => $value) {
-					$nachricht = str_replace(':'.$value.':', '<img src="hhgb/smilies/'.$smilie['set'].'/'.$value.'" alt=":'.$value.':">', $nachricht);
+					$nachricht = str_replace(':'.$value.':', '<img src="'.$path.'hhgb/smilies/'.$smilie['set'].'/'.$value.'" alt=":'.$value.':">', $nachricht);
 				}
 				$nachricht = str_replace("'", "\'", str_replace('"', '\"',$nachricht));
 				$query = sprintf('INSERT INTO hh_gbook (name,email,homepage,betreff,bild_url,nachricht,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s")',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$public,$gbid);

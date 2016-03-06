@@ -1,4 +1,5 @@
 <!-- This is the Template for the submit form, shoud be loaded by showForm() -->
+<?php global $path; ?>
 <div class="row">
 	<div class="gb-overall col-md-8 col-md-offset-2">
 		<?=(isset($_POST['info_msg']))? $_POST['info_msg'] : ''?>
@@ -64,7 +65,7 @@
 							<?php
 							for ($i = 0; $i < count($smilie['list']); $i++) {
 								if ($i % 12 == 0 && $i != 0) echo '<!--<br>-->';
-								echo '<a href="javascript:insertTheSmiley(\':'.$smilie['list'][$i].':\', \'nachricht\');void(0)"><img src="hhgb/smilies/'.$smilie['set'].'/'.$smilie['list'][$i].'" alt=":'.$smilie['set'].$i.':" ></a>&nbsp;&nbsp;';
+								echo '<a href="javascript:insertTheSmiley(\':'.$smilie['list'][$i].':\', \'nachricht\');void(0)"><img src="'.$path.'hhgb/smilies/'.$smilie['set'].'/'.$smilie['list'][$i].'" alt=":'.$smilie['set'].$i.':" ></a>&nbsp;&nbsp;';
 							}
 							?>
 						</center>
@@ -83,7 +84,7 @@
 					<label for="captcha" class="col-sm-2 control-label sr-only hh_form"><?=$l['captcha']?></label>
 					<div class="col-sm-12">
 						<div class="col-sm-3">
-							<img src="hhgb/captcha/captcha.php" class="img-thumbnail">
+							<img src="<?=$path?>hhgb/captcha/captcha.php" class="img-thumbnail">
 						</div>
 						<div class="col-sm-7">
 							<div class="input-group">
