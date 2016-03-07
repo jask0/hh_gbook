@@ -89,7 +89,7 @@
 						<div class="col-sm-7">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-lock"></i></span>
-								<input type="text" class="form-control" id="captcha" name="captcha" placeholder="<?=$l['captcha']?>">
+								<input type="text" class="form-control" id="captcha" name="captcha" placeholder="<?=$l['captcha']?>*">
 							</div>
 						</div>
 					</div>
