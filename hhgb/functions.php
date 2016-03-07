@@ -113,7 +113,7 @@ function fallBackLanguage($l_new){
 function getLanguage($file=NULL){
 	global $user,$gbs,$path;
 	if(isset($file)){
-		$lang = "hhgb/conf/lang/".$file.".php";
+		$lang = $path."hhgb/conf/lang/".$file.".php";
 		include($lang);
 		$l = fallBackLanguage($l);
 		return $l;
@@ -193,7 +193,7 @@ window.opener.insertTheSmiley(input);
 </script>';
 
 	if ($css['use_custom_css'] == 1){
-		echo "\n".'<link rel="stylesheet" href="hhgb/conf/css/gb.custom.css">'."\n";
+		echo "\n".'<link rel="stylesheet" href="'.$path.'hhgb/conf/css/gb.custom.css">'."\n";
 	}
 }
 
