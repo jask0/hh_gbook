@@ -1,5 +1,5 @@
 <?php
-# bosnanski prevod KG
+# english translation of the guestbook
 $l = array(
 'admin' => 'Admin',
 'admin_area' => 'Control Panel',
