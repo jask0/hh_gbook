@@ -30,7 +30,7 @@
 					<div class="col-sm-12">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-home"></i></span>
-							<input type="text" class="form-control" id="homepage" name="homepage" placeholder="<?=$l['homepage']?>" value="<?php echo $data['homepage']; ?>">
+							<input type="url" class="form-control" id="homepage" name="homepage" placeholder="<?=$l['homepage']?>" value="<?php echo $data['homepage']; ?>">
 						</div>
 					</div>
 				</div>
