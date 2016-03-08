@@ -202,9 +202,8 @@ window.opener.insertTheSmiley(input);
 # 		$file ->  	url to the file where the GB is displayed
 */
 function showGBookForm($file){
-	global $gbs,$form,$conn,$smilie,$user,$path; 
+	global $gbs,$form,$conn,$smilie,$user,$path, $l; 
 	$cond = getCondition();
-	$l = getLanguage();
 	if(!isset($_POST['submit'])){
 		
 		showForm($form, $file);
@@ -252,10 +251,9 @@ function showGBookForm($file){
 # 		no param
 */
 function showGBookPosts(){
-	global $gbs,$form,$conn; 
+	global $gbs,$form,$conn,$l; 
 	$page = 1;
 	$gbid = $gbs['id'];
-	$l = getLanguage();
 	$where = getCondition();
 	if(isset($_GET['page'])){
 		$page = (int)$_GET['page'];
@@ -296,8 +294,7 @@ function getPostCount($and=''){
 # 		no param needed
 */
 function showGBpageNavi(){
-	global $gbs,$form,$conn,$user; 
-	$l = getLanguage();
+	global $gbs,$form,$conn,$user,$l; 
 	$count = getPostCount();
 	
 	$p=1;
