@@ -68,7 +68,7 @@
 	}
 	if(isset($_POST) && @$_GET['save'] == "mail"){
 		$gb_set = loadJson('gb.json');
-		$gb_set[1]['btn_send'] = $_POST['btn_mail'];
+		$gb_set[1]['btn_mail'] = $_POST['btn_mail'];
 		$fp = fopen('conf/gb.json', 'w');
 		fwrite($fp, json_encode($gb_set));
 		fclose($fp);
