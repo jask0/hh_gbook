@@ -1,7 +1,8 @@
 <?php
 include_once('conf/path.php');
-$gbs = getGBsettings(); // gestbook settings / configuration
 $db = loadJson('dbc.json'); // database info
+$gbs = getGBsettings(); // gestbook settings / configuration
+$gbid = 1; // use for multiple gb
 
 // connection to database
 include ('conf/connect.php');
@@ -58,7 +59,7 @@ function getSmilies(){
 }
 /*load settings from gb.json file about the GB
 # @param:
-#		$gdid -> load the settings of GB with id=1 (needed by multiple GB)
+#		no param
 */
 function getGBsettings($gbid=1){
 	$data = loadJson('gb.json');
@@ -175,14 +176,28 @@ function loadMeta(){
 	global $path;
 	$css = getCustomCss();
 	echo '
+<!-- Add jQuery library -->
+<script type="text/javascript" src="'.$path.'hhgb/conf/js/jquery.js"></script>
+<!-- Bootstrap JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <!-- Font-Awesome CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="'.$path.'hhgb/conf/css/bootstrap.gb.css">
-<!-- Bootstrap JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-<!-- Smilies JavaScript -->
-<script>
+<!-- Add fancyBox main JS and CSS files -->
+<script type="text/javascript" src="'.$path.'hhgb/conf/js/jquery.fancybox.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="'.$path.'hhgb/conf/css/jquery.fancybox.css" media="screen" />
+
+<!-- Thumbnails and Smilies JavaScript -->
+<script type="text/javascript">
+$(document).ready(function() {
+		/*
+		 *  Simple image gallery. Uses default settings
+		 */
+
+		$(\'.fancybox\').fancybox();
+	});
+	
 function insertTheSmiley(input) {
 document.getElementById(\'nachricht\').value += input;
 }
@@ -251,7 +266,7 @@ function showGBookForm($file){
 # 		no param
 */
 function showGBookPosts(){
-	global $gbs,$form,$conn,$l; 
+	global $gbs,$form,$conn,$l,$db; 
 	$page = 1;
 	$gbid = $gbs['id'];
 	$where = getCondition();
@@ -259,7 +274,7 @@ function showGBookPosts(){
 		$page = (int)$_GET['page'];
 	}
 	$offset = ($page - 1) * $gbs['posts'];
-	$abfrage = "SELECT * FROM hh_gbook $where AND gb = $gbid ORDER BY id DESC LIMIT $gbs[posts] OFFSET $offset";
+	$abfrage = "SELECT * FROM $db[table] $where AND gb = $gbid ORDER BY id DESC LIMIT $gbs[posts] OFFSET $offset";
 	$abfrage_antwort = mysqli_query($conn, $abfrage);
 	
 	if ( ! $abfrage_antwort )
@@ -276,12 +291,12 @@ function showGBookPosts(){
 }
 
 function getPostCount($and=''){
-	global $gbs,$conn;
+	global $db,$gbs,$conn;
 	$myCond = getCondition();
 	if($and==''){
-		$q = "SELECT count($gbs[id]) FROM hh_gbook $myCond";
+		$q = "SELECT count($gbs[id]) FROM $db[table] $myCond";
 	}else{
-		$q = "SELECT count($gbs[id]) FROM hh_gbook WHERE public = 0";
+		$q = "SELECT count($gbs[id]) FROM $db[table] WHERE public = 0";
 	}
     $count = mysqli_query( $conn, $q );
 	$count = mysqli_fetch_row($count);

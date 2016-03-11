@@ -11,7 +11,7 @@
 		die($l['prohibited_direct_access']);
 	}
 
-	if(isset($_POST['use_css']) && $_POST['use_css'] == 1){
+	if(isset($_POST['use_css']) && $_POST['use_css'] == 1 && @$_GET['save'] == "css"){
 		$jcss = getCustomCss();
 		$use_css = 1;
 		
@@ -57,10 +57,27 @@
 		fclose($fp);
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
 	}
+	if(isset($_POST) && @$_GET['save'] == "send"){
+		$gb_set = loadJson('gb.json');
+		$gb_set[1]['btn_send'] = $_POST['btn_send'];
+		//print_r($gb_set);
+		$fp = fopen('conf/gb.json', 'w');
+		fwrite($fp, json_encode($gb_set));
+		fclose($fp);
+		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
+	}
+	if(isset($_POST) && @$_GET['save'] == "mail"){
+		$gb_set = loadJson('gb.json');
+		$gb_set[1]['btn_send'] = $_POST['btn_mail'];
+		$fp = fopen('conf/gb.json', 'w');
+		fwrite($fp, json_encode($gb_set));
+		fclose($fp);
+		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
+	}
 	
 	$css = getCustomCss();
 ?>
-<form class="form-horizontal" action="?page=custom" method="post">
+<form class="form-horizontal" action="?page=custom&save=css" method="post">
 	<div class="col-md-12">
 		
 			<div class="col-md-2">
@@ -110,8 +127,8 @@
 				</div>
 				<div class="panel-body custom-body" id="styleTextBG">
 						<div class="col-xs-6 col-md-3">
-							<a href="" class="thumbnail" id="styleThumbBorder" style="border: 0 !important;">
-								<img src="conf/css/tmp.png" alt="Thumbnail" onload="color()">
+							<a href="#" class="thumbnail" id="styleThumbBorder" style="border: 0 !important;">
+								<img src="conf/css/img/tmp.png" alt="Thumbnail" onload="color()">
 							</a>
 						</div>
 						<span id="styleTextTXT">
@@ -193,3 +210,51 @@ function color(id) {
 	document.getElementById('styleCommentTXT').style.color = '#<?=$css['.custom-footer']['color']?>';
 }
 </script>
+<div class="col-md-5">
+	<form class="form-horizontal" action="?page=custom&save=send" method="post">
+		<div class="form-group">
+			<label for="btn-send" class="control-label"><?=$l['btn_send_color']?></label>
+			<div class="input-group">
+					<span class="input-group-addon"><?=$l['send']?></span>
+					<select type="text" class="form-control" id="btn-send" name="btn_send">
+						<option value="btn-default"<?=($gbs['btn_send'] == "btn-default")? ' selected':'' ?>><?=$l['btn_default']?></option>
+						<option value="btn-primary"<?=($gbs['btn_send'] == "btn-primary")? ' selected':'' ?>><?=$l['btn_primary']?></option>
+						<option value="btn-success"<?=($gbs['btn_send'] == "btn-success")? ' selected':'' ?>><?=$l['btn_success']?></option>
+						<option value="btn-info"<?=($gbs['btn_send'] == "btn-info")? ' selected':'' ?>><?=$l['btn_info']?></option>
+						<option value="btn-warning"<?=($gbs['btn_send'] == "btn-warning")? ' selected':'' ?>><?=$l['btn_warning']?></option>
+						<option value="btn-danger"<?=($gbs['btn_send'] == "btn-danger")? ' selected':'' ?>><?=$l['btn_danger']?></option>
+						<option value="btn-link"<?=($gbs['btn_send'] == "btn-link")? ' selected':'' ?>><?=$l['btn_link']?></option>
+					</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="pull-right">
+				<button type="submit" class="btn btn-success" id="submit" name="submit"><?=$l['save']?></button>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="col-md-5 col-md-offset-2">
+	<form class="form-horizontal" action="?page=custom&save=mail" method="post">
+		<div class="form-group">
+			<label for="btn-mail" class="control-label"><?=$l['btn_mail_color']?></label>
+			<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-envelope-o"></i> <i class="fa fa-home"></i></span>
+					<select type="text" class="form-control" id="btn-mail" name="btn_mail">
+						<option value="btn-default"<?=($gbs['btn_mail'] == "btn-default")? ' selected':'' ?>><?=$l['btn_default']?></option>
+						<option value="btn-primary"<?=($gbs['btn_mail'] == "btn-primary")? ' selected':'' ?>><?=$l['btn_primary']?></option>
+						<option value="btn-success"<?=($gbs['btn_mail'] == "btn-success")? ' selected':'' ?>><?=$l['btn_success']?></option>
+						<option value="btn-info"<?=($gbs['btn_mail'] == "btn-info")? ' selected':'' ?>><?=$l['btn_info']?></option>
+						<option value="btn-warning"<?=($gbs['btn_mail'] == "btn-warning")? ' selected':'' ?>><?=$l['btn_warning']?></option>
+						<option value="btn-danger"<?=($gbs['btn_mail'] == "btn-danger")? ' selected':'' ?>><?=$l['btn_danger']?></option>
+						<option value="btn-link"<?=($gbs['btn_mail'] == "btn-link")? ' selected':'' ?>><?=$l['btn_link']?></option>
+					</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="pull-right">
+				<button type="submit" class="btn btn-success" id="submit" name="submit"><?=$l['save']?></button>
+			</div>
+		</div>
+	</form>
+</div>

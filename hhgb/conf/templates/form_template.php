@@ -125,7 +125,7 @@
 						<input type="hidden" value="<?php echo $gbs['id']; ?>" name="gbid">
 						<p class="text-success"><?php echo $l['note_msg']; ?></p>
 					<?php } ?>
-					<button type="submit" class="btn btn-success" id="submit" name="submit"><?=$l['send']?></button>
+					<button type="submit" class="btn <?=$gbs['btn_send']?>" id="submit" name="submit"><?=$l['send']?></button>
 				</div>
 			</div>
 		</form>
