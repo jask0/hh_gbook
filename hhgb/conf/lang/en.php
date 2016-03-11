@@ -25,7 +25,7 @@ $l = array(
 'settings' => 'Settings',
 'custom_css' => 'Custom CSS',
 'use_custom_css' => 'Use custom CSS',
-'tabel_hh_gbook_successful_created' => 'Table "hh_gbook" successful created!',
+'tabel_successful_created' => 'Table successful created!',
 'error_table_not_created' => 'ERROR table not created',
 'tabel_hh_gbsettings_successful_created' => 'Table "hh_gbsettings" successful created!',
 'guestbook_1_successful_created' => 'Firs GB successful created.',
@@ -93,6 +93,15 @@ $l = array(
 'change' => 'Change',
 'std_user_warning' => 'You are using standard username. It is recommended to change it!',
 'std_pwd_danger' => 'You are using standard password. This is very unsafe, please change it!',
+'btn_send_color' => 'Send button color',
+'btn_mail_color' => 'Website and Mail button color',
+'btn_default' => 'White/Grey',
+'btn_primary' => 'Blue',
+'btn_success' => 'Green',
+'btn_info' => 'Light blue',
+'btn_warning' => 'Orange',
+'btn_danger' => 'Red',
+'btn_link' => 'No color (Link)',
 '' => ''
 );
 ?>

@@ -25,7 +25,7 @@ $l = array(
 'settings' => 'Podesavanja',
 'custom_css' => 'Vlastiti CSS',
 'use_custom_css' => 'Koristiti vlastiti CSS',
-'tabel_hh_gbook_successful_created' => 'Tabela "hh_gbook" uspjesno kreirana!',
+'tabel_successful_created' => 'Tabela uspjesno kreirana!',
 'error_table_not_created' => 'GRESKA pri izgradnji tabele',
 'tabel_hh_gbsettings_successful_created' => 'Tabela "hh_gbsettings" uspjesno kreirana!',
 'guestbook_1_successful_created' => 'Prva knjiga gostiju uspjesno pokrenuta.',
@@ -93,6 +93,15 @@ $l = array(
 'change' => 'Promjeniti',
 'std_user_warning' => 'Koristite standardno korisnicko ime. Preporuceno je da ga promjenite',
 'std_pwd_danger' => 'Koristite standardnu lozinku. To je jako nesigurno, molimo promjenite lozinku!',
+'btn_send_color' => 'Boja dugmeta "Poslati"',
+'btn_mail_color' => 'Boja dugmadi "Homepage & E-Mail"',
+'btn_default' => 'Bijela/Siva',
+'btn_primary' => 'Plava',
+'btn_success' => 'Zelena',
+'btn_info' => 'Svijetlo plava',
+'btn_warning' => 'Narandzasta',
+'btn_danger' => 'Crvena',
+'btn_link' => 'Bez boje (Link)',
 '' => ''
 );
 ?>

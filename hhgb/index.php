@@ -55,7 +55,7 @@ $gbs = getGBsettings();
                             <a href="#"><strong><?=$l['3_new_msg']?></strong></a>
                         </li>
 					<?php
-						$abfrage = "SELECT * FROM hh_gbook ORDER BY id DESC LIMIT 3";
+						$abfrage = "SELECT * FROM ".$db['table']." ORDER BY id DESC LIMIT 3";
 						$abfrage_antwort = mysqli_query($conn, $abfrage);
 	
 						if ( ! $abfrage_antwort )
@@ -94,7 +94,7 @@ $gbs = getGBsettings();
                     </ul>
                 </li>
 				<?php 
-					$abfrage = "SELECT count(public) FROM hh_gbook WHERE public = 0 ORDER BY id DESC";
+					$abfrage = "SELECT count(public) FROM ".$db['table']." WHERE public = 0 ORDER BY id DESC";
 					$abfrage_antwort = mysqli_query($conn, $abfrage);
 					$count = mysqli_fetch_row($abfrage_antwort);
 					if((int)$count[0] > 0){
@@ -112,7 +112,7 @@ $gbs = getGBsettings();
                         </li>
 						<li class="divider"></li>
 					<?php
-						$abfrage = "SELECT * FROM hh_gbook WHERE public = 0 ORDER BY id DESC";
+						$abfrage = "SELECT * FROM ".$db['table']." WHERE public = 0 ORDER BY id DESC";
 						$abfrage_antwort = mysqli_query($conn, $abfrage);
 						if ( ! $abfrage_antwort )
 						{
@@ -143,7 +143,7 @@ $gbs = getGBsettings();
                             <a href="?page=offline&id=0"><i class="fa fa-fw fa-envelope"></i> <?php echo $count[0]; ?> <?=$l['new_msg']?></a>
                         </li>
                         <li>
-                            <a href="index.php"><i class="fa fa-fw fa-gear"></i> <?=$l['settings']?></a>
+                            <a href="index.php?page=settings"><i class="fa fa-fw fa-gear"></i> <?=$l['settings']?></a>
                         </li>
                         <li class="divider"></li>
                         <li>

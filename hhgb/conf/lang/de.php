@@ -25,7 +25,7 @@ $l = array(
 'settings' => 'Einstellungen',
 'custom_css' => 'Eigenes CSS',
 'use_custom_css' => 'Eigenes CSS nutzen',
-'tabel_hh_gbook_successful_created' => 'Tabelle "hh_gbook" erfolgreich erstellt!',
+'tabel_successful_created' => 'Tabelle erfolgreich erstellt!',
 'error_table_not_created' => 'FEHLER beim erstellen der Tabelle',
 'tabel_hh_gbsettings_successful_created' => 'Tabelle "hh_gbsettings" erfolgreich erstellt!',
 'guestbook_1_successful_created' => 'Erstes G&auml;stebuch erfolgreich angelegt.',
@@ -93,6 +93,15 @@ $l = array(
 'change' => 'Ver&auml;ndern',
 'std_user_warning' => 'Du verwendest den Standard-Benutzernamen. Es ist empfohlen das zu &auml;ndern',
 'std_pwd_danger' => 'Du verwendest das Standard-Passwort. Das ist sehr unsicher, <a href="?page=profile">bitte &auml;ndern</a>!',
+'btn_send_color' => 'Knopf Farbe "Senden"',
+'btn_mail_color' => 'Knopf Farbe "Homepage & E-Mail"',
+'btn_default' => 'Wei&szlig;/Grau',
+'btn_primary' => 'Blau',
+'btn_success' => 'Gr&uuml;n',
+'btn_info' => 'Hellblau',
+'btn_warning' => 'Orange',
+'btn_danger' => 'Rot',
+'btn_link' => 'Ohne Farbe (Link)',
 '' => ''
 );
 ?>

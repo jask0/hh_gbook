@@ -14,7 +14,7 @@
 
 	if(isset($_POST['submit'])){
 		if(isset($_POST['loeschen']) and $_POST['loeschen'] == "1"){
-			$abfrage = sprintf("DELETE FROM hh_gbook WHERE id = %d",$id);
+			$abfrage = sprintf("DELETE FROM %s WHERE id = %d",$db['table'],$id);
 			
 			if ( mysqli_query($conn, $abfrage) )
 			{
@@ -34,7 +34,7 @@
 			if(isset($_POST['public']) and $_POST['public'] == "1")
 				$public=1;
 			
-			$abfrage = sprintf('UPDATE hh_gbook
+			$abfrage = sprintf('UPDATE '.$db['table'].'
 								SET name="%s",
 									email="%s",
 									homepage="%s",
@@ -53,7 +53,7 @@
 			}
 		}
 	}
-	$abfrage = sprintf("SELECT * FROM hh_gbook WHERE id = %s",$id);
+	$abfrage = sprintf("SELECT * FROM %s WHERE id = %s",$db['table'],$id);
 	$abfrage_antwort = mysqli_query($conn, $abfrage);
 	
 	if ( ! $abfrage_antwort )

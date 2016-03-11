@@ -110,7 +110,7 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 				<p class="list-group-item-text"></p>
 			</span>
 			<?php
-				$abfrage = "SELECT * FROM hh_gbook ORDER BY id DESC LIMIT 3";
+				$abfrage = "SELECT * FROM $db[table] ORDER BY id DESC LIMIT 3";
 				$abfrage_antwort = mysqli_query($conn, $abfrage);
 
 				if ( ! $abfrage_antwort )

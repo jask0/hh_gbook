@@ -8,6 +8,7 @@ if(isset($_POST['install']) && $_POST['install']=="dbc" && $_GET['dbc']==1){
 	$db['username'] = $_POST['username'];
 	$db['password'] = $_POST['password'];
 	$db['dbname'] = $_POST['dbname'];
+	$db['table'] = $_POST['table'];
 	$db['installed'] = "yes";
 
 	//write user configuration
@@ -23,7 +24,7 @@ if ($db['installed'] == "no") {
 
 if(isset($_POST['install']) && $_POST['install']=="db" && $_GET['db']==1){
 	// sql to create post table
-	$q = "CREATE TABLE hh_gbook (
+	$q = "CREATE TABLE ".$db['table']." (
 	id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	datum TIMESTAMP,
 	name VARCHAR(30) NOT NULL,
@@ -38,7 +39,7 @@ if(isset($_POST['install']) && $_POST['install']=="db" && $_GET['db']==1){
 	);";
 
 	if (mysqli_query($conn, $q)) {
-		$info = "<p class=\"alert alert-success\">$l[tabel_hh_gbook_successful_created]</p><p>Login Info:</p><ul><li>Username: admin</li><li>Password: 123456</li></p>";
+		$info = "<p class=\"alert alert-success\">".$db['table']." =>$l[tabel_successful_created]</p><p>Login Info:</p><ul><li>Username: admin</li><li>Password: 123456</li></p>";
 	} else {
 		$info= "<p class=\"alert alert-danger\">$l[error_table_not_created]: " . mysqli_error($conn) . "</p>>";
 	}
@@ -79,6 +80,9 @@ if(isset($_POST['install']) && $_POST['install']=="db" && $_GET['db']==1){
 									<input type="password" name="password" class="form-control"><br>
 									<b>Database Name:</b>
 									<input type="text" name="dbname" class="form-control"><br>
+									<br>
+									<b>Table Name:</b>
+									<input type="text" name="table" value="hh_gbook" class="form-control"><br>
 									<br>
 									<input type="hidden" name="install" value="dbc" >
 									<button type="submit" name="submit" class="btn btn-success"><?=$l['save']?></button>
