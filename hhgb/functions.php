@@ -217,7 +217,7 @@ window.opener.insertTheSmiley(input);
 # 		$file ->  	url to the file where the GB is displayed
 */
 function showGBookForm($file){
-	global $gbs,$form,$conn,$smilie,$user,$path, $l; 
+	global $db,$gbs,$form,$conn,$smilie,$user,$path, $l; 
 	$cond = getCondition();
 	if(!isset($_POST['submit'])){
 		
@@ -241,7 +241,7 @@ function showGBookForm($file){
 					$nachricht = str_replace(':'.$value.':', '<img src="'.$path.'hhgb/smilies/'.$smilie['set'].'/'.$value.'" alt=":'.$value.':">', $nachricht);
 				}
 				$nachricht = str_replace("'", "\'", str_replace('"', '\"',$nachricht));
-				$query = sprintf('INSERT INTO hh_gbook (name,email,homepage,betreff,bild_url,nachricht,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s")',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$public,$gbid);
+				$query = sprintf('INSERT INTO '.$db['table'].' (name,email,homepage,betreff,bild_url,nachricht,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s")',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$public,$gbid);
 			
 				if (mysqli_query($conn, $query)) {
 					$_POST['info_msg'] = '<p class="alert alert-success">'.$l['msg_successful_send'].'</p>';
