@@ -76,6 +76,7 @@
 	}
 	
 	$css = getCustomCss();
+	$gbs = getGBsettings();
 ?>
 <form class="form-horizontal" action="?page=custom&save=css" method="post">
 	<div class="col-md-12">
