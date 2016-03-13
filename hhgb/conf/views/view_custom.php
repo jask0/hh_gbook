@@ -11,7 +11,7 @@
 		die($l['prohibited_direct_access']);
 	}
 
-	if(isset($_POST['use_css']) && $_POST['use_css'] == 1 && @$_GET['save'] == "css"){
+	if(isset($_POST['use_css']) && $_POST['use_css'] == 1 && (isset($_GET['save']) && $_GET['save'] == "css")){
 		$jcss = getCustomCss();
 		$use_css = 1;
 		
@@ -48,7 +48,7 @@
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
 		
 	}
-	if(isset($_POST['submit']) && !isset($_POST['use_css'])){
+	if(isset($_POST['submit']) && (isset($_GET['save']) && $_GET['save'] == "css") && !isset($_POST['use_css'])){
 		$jcss = getCustomCss();
 		$use_css = 0;
 		$jcss['use_custom_css'] = 0;
@@ -57,7 +57,7 @@
 		fclose($fp);
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
 	}
-	if(isset($_POST) && @$_GET['save'] == "send"){
+	if(isset($_POST) && (isset($_GET['save']) && $_GET['save'] == "send")){
 		$gb_set = loadJson('gb.json');
 		$gb_set[1]['btn_send'] = $_POST['btn_send'];
 		//print_r($gb_set);
@@ -66,7 +66,7 @@
 		fclose($fp);
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].'</p>';
 	}
-	if(isset($_POST) && @$_GET['save'] == "mail"){
+	if(isset($_POST) && (isset($_GET['save']) && $_GET['save'] == "mail")){
 		$gb_set = loadJson('gb.json');
 		$gb_set[1]['btn_mail'] = $_POST['btn_mail'];
 		$fp = fopen('conf/gb.json', 'w');
