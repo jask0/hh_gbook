@@ -238,7 +238,7 @@ function showGBookForm($file){
 				$public = $_POST['public'];
 				$gbid = $_POST['gbid'];
 				foreach ($smilie['list'] as $key => $value) {
-					$nachricht = str_replace(':'.$value.':', '<img src="'.$path.'hhgb/smilies/'.$smilie['set'].'/'.$value.'" alt="{'.$value.'}">', $nachricht);
+					$nachricht = str_replace(':'.$value.':', '<img src="'.$path.'hhgb/smilies/'.$smilie['set'].'/'.$value.'" alt="('.$value.')">', $nachricht);
 				}
 				$nachricht = str_replace("'", "\'", str_replace('"', '\"',$nachricht));
 				$query = sprintf('INSERT INTO '.$db['table'].' (name,email,homepage,betreff,bild_url,nachricht,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s")',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$public,$gbid);
