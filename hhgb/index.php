@@ -12,7 +12,8 @@ $gbs = getGBsettings();
 <head>
 	<meta charset="UTF-8">
 	<title><?=$l['gb']?> : <?=$gbs['title']?></title>
-	<?php loadMeta(); ?>
+	<!-- Font-Awesome CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<!-- Bootstrap Core CSS -->
 	<link href="conf/css/bootstrap.min.css" rel="stylesheet">
 
