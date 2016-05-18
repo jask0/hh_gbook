@@ -13,6 +13,7 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 	$gb[$id]['image'] = $_POST['show_image'];
 	$gb[$id]['subject'] = $_POST['show_subject'];
 	$gb[$id]['posts'] = $_POST['beitraege_pro_seite'];
+	$gb[$id]['scale'] = $_POST['scale'];
 	$gb[$id]['public'] = $_POST['public'];
 
 	//write gb configuration
@@ -103,6 +104,15 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 						?>
 							<option value="<?=$value?>" <?=($gbs['language']==$value)? 'selected': ''?>><?=$value?></option>
 							<?php } ?>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="public" class="col-sm-4 control-label hh_form"><?=$l['scale_image']?></label>
+				<div class="col-sm-8">
+					<select class="form-control" id="public" name="scale">
+						<option value="1" <?php ($gbs['scale']) ? print 'selected' : print''; ?>><?=$l['yes']?></option>
+						<option value="0" <?php ($gbs['scale']) ? print '' : print 'selected'; ?>><?=$l['no']?></option>
 					</select>
 				</div>
 			</div>
