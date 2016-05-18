@@ -143,6 +143,18 @@ function getCondition(){
 	}
 }
 
+/*scale all images in $msg if gbc[scale] is active
+# @param:
+# 		$msg, string text with html image tags
+*/
+function scaleImages($msg){
+	global $gbs;
+	if ($gbs['scale'] == "1" or $gbs['scale'] == 1){
+		$msg = str_replace('<img', '<img class="img-responsive img-thumbnail"',$msg);
+	}
+	return $msg;
+}
+
 /* display submit form
 # @param:
 # 		$data ->  	posted data array to fill the value fields
@@ -234,7 +246,7 @@ function showGBookForm($file){
 				$homepage = htmlentities($_POST['homepage']);
 				$betreff = htmlentities($_POST['betreff']);
 				$bild_url = htmlentities($_POST['bild_url']);
-				$nachricht = htmlentities($_POST['nachricht']);
+				$nachricht = htmlentities(scaleImages($_POST['nachricht']));
 				$public = $_POST['public'];
 				$gbid = $_POST['gbid'];
 				foreach ($smilie['list'] as $key => $value) {
