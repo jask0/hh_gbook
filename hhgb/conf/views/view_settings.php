@@ -1,9 +1,9 @@
 <?php
 $gbs = getGBsettings();
 if($_POST && $_POST['beitraege_pro_seite'] >0){
-	$gb = array();
+	$gb = loadJson('gb.json');
 	$id = $gbs['id'];
-	$gb[$id] = array();
+
 	//change gb configuration
 	$gb[$id]['id'] = $id;
 	$gb[$id]['title'] = $_POST['gb_title'];
