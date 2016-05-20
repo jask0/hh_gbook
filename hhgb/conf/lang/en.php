@@ -88,6 +88,7 @@ $l = array(
 'comment_txt_color' => 'Comment Text Color',
 'thumb_border_color' => 'Thumbnail Border Color',
 'dbc_data_successful_saved' => 'Database connection data successful saved.',
+'dbc_data_not_saved' => 'Database connection failed, check your data please!',
 'home' => 'Home',
 'post_count' => 'Post Count',
 'change' => 'Change',

@@ -88,6 +88,7 @@ $l = array(
 'comment_txt_color' => 'Boja teksta u kommentaru',
 'thumb_border_color' => 'Boja ruba kod slike',
 'dbc_data_successful_saved' => 'Podaci za pozvezivanje sa bazom podataka uspjesno snimljeni.',
+'dbc_data_not_saved' => 'Konekcija sa bazom podataka neuspjesna, molimo provjerite vase podatke',
 'home' => 'Home',
 'post_count' => 'Ukupnih poruka',
 'change' => 'Promjeniti',

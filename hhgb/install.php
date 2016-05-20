@@ -33,7 +33,7 @@ if(isset($_POST['install']) && $_POST['install']=="dbc" && $_GET['dbc']==1){
 		fclose($fp);
 		$info = "<p class=\"alert alert-success\">$l[dbc_data_successful_saved]</p>";
 	} else {
-		$info = "<p class=\"alert alert-danger\">Die Datenbankverbindung ist fehlgeschlagen bitte pr&uuml;fen Sie ihre Daten!</p>";
+		$info = "<p class=\"alert alert-danger\">$l[dbc_data_not_saved]</p>";
 	}
 }
 

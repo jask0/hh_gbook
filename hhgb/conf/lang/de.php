@@ -88,6 +88,7 @@ $l = array(
 'comment_txt_color' => 'Kommentar Textfarbe',
 'thumb_border_color' => 'Thumbnail Rahmenfarbe',
 'dbc_data_successful_saved' => 'Datenbank Verbindungsdaten erfolgreich gespeichert.',
+'dbc_data_not_saved' => 'Die Datenbankverbindung ist fehlgeschlagen bitte pr&uuml;fen Sie ihre Daten!',
 'home' => 'Startseite',
 'post_count' => 'Insgesamt Beitr&auml;ge',
 'change' => 'Ver&auml;ndern',
