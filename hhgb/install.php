@@ -2,6 +2,19 @@
 include('functions.php');
 $set_dbc = 0;
 
+function testConn($db_test){
+	if($db_test['username'] != "" and $db_test['dbname'] != ""){
+		$connection = @mysqli_connect($db_test['servername'], $db_test['username'], $db_test['password'], $db_test['dbname']);
+		// Check connection
+		if (!$connection) {
+			return 0;
+		}else {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 if(isset($_POST['install']) && $_POST['install']=="dbc" && $_GET['dbc']==1){
 	//change user configuration
 	$db['servername'] = $_POST['servername'];
@@ -9,13 +22,19 @@ if(isset($_POST['install']) && $_POST['install']=="dbc" && $_GET['dbc']==1){
 	$db['password'] = $_POST['password'];
 	$db['dbname'] = $_POST['dbname'];
 	$db['table'] = $_POST['table'];
-	$db['installed'] = "yes";
-
-	//write user configuration
-	$fp = fopen('conf/dbc.json', 'w');
-	fwrite($fp, json_encode($db));
-	fclose($fp);
-	$info = "<p class=\"alert alert-success\">$l[dbc_data_successful_saved]</p>";
+	
+	
+	if(testConn($db)){
+		$db['installed'] = "yes";
+		
+		//write user configuration
+		$fp = fopen('conf/dbc.json', 'w');
+		fwrite($fp, json_encode($db));
+		fclose($fp);
+		$info = "<p class=\"alert alert-success\">$l[dbc_data_successful_saved]</p>";
+	} else {
+		$info = "<p class=\"alert alert-danger\">Die Datenbankverbindung ist fehlgeschlagen bitte pr&uuml;fen Sie ihre Daten!</p>";
+	}
 }
 
 if ($db['installed'] == "no") {
