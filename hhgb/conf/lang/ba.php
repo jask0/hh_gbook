@@ -102,6 +102,7 @@ $l = array(
 'btn_warning' => 'Narandzasta',
 'btn_danger' => 'Crvena',
 'btn_link' => 'Bez boje (Link)',
+'scale_image' => 'Skalirati slike',
 '' => ''
 );
 ?>

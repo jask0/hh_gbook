@@ -61,9 +61,9 @@ function getSmilies(){
 # @param:
 #		no param
 */
-function getGBsettings($gbid=1){
+function getGBsettings(){
 	$data = loadJson('gb.json');
-	return $data[(string)$gbid];
+	return $data;
 }
 
 function isFileExtension($file, $ext) {

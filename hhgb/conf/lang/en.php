@@ -102,6 +102,7 @@ $l = array(
 'btn_warning' => 'Orange',
 'btn_danger' => 'Red',
 'btn_link' => 'No color (Link)',
+'scale_image' => 'Scale Images',
 '' => ''
 );
 ?>
