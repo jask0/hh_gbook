@@ -59,7 +59,7 @@
 	}
 	if(isset($_POST) && (isset($_GET['save']) && $_GET['save'] == "send")){
 		$gb_set = loadJson('gb.json');
-		$gb_set[1]['btn_send'] = $_POST['btn_send'];
+		$gb_set['btn_send'] = $_POST['btn_send'];
 		//print_r($gb_set);
 		$fp = fopen('conf/gb.json', 'w');
 		fwrite($fp, json_encode($gb_set));
@@ -68,7 +68,7 @@
 	}
 	if(isset($_POST) && (isset($_GET['save']) && $_GET['save'] == "mail")){
 		$gb_set = loadJson('gb.json');
-		$gb_set[1]['btn_mail'] = $_POST['btn_mail'];
+		$gb_set['btn_mail'] = $_POST['btn_mail'];
 		$fp = fopen('conf/gb.json', 'w');
 		fwrite($fp, json_encode($gb_set));
 		fclose($fp);
