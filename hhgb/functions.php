@@ -47,7 +47,7 @@ function showBBcodes($text) {
 		'<span style="font-size:$1px;">$2</span>',
 		'<span style="color:$1;">$2</span>',
 		'<a href="$1">$1</a>',
-		'<img src="$1" alt="" />'
+		'<img class="img-responsive img-thumbnail" src="$1" alt="" />'
 	);
 	// Replacing the BBcodes with corresponding HTML tags
 	return preg_replace($find,$replace,$text);
