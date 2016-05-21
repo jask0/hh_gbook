@@ -8,7 +8,7 @@
 					<?php if(isset($_SESSION['username'])){ ?>
 						<a class="btn btn-danger btn-xs pull-right" style="margin-left:5px;" href="<?php echo $path.$edit; ?>"><i class="fa fa-pencil"></i> <?=$l['edit']?></a> 
 					<?php } ?>
-					<?php echo $l['at_date'].' '.date_format($data['datum'], 'd.m.y').' '.$l['at_time'].' '.date_format($data['datum'], 'H:m').' '.$l['a_clock'].' '.$l['wrote'].' '.$data['name'].':'; ?>
+					<?php echo $l['at_date'].' '.date_format($data['datum'], 'd.m.Y').' '.$l['at_time'].' '.date_format($data['datum'], 'H:i').' '.$l['a_clock'].' '.$l['wrote'].' '.$data['name'].':'; ?>
 					<div class="pull-right">
 						<?php if ($gbs['email'] && $data['email'] != '') { ?>
 							<a href="mailto:<?php echo $data['email']; ?>" target="_blank" class="btn btn-xs <?=$gbs['btn_mail']?>" title="<?=$l['email']?>">

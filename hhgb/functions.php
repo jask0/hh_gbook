@@ -36,7 +36,9 @@ function showBBcodes($text) {
 		'~\[size=(.*?)\](.*?)\[/size\]~s',
 		'~\[color=(.*?)\](.*?)\[/color\]~s',
 		'~\[url\]((?:ftp|https?)://.*?)\[/url\]~s',
-		'~\[img\](https?://.*?\.(?:jpg|jpeg|gif|png|bmp))\[/img\]~s'
+		'~\[url=((?:ftp|https?)://.*?)\](.*?)\[/url\]~s',
+		'~\[img\](https?://.*?\.(?:jpg|jpeg|gif|png|bmp))\[/img\]~s',
+		'~\[smillie\](.*?\.(?:jpg|jpeg|gif|png|bmp))\[/smillie\]~s'
 	);
 	// HTML tags to replace BBcode
 	$replace = array(
@@ -47,7 +49,9 @@ function showBBcodes($text) {
 		'<span style="font-size:$1px;">$2</span>',
 		'<span style="color:$1;">$2</span>',
 		'<a href="$1">$1</a>',
-		'<img class="img-responsive img-thumbnail" src="$1" alt="" />'
+		'<a href="$1">$2</a>',
+		'<img class="img-responsive img-thumbnail" src="$1" alt="" />',
+		'<img src="$1" alt="" />'
 	);
 	// Replacing the BBcodes with corresponding HTML tags
 	return preg_replace($find,$replace,$text);
@@ -276,7 +280,7 @@ function showGBookForm($file){
 				$public = $_POST['public'];
 				$gbid = $_POST['gbid'];
 				foreach ($smilie['list'] as $key => $value) {
-					$nachricht = str_replace(':'.$value.':', '<img src="'.$path.'hhgb/smilies/'.$smilie['set'].'/'.$value.'" alt="('.$value.')">', $nachricht);
+					$nachricht = str_replace(':'.$value.':', '[smillie]'.$path.'hhgb/smilies/'.$smilie['set'].'/'.$value.'[/smillie]', $nachricht);
 				}
 				$nachricht = str_replace("'", "\'", str_replace('"', '\"',$nachricht));
 				$query = sprintf('INSERT INTO '.$db['table'].' (name,email,homepage,betreff,bild_url,nachricht,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s")',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$public,$gbid);
