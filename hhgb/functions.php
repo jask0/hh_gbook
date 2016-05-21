@@ -280,13 +280,12 @@ function showGBookForm($file){
 function showGBookPosts(){
 	global $gbs,$form,$conn,$l,$db; 
 	$page = 1;
-	$gbid = $gbs['id'];
 	$where = getCondition();
 	if(isset($_GET['page'])){
 		$page = (int)$_GET['page'];
 	}
 	$offset = ($page - 1) * $gbs['posts'];
-	$abfrage = "SELECT * FROM $db[table] $where AND gb = $gbid ORDER BY datum DESC LIMIT $gbs[posts] OFFSET $offset";
+	$abfrage = "SELECT * FROM $db[table] $where ORDER BY datum DESC LIMIT $gbs[posts] OFFSET $offset";
 	$abfrage_antwort = mysqli_query($conn, $abfrage);
 	
 	if ( ! $abfrage_antwort )
