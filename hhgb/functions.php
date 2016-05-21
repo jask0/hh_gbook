@@ -48,8 +48,8 @@ function showBBcodes($text) {
 		'<pre>$1</'.'pre>',
 		'<span style="font-size:$1px;">$2</span>',
 		'<span style="color:$1;">$2</span>',
-		'<a href="$1">$1</a>',
-		'<a href="$1">$2</a>',
+		'<a href="$1" target="_blank">$1</a>',
+		'<a href="$1" target="_blank">$2</a>',
 		'<img class="img-responsive img-thumbnail" src="$1" alt="" />',
 		'<img src="$1" alt="" />'
 	);
