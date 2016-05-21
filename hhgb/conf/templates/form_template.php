@@ -122,8 +122,9 @@
 				<div class="col-sm-12">
 					<?php if(!isset($data['admin'])) { ?>
 						<input type="hidden" value="<?php echo $gbs['public']; ?>" name="public">
-						<input type="hidden" value="<?php echo $gbs['id']; ?>" name="gbid">
 						<p class="text-success"><?php echo $l['note_msg']; ?></p>
+					<?php } else {?>
+						<input type="hidden" value="<?php echo $data['datum']; ?>" name="old_datum">
 					<?php } ?>
 					<button type="submit" class="btn <?=$gbs['btn_send']?>" id="submit" name="submit"><?=$l['send']?></button>
 				</div>

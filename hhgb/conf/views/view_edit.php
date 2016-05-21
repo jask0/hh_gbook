@@ -24,6 +24,7 @@
 			}
 		}else{
 			$name = $_POST['name'];
+			$old_datum = $_POST['old_datum'];
 			$email = htmlentities($_POST['email']);
 			$homepage = htmlentities($_POST['homepage']);
 			$betreff = htmlentities($_POST['betreff']);
@@ -36,6 +37,7 @@
 			
 			$abfrage = sprintf('UPDATE '.$db['table'].'
 								SET name="%s",
+									datum="%s",
 									email="%s",
 									homepage="%s",
 									betreff="%s",
@@ -43,7 +45,7 @@
 									nachricht="%s",
 									kommentar="%s",
 									public=%d
-								WHERE id=%d;',$name,$email,$homepage,$betreff,$bild_url,$nachricht,$kommentar,$public,$id);
+								WHERE id=%d;',$name,$old_datum,$email,$homepage,$betreff,$bild_url,$nachricht,$kommentar,$public,$id);
 			
 			if ( mysqli_query($conn, $abfrage) )
 			{
