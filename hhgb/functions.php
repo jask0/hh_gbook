@@ -306,9 +306,9 @@ function getPostCount($and=''){
 	global $db,$gbs,$conn;
 	$myCond = getCondition();
 	if($and==''){
-		$q = "SELECT count($gbs[id]) FROM $db[table] $myCond";
+		$q = "SELECT count(id) FROM $db[table] $myCond";
 	}else{
-		$q = "SELECT count($gbs[id]) FROM $db[table] WHERE public = 0";
+		$q = "SELECT count(id) FROM $db[table] WHERE public = 0";
 	}
     $count = mysqli_query( $conn, $q );
 	$count = mysqli_fetch_row($count);

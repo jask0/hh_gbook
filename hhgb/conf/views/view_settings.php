@@ -2,19 +2,18 @@
 $gbs = getGBsettings();
 if($_POST && $_POST['beitraege_pro_seite'] >0){
 	$gb = loadJson('gb.json');
-	$id = $gbs['id'];
 
 	//change gb configuration
-	$gb[$id]['id'] = $id;
-	$gb[$id]['title'] = $_POST['gb_title'];
-	$gb[$id]['language'] = $_POST['language'];
-	$gb[$id]['email'] = $_POST['show_email'];
-	$gb[$id]['homepage'] = $_POST['show_homepage'];
-	$gb[$id]['image'] = $_POST['show_image'];
-	$gb[$id]['subject'] = $_POST['show_subject'];
-	$gb[$id]['posts'] = $_POST['beitraege_pro_seite'];
-	$gb[$id]['scale'] = $_POST['scale'];
-	$gb[$id]['public'] = $_POST['public'];
+	$gb['id'] = $id;
+	$gb['title'] = $_POST['gb_title'];
+	$gb['language'] = $_POST['language'];
+	$gb['email'] = $_POST['show_email'];
+	$gb['homepage'] = $_POST['show_homepage'];
+	$gb['image'] = $_POST['show_image'];
+	$gb['subject'] = $_POST['show_subject'];
+	$gb['posts'] = $_POST['beitraege_pro_seite'];
+	$gb['scale'] = $_POST['scale'];
+	$gb['public'] = $_POST['public'];
 
 	//write gb configuration
 	$fp = fopen('conf/gb.json', 'w');
