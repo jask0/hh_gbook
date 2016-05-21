@@ -31,7 +31,7 @@
 						</div>
 					<?php } ?>
 						<h4><?php echo $data['betreff']; ?></h4>
-						<?php echo nl2br($data['nachricht']); ?>
+						<?php echo nl2br(showBBcodes($data['nachricht'])); ?>
 				</div>
 				<?php if($data['kommentar'] != ''){ ?>
 					<div class="panel-footer <?=($data['public'] == 1) ? 'custom-footer' : ''; ?>">
