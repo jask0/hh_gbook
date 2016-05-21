@@ -103,7 +103,7 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 	</div>
 </div><!-- END .row -->
 <div class="row">
-	<div class="col-lg-6 col-md-6 col-sm-6">
+	<div class="col-lg-12 col-md-12 col-sm-12">
 		<div class="list-group">
 			<span class="list-group-item active">
 				<h4 class="list-group-item-heading"><?=$l['3_new_msg']?></h4>
@@ -124,14 +124,11 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 			?>
 			<a href="?page=edit&id=<?php echo $zeile['id']; ?>" class="list-group-item">
 				<h4 class="list-group-item-heading"><?php echo '('.date_format($zeile['datum'], 'd.m.y H:i').') '.$zeile['name'].':'; ?></h4>
-				<p class="list-group-item-text"><?php echo substr($zeile['nachricht'],0,120).'...'; ?></p>
+				<p class="list-group-item-text"><?php echo substr($zeile['nachricht'],0,240).'...'; ?></p>
 			</a>
 			<?php	}
 				mysqli_free_result( $abfrage_antwort );
 			?>
 		</div>
-	</div>
-	<div class="col-lg-6 col-md-6 col-sm-6">
-		<?php print file_get_contents("http://demo.jaskoscript.net/gb/info.php");?>
 	</div>
 </div> <!-- END .row -->
