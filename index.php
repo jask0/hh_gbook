@@ -20,8 +20,6 @@ $sgs = getGBsettings();
 </head>
 
 <body>
-<!--debug-->
-<div style="display:none"><?php  print_r($sgs); ?></div>
 <!-- Dieser Teil kommt in den Textbereich der Seite oft auch Content-Bereich genannt. ANFANG GB Body. Von hier -->
 	<h3 class="hh_form"><?php echo $sgs['title'];?></h3>
 	<!-- Load the submit form -->
