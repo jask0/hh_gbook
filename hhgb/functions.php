@@ -266,7 +266,7 @@ function showGBookForm($file){
 		showForm($form, $file);
 	 
 	} else {
-		if(1)/*$_SESSION['captcha_code'] == md5($_POST['captcha']))*/{
+		if($_SESSION['captcha_code'] == md5($_POST['captcha'])){
 			if($_POST['name'] == "" or $_POST['nachricht'] == ""){
 				$_POST['info_msg'] = '<p class="alert alert-danger">'. $gbs['error'].'<br>'. $gbs['msg'] . '</p>';
 				showForm($_POST, $file);
