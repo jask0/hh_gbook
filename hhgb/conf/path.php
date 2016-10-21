@@ -5,4 +5,3 @@
 		global $path;
 		$path = $p;
 	}
-?>

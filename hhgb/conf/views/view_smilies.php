@@ -3,8 +3,8 @@
 		die($l['prohibited_direct_access']);
 	}
 	//stored smilie data
-	global $smilie;
-	$set = $smilie['set'];
+	$smilie = $gb->smilie;
+	$set = $smilie['folder'];
 	
 	$smilie_sets = Array();
 	$dirs = array_filter(glob('smilies/*'), 'is_dir');
@@ -13,25 +13,25 @@
 		array_push($smilie_sets, $temp[1]);
 	}
 	$smilie_list = Array();
-	
-	if(!$_POST){
-		$dirs = array_filter(glob('smilies/'.$smilie['set'].'/*'));
+	$post = filter_input_array(INPUT_POST);
+	if(!isset($post['submit'])){
+		$dirs = array_filter(glob('smilies/'.$smilie['folder'].'/*'));
 		foreach ($dirs as $key => $value){
-			$temp = explode($smilie['set']."/", $value);
+			$temp = explode($smilie['folder']."/", $value);
 			array_push($smilie_list, $temp[1]);
 		}
 	}
 	
-	if($_POST){
+	if(isset($post['submit'])){
 		
-		$dirs = array_filter(glob('smilies/'.$_POST['set'].'/*'));
+		$dirs = array_filter(glob('smilies/'.$post['folder'].'/*'));
 		foreach ($dirs as $key => $value){
-			$temp = explode($_POST['set']."/", $value);
+			$temp = explode($post['folder']."/", $value);
 			array_push($smilie_list, $temp[1]);
 		}
 		
 		//change user configuration
-		$smilie['set'] = $_POST['set'];
+		$smilie['folder'] = $_POST['folder'];
 		$smilie['list'] = $smilie_list;
 
 		//write user configuration
@@ -39,10 +39,9 @@
 		fwrite($fp, json_encode($smilie));
 		fclose($fp);
 		
-		$l = getLanguage();
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].$l['reload_page_to_view_result'].'</p>';
 		
-		$set = $_POST['set'];
+		$set = $post['folder'];
 }
 ?>
 <div class="row">
@@ -55,14 +54,14 @@
 </div>
 <div class="raw">
 	<div class="col-md-12">
-		<?php if($_POST) {echo $info;} ?>
+		<?php if($post) {echo $info;} ?>
 		<form class="form-horizontal" action="index.php?page=smilies" method="post" autocomplete="off">
 			<div class="form-group">
 				<label for="set" class="col-sm-4 control-label hh_form"><?=$l['smilie_set']?></label>
 				<div class="col-sm-8">
-					<select type="text" class="form-control" id="set" name="set">
+					<select type="text" class="form-control" id="set" name="folder">
 						<?php foreach ($smilie_sets as $key => $dir){ ?>
-							<option value="<?=$dir?>" <?=($smilie['set']==$dir) ?'selected':''?>><?=$dir?></option>
+							<option value="<?=$dir?>" <?=($smilie['folder']==$dir) ?'selected':''?>><?=$dir?></option>
 						<?php } ?>
 					</select>
 				</div>

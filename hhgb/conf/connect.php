@@ -1,19 +1,22 @@
 <?php
-global $db,$path;
-if($db['installed']!='no'){
-	if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){
-		$file = file_get_contents('conf/dbc.json');
-	} else {
-		$file = file_get_contents($path.'hhgb/conf/dbc.json');
-	}
-
-	$db = json_decode($file, true);
-
+require_once 'config.php';
+class CONNECT{
+    public $conn;
+    
+    public function __construct() {
+        global $dbc;
+        $this->conn = mysqli_connect($dbc['servername'], $dbc['username'], $dbc['password'], $dbc['dbname']);
+    }
+    
+    public function getConnection(){
+        return $this->conn;
+    }
+}
+if(isset($dbc)){
 	// Create connection
-	$conn = mysqli_connect($db['servername'], $db['username'], $db['password'], $db['dbname']);
+	$conn = new CONNECT;
 	// Check connection
-	if (!$conn) {
+	if (!$conn->getConnection()) {
 		die("Connection failed: " . mysqli_connect_error());
 	}
 }
-?>

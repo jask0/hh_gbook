@@ -1,0 +1,34 @@
+<!-- Add jQuery library -->
+<script type="text/javascript" src="%shhgb/conf/js/jquery.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script src="%shhgb/conf/js/bootstrap.min.js"></script>
+    
+<!-- Font-Awesome CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="%shhgb/conf/css/bootstrap.min.css" />
+
+<!-- Add fancyBox main JS and CSS files -->
+<script type="text/javascript" src="%shhgb/conf/js/jquery.fancybox.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="%shhgb/conf/css/jquery.fancybox.css" media="screen" />
+
+<!-- Thumbnails and Smilies JavaScript -->
+<script type="text/javascript">
+    $(document).ready(function() {
+                    /*
+                     *  Simple image gallery. Uses default settings
+                     */
+
+                    $('.fancybox').fancybox();
+            });
+
+    function insertTheSmiley(input) {
+    document.getElementById('nachricht').value += input;
+    }
+
+    function putTheSmiley(input) {
+    window.opener.insertTheSmiley(input);
+    }
+</script>'

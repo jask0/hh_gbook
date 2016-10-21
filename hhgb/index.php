@@ -3,15 +3,19 @@ session_start();
 if(!isset($_SESSION['username'])){
 		header('Location: login.php');
 }
-include('functions.php');
-$l = getLanguage();
-$gbs = getGBsettings();
+require 'gb.php';
+$gb = new GB;
+$db = $gb->getDB();
+$l = $gb->getLanguage();
+$gbs = $gb->getGbSettings();
+$user = $gb->getUserSettings();
+$unpublic_count = $db->getCountOfUnpablicPosts();
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title><?=$l['gb']?> : <?=$gbs['title']?></title>
+	<title><?=$l['gb']?> : <?=$gbs['gb_title']?></title>
 	<!-- Font-Awesome CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<!-- Bootstrap Core CSS -->
@@ -52,41 +56,35 @@ $gbs = getGBsettings();
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu message-dropdown">
-						<li class="message-footer">
+			<li class="message-footer">
                             <a href="#"><strong><?=$l['3_new_msg']?></strong></a>
                         </li>
-					<?php
-						$abfrage = "SELECT * FROM ".$db['table']." ORDER BY id DESC LIMIT 3";
-						$abfrage_antwort = mysqli_query($conn, $abfrage);
-	
-						if ( ! $abfrage_antwort )
-						{
-						  die('Abfrage Fehler: ' . mysqli_error($conn));
-						} 
+			<?php
+			$abfrage_antwort = $db->getLastPosts();
 						
-						while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
-						{?>
-							<li class="message-preview">
-								<a href="?page=edit&id=<?php echo $zeile['id']; ?>" title="<?=$l['3_new_msg']?>">
-									<div class="media">
-										<?php if($zeile['bild_url'] != '') {; ?>
-											<span class="pull-left">
-												<img class="media-object" style="width:64px;height:64px;" src="<?php echo $zeile['bild_url']; ?>" alt="">
-											</span>
-										<?php } ?>
-										<div class="media-body">
-											<h5 class="media-heading">
-												<strong><?php echo $zeile['name']; ?></strong>
-											</h5>
-											<p class="small text-muted"><i class="fa fa-clock-o"></i> <?php echo $zeile['datum']; ?></p>
-											<p><?php echo substr($zeile['nachricht'],0,200).'...'; ?></p>
-										</div>
-									</div>
-								</a>
-							</li>
-					<?php	}
-						mysqli_free_result( $abfrage_antwort );
-					?>
+			while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
+			{?>
+			<li class="message-preview">
+                            <a href="?page=edit&id=<?php echo $zeile['id']; ?>" title="<?=$l['3_new_msg']?>">
+				<div class="media">
+				<?php if($zeile['bild_url'] != '') {; ?>
+                                    <span class="pull-left">
+					<img class="media-object" style="width:64px;height:64px;" src="<?php echo $zeile['bild_url']; ?>" alt="">
+                                    </span>
+				<?php } ?>
+                                    <div class="media-body">
+                                        <h5 class="media-heading">
+                                            <strong><?php echo $zeile['name']; ?></strong>
+                                        </h5>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> <?php echo $zeile['datum']; ?></p>
+                                        <p><?php echo substr($zeile['nachricht'],0,200).'...'; ?></p>
+                                    </div>
+				</div>
+                            </a>
+			</li>
+			<?php	}
+                            mysqli_free_result( $abfrage_antwort );
+			?>
                         
                        
                         <li class="message-footer">
@@ -94,40 +92,35 @@ $gbs = getGBsettings();
                         </li>
                     </ul>
                 </li>
-				<?php 
-					$abfrage = "SELECT count(public) FROM ".$db['table']." WHERE public = 0 ORDER BY id DESC";
-					$abfrage_antwort = mysqli_query($conn, $abfrage);
-					$count = mysqli_fetch_row($abfrage_antwort);
-					if((int)$count[0] > 0){
-						$new_msg=1;
-					} else{
-						$new_msg=0;
-					}
-					mysqli_free_result( $abfrage_antwort );
-				?>
+		<?php 
+		if($unpublic_count > 0){
+                    $new_msg=1;
+		} else{
+                    $new_msg=0;
+		}?>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle <?php $new_msg ? print 'new_msg': print '';?>" data-toggle="dropdown" title="<?php echo $count[0];?> <?=$l['unpublished_msg']?>"><i class="fa fa-bell" ></i> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle <?php $new_msg ? print 'new_msg': print '';?>" data-toggle="dropdown" title="<?php echo $unpublic_count;?> <?=$l['unpublished_msg']?>">
+                        <i class="fa fa-bell" ></i> <b class="caret"></b>
+                    </a>
                     <ul class="dropdown-menu alert-dropdown">
-                       <li class="message-footer">
+                        <li class="message-footer">
                             <a href="#"><strong><?=$l['unpublished_msg']?></strong></a>
                         </li>
-						<li class="divider"></li>
-					<?php
-						$abfrage = "SELECT * FROM ".$db['table']." WHERE public = 0 ORDER BY id DESC";
-						$abfrage_antwort = mysqli_query($conn, $abfrage);
-						if ( ! $abfrage_antwort )
-						{
-						  die('Abfrage Fehler: ' . mysqli_error($conn));
-						} 
+			<li class="divider"></li>
+                        <?php
+			$abfrage_antwort = $db->getLastPosts();
 						
-						while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
-						{?>	
-							<li>
-								<a href="?page=edit&id=<?php echo $zeile['id']; ?>"><?php echo $zeile['name']; ?> <span class="label label-warning" style="float:right;"><?=$l['edit']?></span></a>
-							</li>
-						<?php	}
-							mysqli_free_result( $abfrage_antwort );
-						?>
+			while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
+                            {?>	
+                            <li>
+                                <a href="?page=edit&id=<?php echo $zeile['id']; ?>">
+                                    <?php echo $zeile['name']; ?> 
+                                    <span class="label label-warning" style="float:right;"><?=$l['edit']?></span>
+                                </a>
+                            </li>
+			<?php	}
+				mysqli_free_result( $abfrage_antwort );
+			?>
                         <li class="divider message-footer"></li>
                         <li>
                             <a href="?page=offline&id=0"><?=$l['see_all']?></a>
@@ -135,13 +128,13 @@ $gbs = getGBsettings();
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo $user['username']; ?> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo $db->getUserConfig()['user']; ?> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="index.php?page=profile"><i class="fa fa-fw fa-user"></i> <?=$l['profile']?></a>
                         </li>
                         <li>
-                            <a href="?page=offline&id=0"><i class="fa fa-fw fa-envelope"></i> <?php echo $count[0]; ?> <?=$l['new_msg']?></a>
+                            <a href="?page=offline&id=0"><i class="fa fa-fw fa-envelope"></i> <?php echo $unpublic_count; ?> <?=$l['new_msg']?></a>
                         </li>
                         <li>
                             <a href="index.php?page=settings"><i class="fa fa-fw fa-gear"></i> <?=$l['settings']?></a>

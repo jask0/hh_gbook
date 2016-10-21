@@ -27,8 +27,6 @@ $l = array(
 'use_custom_css' => 'Use custom CSS',
 'tabel_successful_created' => 'Table successful created!',
 'error_table_not_created' => 'ERROR table not created',
-'tabel_hh_gbsettings_successful_created' => 'Table "hh_gbsettings" successful created!',
-'guestbook_1_successful_created' => 'Firs GB successful created.',
 'install' => 'Install',
 'name' => 'Name',
 'email' => 'E-Mail',
@@ -104,6 +102,7 @@ $l = array(
 'btn_danger' => 'Red',
 'btn_link' => 'No color (Link)',
 'scale_image' => 'Scale Images',
+'error' => 'ERROR',
 '' => ''
 );
 ?>

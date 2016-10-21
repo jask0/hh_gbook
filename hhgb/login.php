@@ -1,11 +1,12 @@
 <?php
 session_start();
-include('functions.php');
-if ($db['installed']=="no") {
+require 'conf/config.php';
+if (!isset($dbc)) {
     header('Location: install.php');
 }
-$l = getLanguage();
-$sgs = getGBsettings();
+require 'gb.php';
+$gb = new GB;
+$l = $gb->getLanguage();
 
 $info = '<p class="alert alert-success">'.$l['you_are_alredy_loged_in'].'</p><br>';
 $info .= '<center><a class="btn btn-success" href="index.php">'.$l['admin_area'].'</a>  <a class="btn btn-danger" href="login.php?logout=1">'.$l['logout'].'</a></center>';
@@ -23,8 +24,9 @@ if(isset($_GET['logout']) && $_GET['logout'] == 1) {
 }
 if($_POST){
 	$username = $_POST['username'];
-	$passwort = md5($_POST['password']);
-	if(($username == $user['username']) and ($passwort == $user['password'])){
+	$passwort = sha1($_POST['password']+$gb->getSalt());
+        $user = $gb->getUserSettings();
+	if(($username == $user['user']) and ($passwort == $user['password'])){
 		$_SESSION['username'] = $username;
 		if(isset($_POST['cookie'])){
 			setcookie("username",session_id(),time() + (86400*10), "/"); // = 10 Days

@@ -104,6 +104,7 @@ $l = array(
 'btn_danger' => 'Rot',
 'btn_link' => 'Ohne Farbe (Link)',
 'scale_image' => 'Bilder skalieren',
+'error' => 'FEHLER',
 '' => ''
 );
 ?>

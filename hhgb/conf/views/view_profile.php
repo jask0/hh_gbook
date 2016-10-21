@@ -2,42 +2,39 @@
 	if(!isset($_SESSION['username'])){
 		die($l['prohibited_direct_access']);
 	}
-	//stored user data
-	global $user;
-	
-	if($_POST){
+	$post = filter_input_array(INPUT_POST);
+	if(isset($post['submit'])){
 		
 		//change user password
 		$new_pword = $user['password'];
-		if($_POST['pword'] != ''){
-			if($_POST['pword'] == $_POST['pwordv']){
-				$new_pword = md5($_POST['pwordv']);
+		if(!empty($post['pword'])){
+			if($post['pword'] == $post['pwordv']){
+				$new_pword = sha1($post['pwordv']+$db->getSalt());
 			}else {
 				$info = '<p class="alert alert-danger">'.$l['pasword_error'].' '.$l['settings_not_saved'].'</p>';
 			}
 		}
 		
 		//email me about new post if $mail_msg == 1
-		if(isset($_POST['mail_msg'])){
+		if(isset($post['mail_msg'])){
 			$mail_msg = 1;
 		} else {
 			$mail_msg = 0;
 		}
 		
 		//change user configuration
-		$user['username'] = $_POST['uname'];
+		$user['user'] = $post['uname'];
 		$user['password'] = $new_pword;
-		$user['email'] = $_POST['email'];
+		$user['email'] = $post['email'];
 		$user['mail_msg'] = $mail_msg;
-		$user['language'] = $_POST['language'];
+		$user['user_language'] = $post['language'];
 
-		//write user configuration
-		$fp = fopen('conf/user.json', 'w');
-		fwrite($fp, json_encode($user));
-		fclose($fp);
+		//update user configuration
+		$db->updateConfigTable($user);
 		
-		$l = getLanguage();
+		$l = $gb->getLanguage($post['language']);
 		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].$l['reload_page_to_view_result'].'</p>';
+                $gbs = $db->getGbConfig();
 }
 ?>
 <div class="row">
@@ -51,10 +48,10 @@
 <div class="raw">
 	<div class="col-md-12">
 		<?php 
-			if($user['username'] == 'admin'){
+			if($user['user'] == 'admin'){
 				echo '<p class="alert alert-warning">'.$l['std_user_warning'].'</p>';
 			}
-			if ($user['password'] == md5('123456')){
+			if ($user['password'] == sha1('123456'+$db->getSalt())){
 				echo '<p class="alert alert-danger">'.$l['std_pwd_danger'].'</p>';
 			}
 		?>
@@ -63,7 +60,7 @@
 			<div class="form-group">
 				<label for="uname" class="col-sm-4 control-label hh_form"><?=$l['username']?></label>
 				<div class="col-sm-8">
-					<input type="text" class="form-control" id="uname" name="uname" placeholder="<?=$l['username']?>" value="<?php echo $user['username']; ?>">
+					<input type="text" class="form-control" id="uname" name="uname" placeholder="<?=$l['username']?>" value="<?php echo $user['user']; ?>">
 				</div>
 			</div>
 			<div class="form-group">
@@ -86,10 +83,10 @@
 				<div class="col-sm-8">
 					<select class="form-control" id="language" name="language">
 						<?php 
-							$lang_file = getLanguageFiles();
+							$lang_file = $gb->getLanguageFileList();
 							foreach($lang_file as $key => $value){
 						?>
-							<option value="<?=$value?>" <?=($user['language']==$value)? 'selected': ''?>><?=$value?></option>
+							<option value="<?=$value?>" <?=($user['user_language']==$value)? 'selected': ''?>><?=$value?></option>
 							<?php } ?>
 					</select>
 				</div>

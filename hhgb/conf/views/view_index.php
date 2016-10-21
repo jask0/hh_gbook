@@ -1,5 +1,5 @@
 <?php
-$count = getPostCount();
+$count = $db->getPostCountbyCondition("WHERE public*1 in (0,1)");
 
 if($_POST && $_POST['beitraege_pro_seite'] >0){
 	$gb = array();
@@ -28,7 +28,7 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 			<small><?=$l['home']?></small>
 		</h1>
 		<?php
-			if ($user['password'] == md5('123456')){
+			if ($user['password'] == sha1('123456'+$db->getSalt())){
 				echo '<p class="alert alert-danger">'.$l['std_pwd_danger'].'</p>';
 			}
 		?>
@@ -65,7 +65,7 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 						<i class="fa fa-tasks fa-5x"></i>
 					</div>
 					<div class="col-xs-9 text-right">
-						<div class="huge"><?=$gbs['posts']?></div>
+						<div class="huge"><?=$gbs['posts_on_page']?></div>
 						<div><?=$l['msgs_per_page']?></div>
 					</div>
 				</div>
@@ -87,7 +87,7 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 						<i class="fa fa-ban fa-5x"></i>
 					</div>
 					<div class="col-xs-9 text-right">
-						<div class="huge"><?=getPostCount('unpublished')?></div>
+						<div class="huge"><?=$db->getPostCountbyCondition('WHERE public=0')?></div>
 						<div><?=$l['unpublished_msg']?></div>
 					</div>
 				</div>
@@ -110,13 +110,7 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 				<p class="list-group-item-text"></p>
 			</span>
 			<?php
-				$abfrage = "SELECT * FROM $db[table] ORDER BY id DESC LIMIT 3";
-				$abfrage_antwort = mysqli_query($conn, $abfrage);
-
-				if ( ! $abfrage_antwort )
-				{
-				  die('Abfrage Fehler: ' . mysqli_error($conn));
-				} 
+				$abfrage_antwort = $db->getLastPosts();
 				
 				while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
 				{
@@ -127,7 +121,7 @@ if($_POST && $_POST['beitraege_pro_seite'] >0){
 				<p class="list-group-item-text"><?php echo substr($zeile['nachricht'],0,240).'...'; ?></p>
 			</a>
 			<?php	}
-				mysqli_free_result( $abfrage_antwort );
+				
 			?>
 		</div>
 	</div>

@@ -1,73 +1,54 @@
 <div class="row">
-	<div class="col-lg-12">
-		<h1 class="page-header">
-			<?=$l['admin_area']?>
-			<small><?=$l['edit']?></small>
-		</h1>
-	</div>
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <?=$l['admin_area']?>
+            <small><?=$l['edit']?></small>
+        </h1>
+    </div>
 </div>
 <?php
-	if(!isset($_SESSION['username'])){
-		die($l['prohibited_direct_access']);
-	}
-	$id = (int)$_GET['id'];
+    if(!isset($_SESSION['username'])){
+            die($l['prohibited_direct_access']);
+    }
+    $id = (int)$_GET['id'];
 
-	if(isset($_POST['submit'])){
-		if(isset($_POST['loeschen']) and $_POST['loeschen'] == "1"){
-			$abfrage = sprintf("DELETE FROM %s WHERE id = %d",$db['table'],$id);
-			
-			if ( mysqli_query($conn, $abfrage) )
-			{
-				echo '<p class="alert alert-success">'.$l['msg_successful_deleted'].'</p>';
-			}else{
-				die($l['bad_query'].': ' . mysqli_error($conn));
-			}
-		}else{
-			$name = $_POST['name'];
-			$old_datum = $_POST['old_datum'];
-			$email = htmlentities($_POST['email']);
-			$homepage = htmlentities($_POST['homepage']);
-			$betreff = htmlentities($_POST['betreff']);
-			$bild_url = htmlentities($_POST['bild_url']);
-			$nachricht = str_replace('"','\"',str_replace("'", "\'",$_POST['nachricht']));
-			$kommentar = str_replace('"','\"',str_replace("'", "\'",$_POST['kommentar']));
-			$public = 0;
-			if(isset($_POST['public']) and $_POST['public'] == "1")
-				$public=1;
-			
-			$abfrage = sprintf('UPDATE '.$db['table'].'
-								SET name="%s",
-									datum="%s",
-									email="%s",
-									homepage="%s",
-									betreff="%s",
-									bild_url="%s",
-									nachricht="%s",
-									kommentar="%s",
-									public=%d
-								WHERE id=%d;',$name,$old_datum,$email,$homepage,$betreff,$bild_url,$nachricht,$kommentar,$public,$id);
-			
-			if ( mysqli_query($conn, $abfrage) )
-			{
-				echo '<p class="alert alert-success">'.$l['msg_successful_edited'].'</p>';
-			}else{
-				die($l['bad_query'].': ' . mysqli_error($conn));
-			}
-		}
-	}
-	$abfrage = sprintf("SELECT * FROM %s WHERE id = %s",$db['table'],$id);
-	$abfrage_antwort = mysqli_query($conn, $abfrage);
-	
-	if ( ! $abfrage_antwort )
-	{
-	  die($l['bad_query'].': ' . mysqli_error($conn));
-	}
-	
-	while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
-	{	$zeile['public']=="1" ? $checked = "checked" : $checked = "";
-		$zeile['admin'] = 1;
-		showForm($zeile, '?page=edit&id='.$id);
-	}
-	 
-	mysqli_free_result( $abfrage_antwort );
+    if(isset($_POST['submit'])){
+        if(isset($_POST['loeschen']) and $_POST['loeschen'] == "1"){	
+            if ( $db->deletePost($id) )
+            {
+                echo '<p class="alert alert-success">'.$l['msg_successful_deleted'].'</p>';
+            }else{
+            die($l['bad_query']);
+            }
+        }else{
+            $form = array();
+            $post = filter_input_array(INPUT_POST);
+            $form['datum'] = $post['old_datum'];
+            $form['name'] = $post['name'];
+            $form['email'] = $post['email'];
+            $form['homepage'] = $post['homepage'];
+            $form['betreff'] = $post['betreff'];
+            $form['bild_url'] = $post['bild_url'];
+            $form['nachricht'] = str_replace('"','\"',str_replace("'", "\'",$post['nachricht']));
+            $form['kommentar'] = str_replace('"','\"',str_replace("'", "\'",$post['kommentar']));
+            $form['public'] = 0;
+            if(isset($_POST['public']) and $_POST['public'] == "1")
+                $form['public']=1;
+
+            if ( $db->updatePost($id,$form) )
+            {
+                echo '<p class="alert alert-success">'.$l['msg_successful_edited'].'</p>';
+            }else{
+                die($l['bad_query']);
+            }
+        }
+    }
+    $post_list = $db->readPost($id);
+
+    foreach ($post_list as $zeile){
+        $zeile['public']=="1" ? $checked = "checked" : $checked = "";
+        $zeile['admin'] = 1;
+        $gb->displayForm($zeile, '?page=edit&id='.$id);
+    }
+
 ?>

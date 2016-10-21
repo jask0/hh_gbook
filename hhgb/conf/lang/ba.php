@@ -104,6 +104,7 @@ $l = array(
 'btn_danger' => 'Crvena',
 'btn_link' => 'Bez boje (Link)',
 'scale_image' => 'Skalirati slike',
+'error' => 'GRESKA',
 '' => ''
 );
 ?>
