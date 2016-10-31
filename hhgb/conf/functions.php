@@ -44,32 +44,17 @@ function getFormDefault(){
 }
 
 function securityCheck($text_old){
-    	// BBcode array
-	$find = array(
-		'<',
-		'>',
-		';?>',
-		';?>',
-		'<?',
-		'<?php',
-		'DELETE FROM',
-		'INSERT INTO',
-		'~UPDATE(*.?)SET(*.?)WHERE~s'
-	);
-	// HTML tags to replace BBcode
-	$replace = array(
-		'-',
-		'-',
-		'',
-		'',
-		'',
-		'',
-		'del from',
-		'insert in to',
-		''
-	);
-	// Replacing the BBcodes with corresponding HTML tags
-	return preg_replace($find,$replace,$text_old);
+    	$text = str_replace('<','-',$text_old);
+	$text = str_replace('>','-',$text);
+	$text = str_replace(';?>',' ',$text);
+	$text = str_replace('<?',' ',$text);
+	$text = str_replace('<?php',' ',$text);
+	$text = str_replace('DELETE FROM','del from',$text);
+	$text = str_replace('INSERT INTO','insert in to',$text);
+	$text = str_replace('SET','_set_',$text);
+	$text = str_replace('UPDATE','_update_',$text);
+
+	return $text;
 }
 
 /* fixes string encoding and prevent code iniaction
