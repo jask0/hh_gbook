@@ -7,7 +7,6 @@ $gb = new GB;
 * in dem man folgende funktion verwendet:
 * $gb->setLanguage('de');
 */
-$gb->setLanguage('ba');
 ?>
 <!DOCTYPE html>
 <html>
