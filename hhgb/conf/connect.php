@@ -14,9 +14,9 @@ class CONNECT{
 }
 if(isset($dbc)){
 	// Create connection
-	$conn = new CONNECT;
+	$db = new CONNECT;
 	// Check connection
-	if (!$conn->getConnection()) {
+	if (!$db->getConnection()) {
 		die("Connection failed: " . mysqli_connect_error());
 	}
 }
