@@ -62,6 +62,7 @@ if(isset($_POST['install']) && $_POST['install']=="dbc" && $_GET['dbc']==1){
 
 
 if(isset($_POST['install']) && $_POST['install']=="db" && $_GET['db']==1){
+	$conn = $db->getConnection();
 	// sql to create post table
 	$q = "CREATE TABLE ".$dbc['table']."posts (
 	id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
