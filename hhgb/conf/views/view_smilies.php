@@ -12,9 +12,10 @@
 		$temp = explode("/", $value);
 		array_push($smilie_sets, $temp[1]);
 	}
-	$smilie_list = Array();
+
 	$post = filter_input_array(INPUT_POST);
 	if(!isset($post['submit'])){
+		$smilie_list = Array();
 		$dirs = array_filter(glob('smilies/'.$smilie['folder'].'/*'));
 		foreach ($dirs as $key => $value){
 			$temp = explode($smilie['folder']."/", $value);
@@ -23,7 +24,7 @@
 	}
 	
 	if(isset($post['submit'])){
-		
+		$smilie_list = Array();
 		$dirs = array_filter(glob('smilies/'.$post['folder'].'/*'));
 		foreach ($dirs as $key => $value){
 			$temp = explode($post['folder']."/", $value);
@@ -33,7 +34,9 @@
 		//change user configuration
 		$smilie['folder'] = $_POST['folder'];
 		$smilie['list'] = $smilie_list;
-
+		$smilie_array = array('smilies'=>json_encode($smilie));
+		$gb->setSmilies($smilie_array);
+		
 		//write user configuration
 		$fp = fopen('conf/smilies.json', 'w');
 		fwrite($fp, json_encode($smilie));
