@@ -226,7 +226,6 @@ class GB {
         $form['bild_url'] = (isset($post['bild_url'])) ? securityCheck($post['bild_url']) : '';
         
         $form['nachricht'] = fixUmlautEntry($this->scaleImages($post['nachricht']));
-        $form['public'] = $post['public'];
         $form['nachricht'] = $this->addSmilieBbCode($form['nachricht']);
         
         if ($this->db->insertInToPosts($form)) {
