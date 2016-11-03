@@ -120,7 +120,6 @@
 			<div class="form-group">
 				<div class="col-sm-12">
 					<?php if(!isset($data['admin'])) { ?>
-						<input type="hidden" value="<?php echo $gbs['public']; ?>" name="public">
 						<p class="<?=$gbs['note_text_color']?> custom-note"><?php echo $l['note_msg']; ?></p>
 					<?php } else {?>
 						<input type="hidden" value="<?php echo date_format($data['datum'], 'Y-m-d H:i:s'); ?>" name="old_datum">
