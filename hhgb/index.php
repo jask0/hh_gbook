@@ -6,7 +6,7 @@ if(!isset($_SESSION['username'])){
 require 'gb.php';
 $gb = new GB;
 $db = $gb->getDB();
-$l = $gb->getLanguage();
+$l = $gb->getLanguage($gb->getUserSettings()['user_language']);
 $gbs = $gb->getGbSettings();
 $user = $gb->getUserSettings();
 $unpublic_count = $db->getCountOfUnpablicPosts();
