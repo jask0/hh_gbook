@@ -40,7 +40,7 @@ class GB {
         $this->user = $this->db->getUserConfig();
         $this->system = $this->db->getSystemConfig();
         $this->setLanguage($this->db->getValue('gb_language'));
-        $this->setSmielies();
+        $this->setSmilies();
         $this->setCSS();
         $this->setPath();
     }
@@ -62,7 +62,7 @@ class GB {
         }
     }
 
-    public function setSmielies($update=array()){
+    public function setSmilies($update=array()){
         if(count($update) == 0){
             $this->smilie  = json_decode($this->gb['smilies'], true);
         } else {
