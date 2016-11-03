@@ -157,6 +157,7 @@ class DB {
     
     public function insertInToPosts($form){
         $form['kommentar'] = (isset($form['kommentar']) ? $form['kommentar'] : '');
+	$form['public'] = $this->getGbConfig()['post_instant_online'];
         $query = sprintf('INSERT INTO '.$this->table_posts.' (name,email,homepage,betreff,bild_url,nachricht,kommentar,public,gb) VALUES ("%s","%s","%s","%s","%s","%s","%s","%s","%s")',$form['name'],$form['email'],$form['homepage'],$form['betreff'],$form['bild_url'],$form['nachricht'],$form['kommentar'],$form['public'],1);
 
         if (mysqli_query($this->conn, $query)) {
