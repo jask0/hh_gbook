@@ -149,11 +149,11 @@ class GB {
         } else {
             if($_SESSION['captcha_code'] == md5($post['captcha']) or $this->db->getValue('captcha_on','0') == '0'){
                 if($post['name'] == "" || $post['nachricht'] == ""){
-                    $post['info_msg'] = '<p class="alert alert-danger">'. $this->lang['error'].'<br>'. $this->lang['error_msg_dont_send'] . '</p>';
+                    $_POST['info_msg'] = '<p class="alert alert-danger">'. $this->lang['error'].'<br>'. $this->lang['error_msg_dont_send'] . '</p>';
                     $this->showForm($post, $filename);
                 } else {
                     if ($this->sendPost($post)) {
-                        $post['info_msg'] = '<p class="alert alert-success">'.$this->lang['msg_successful_send'].'</p>';
+                        $_POST['info_msg'] = '<p class="alert alert-success">'.$this->lang['msg_successful_send'].'</p>';
                         if($this->user['mail_msg'] == 1){
                             mail($this->user['email'], $this->lang['new_gb_msg'], $form['nachricht']);
                         }
@@ -163,7 +163,7 @@ class GB {
                     }
                 }
             } else {
-                    $post['info_msg'] = '<p class="alert alert-danger">'.$this->lang['error_wrong_captcha'].'</p>';
+                    $_POST['info_msg'] = '<p class="alert alert-danger">'.$this->lang['error_wrong_captcha'].'</p>';
                     $this->showForm($post, $filename);
             }
         }
