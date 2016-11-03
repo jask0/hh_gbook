@@ -25,10 +25,10 @@
             $post = filter_input_array(INPUT_POST);
             $form['datum'] = $post['old_datum'];
             $form['name'] = $post['name'];
-            $form['email'] = $post['email'];
-            $form['homepage'] = $post['homepage'];
-            $form['betreff'] = $post['betreff'];
-            $form['bild_url'] = $post['bild_url'];
+            $form['email'] = (isset($post['email']))?$post['email']: print"";
+            $form['homepage'] = (isset($post['homepage']))? $post['homepage']:"";
+            $form['betreff'] = (isset($post['betreff']))? $post['betreff']:"";
+            $form['bild_url'] = (isset($post['bild_url']))? $post['bild_url']:"";
             $form['nachricht'] = str_replace('"','\"',str_replace("'", "\'",$post['nachricht']));
             $form['kommentar'] = str_replace('"','\"',str_replace("'", "\'",$post['kommentar']));
             $form['public'] = 0;
