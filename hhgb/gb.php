@@ -159,7 +159,7 @@ class GB {
                         }
                         $this->showForm(getFormDefault(), $filename);
                     } else {
-                        $post['info_msg'] = '<p class="alert alert-danger">'.$this->lang['error_msg_dont_send'].'</p>';
+                        $_POST['info_msg'] = '<p class="alert alert-danger">'.$this->lang['error_msg_dont_send'].'</p>';
                     }
                 }
             } else {
