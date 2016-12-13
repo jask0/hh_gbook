@@ -8,12 +8,18 @@
 		//change user password
 		$new_pword = $user['password'];
 		if(!empty($post['pword'])){
-			if($post['pword'] == $post['pwordv']){
-				$new_pword = sha1($post['pwordv']+$db->getSalt());
-			}else {
-				$info = '<p class="alert alert-danger">'.$l['pasword_error'].' '.$l['settings_not_saved'].'</p>';
-			}
+			if (preg_match ('%^[A-Za-z0-9]{6,20}$%', stripslashes(trim($_POST['pword'])))) {
+				if($post['pword'] == $post['pwordv']){
+					$pw =  escape_data($_POST['pword'], $gb->getConn());
+					$new_pword = sha1($pw+$db->getSalt());
+				} else {
+					$info = '<p class="alert alert-danger">'.$l['pasword_error'].' '.$l['settings_not_saved'].'</p>';
+				}
+			} else {
+				$new_pword = FALSE;
+			}	
 		}
+		
 		
 		//email me about new post if $mail_msg == 1
 		if(isset($post['mail_msg'])){
@@ -23,18 +29,27 @@
 		}
 		
 		//change user configuration
-		$user['user'] = $post['uname'];
-		$user['password'] = $new_pword;
-		$user['email'] = $post['email'];
-		$user['mail_msg'] = $mail_msg;
-		$user['user_language'] = $post['language'];
+		if (preg_match('%^[A-Za-z\.\' \-]{2,15}$%', stripslashes(trim($post['uname']))) && $new_pword != FALSE) {
+			$un =  escape_data($post['uname'], $gb->getConn());
+			$user['user'] = $un;
+			$user['password'] = $new_pword;
+			$user['email'] = escape_data($post['email']);
+			$user['mail_msg'] = escape_data($mail_msg);
+			$user['user_language'] = escape_data($post['language']);
 
-		//update user configuration
-		$db->updateConfigTable($user);
-		
-		$l = $gb->getLanguage($post['language']);
-		$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].$l['reload_page_to_view_result'].'</p>';
-                $gbs = $db->getGbConfig();
+			//update user configuration
+			$db->updateConfigTable($user);
+			
+			$l = $gb->getLanguage($post['language']);
+			$info = '<p class="alert alert-success">'.$l['settings_successful_saved'].$l['reload_page_to_view_result'].'</p>';
+            $gbs = $db->getGbConfig();
+		} else {
+			$un = FALSE;
+			$info = '<p class="alert alert-danger"><font size="+1">Der eingegebene Benutzername ist ungültig!</font></p>';
+			if ($new_pword == FALSE){
+				$info = '<p class="alert alert-danger"><font size="+1">Der eingegebene Passwort ist ungültig!</font></p>';
+			}
+		}
 }
 ?>
 <div class="row">
