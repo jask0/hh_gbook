@@ -23,18 +23,30 @@ if(isset($_GET['logout']) && $_GET['logout'] == 1) {
 	header('Location: login.php');
 }
 if($_POST){
-	$username = $_POST['username'];
-	$passwort = sha1($_POST['password']+$gb->getSalt());
-        $user = $gb->getUserSettings();
-	if(($username == $user['user']) and ($passwort == $user['password'])){
-		$_SESSION['username'] = $username;
+	if (preg_match('%^[A-Za-z\.\' \-]{2,15}$%', stripslashes(trim($_POST['username'])))) {
+	$un =  escape_data($_POST['username'], $gb->getConn());
+	} else {
+		$un = FALSE;
+		$info = '<p class="alert alert-danger"><font size="+1">Der eingegebene Benutzername oder das Passwort sind ungültig!</font><br>';
+	}
+	if (preg_match ('%^[A-Za-z0-9]{6,20}$%', stripslashes(trim($_POST['password'])))) {
+	$pw =  escape_data($_POST['password'], $gb->getConn());
+	$p = sha1($pw+$gb->getSalt());
+    } else {
+		$p = FALSE;
+		$info = '<p class="alert alert-danger"><font size="+1">Der eingegebene Benutzername oder das Passwort sind ungültig!</font><br>';
+	}
+	
+	$user = $gb->getUserSettings();
+	if(($un == $user['user']) and ($p == $user['password'])){
+		$_SESSION['username'] = $un;
 		if(isset($_POST['cookie'])){
 			setcookie("username",session_id(),time() + (86400*10), "/"); // = 10 Days
 		}
 		$info = '<p class="alert alert-success">'.$l['login_successful'].'<br><b><a href="../">'.$l['to_gb'].'</a><b></p>';
 		$info .= '<center><a class="btn btn-success" href="index.php">'.$l['admin_area'].'</a>&nbsp;&nbsp;<a class="btn btn-danger" href="login.php?logout=1">'.$l['logout'].'</a></center>';
 	} else {
-		$info = '<p class="alert alert-danger">'.$l['login_failed'].'<br><b>'.$l['please_try_again'].'</b></p>';
+		$info .= $l['login_failed'].'<br><b>'.$l['please_try_again'].'</b></p>';
 	}
 }
 ?>
