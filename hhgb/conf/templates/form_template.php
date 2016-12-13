@@ -8,7 +8,7 @@
 				<div class="col-sm-12">
 					<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-user"></i></span>
-						<input type="text" class="form-control jscolor" id="name" name="name" placeholder="<?=$l['name']?>*" value="<?php echo $data['name']; ?>">
+						<input type="text" class="form-control jscolor" id="name" name="name" placeholder="<?=$l['name']?>*" value="<?php echo $data['name']; ?>" maxlength="20" >
 					</div>
 				</div>
 			</div>
@@ -64,7 +64,7 @@
 							<?php
 							for ($i = 0; $i < count($smilie['list']); $i++) {
 								if ($i % 12 == 0 && $i != 0) echo '<!--<br>-->';
-								echo '<a href="javascript:insertTheSmiley(\':'.$smilie['list'][$i].':\', \'nachricht\');void(0)"><img src="'.$path.'hhgb/smilies/'.$smilie['folder'].'/'.$smilie['list'][$i].'" alt=":'.$smilie['folder'].$i.':" ></a>&nbsp;&nbsp;';
+							echo '<a href="javascript:insertTheSmiley(\'{{'.$smilie['list'][$i].'}}\', \'nachricht\');void(0)"><img src="'.$path.'hhgb/smilies/'.$smilie['folder'].'/'.$smilie['list'][$i].'" alt="{{'.$smilie['folder'].$i.'}}" ></a>&nbsp;&nbsp;';
 							}
 							?>
 						</center>
