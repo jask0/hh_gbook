@@ -228,25 +228,25 @@ class GB {
 		
         $form['name'] = htmlspecialchars (escape_input($post['name'], $this->getConn(), 2, 20), ENT_NOQUOTES);
         
-        if (isset($post['email'])){
+        if (isset($post['email']) && !empty($post['email'])){
 			$form['email'] = htmlspecialchars (escape_email($post['email'], $this->getConn()), ENT_NOQUOTES);
 		} else {
-			$form['email'] = "";
+			$form['email'] = " ";
 		}
-		if (isset($post['homepage'])){
+		if (isset($post['homepage']) && !empty($post['homepage'])){
 			$form['homepage'] = htmlspecialchars (escape_url($post['homepage'], $this->getConn()), ENT_NOQUOTES);
 		} else {
-			$form['homepage'] = "";
+			$form['homepage'] = " ";
 		}
-		if (isset($post['betreff'])){
+		if (isset($post['betreff']) && !empty($post['betreff'])){
 			$form['betreff'] = htmlspecialchars (escape_input($post['betreff'], $this->getConn()), ENT_NOQUOTES);
 		} else {
-			$form['betreff'] = "";
+			$form['betreff'] = " ";
 		}
-		if (isset($post['bild_url'])){
+		if (isset($post['bild_url']) && !empty($post['bild_url'])){
 			$form['bild_url'] = htmlspecialchars (escape_input($post['bild_url'], $this->getConn()), ENT_NOQUOTES);
 		} else {
-			$form['bild_url'] = "";
+			$form['bild_url'] = " ";
 		}
 
         $form['nachricht'] = htmlspecialchars($this->scaleImages($post['nachricht']), ENT_NOQUOTES);
