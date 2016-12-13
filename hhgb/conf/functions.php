@@ -103,7 +103,7 @@ return $data;
 }
 
 function escape_input($data, $c=NULL, $min=2, $max=255){
-	if (preg_match('%^[A-Za-zöäüßÄÖÜ\.\' \-]{'.$min.','.$max.'}$%', stripslashes(trim($data)))) {
+	if (preg_match('%^[A-Za-z0-9öäüßÄÖÜ\.\' \-]{'.$min.','.$max.'}$%', stripslashes(trim($data)))) {
 		$nd =  escape_data($data, $c);
 	} else {
 		$nd = FALSE;
