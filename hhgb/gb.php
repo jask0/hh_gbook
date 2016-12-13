@@ -244,7 +244,7 @@ class GB {
 			$form['betreff'] = " ";
 		}
 		if (isset($post['bild_url']) && !empty($post['bild_url'])){
-			$form['bild_url'] = htmlspecialchars (escape_input($post['bild_url'], $this->getConn()), ENT_NOQUOTES);
+			$form['bild_url'] = htmlspecialchars (escape_url($post['bild_url'], $this->getConn()), ENT_NOQUOTES);
 		} else {
 			$form['bild_url'] = " ";
 		}
