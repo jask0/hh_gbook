@@ -76,7 +76,7 @@ if(isset($_POST['install']) && $_POST['install']=="db" && $_GET['db']==1){
 	kommentar TEXT,
 	public TINYINT(1),
 	gb TINYINT(1)
-	);";
+	) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
 
 	if (mysqli_query($conn, $q)) {
 		$info = "<p class=\"alert alert-success\">".$dbc['table']."post =>$l[tabel_successful_created]</p>";
@@ -88,8 +88,8 @@ if(isset($_POST['install']) && $_POST['install']=="db" && $_GET['db']==1){
 	id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	variable VARCHAR(100) NOT NULL UNIQUE,
 	value TEXT,
-        meta TINYINT
-	);";
+    meta TINYINT
+	) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
 
 	if (mysqli_query($conn, $q)) {
 		$info .= "<p class=\"alert alert-success\">".$dbc['table']."config =>$l[tabel_successful_created]!</p>"
