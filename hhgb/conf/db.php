@@ -17,7 +17,7 @@ class DB {
         
     }
     
-    private function getConn(){
+    public function getConn(){
         return $this->conn;
     }
 
