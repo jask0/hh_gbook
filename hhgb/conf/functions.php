@@ -123,7 +123,7 @@ function escape_email($email, $c=NULL){
 }
 
 function escape_url($url, $c=NULL){
-	if (preg_match ('@^(?:http://)?([^/]+)@i', stripslashes(trim($url)))) {
+	if (preg_match ('@^(?:http://|https://)?([^/]+)@i', stripslashes(trim($url)))) {
 		$e = escape_data($url, $c);
 	} else {
 		$e = FALSE;
