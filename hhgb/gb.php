@@ -118,6 +118,10 @@ class GB {
     public function getDB(){
         return $this->db;
     }
+	
+	public function getConn(){
+        return $this->db->getConn();
+    }
     
     public function getCustomCss(){
         return json_decode($this->gb['custom_css'], true);
@@ -159,7 +163,8 @@ class GB {
                         }
                         $this->showForm(getFormDefault(), $filename);
                     } else {
-                        $_POST['info_msg'] = '<p class="alert alert-danger">'.$this->lang['error_msg_dont_send'].'</p>';
+                        $_POST['info_msg'] .= $this->lang['error_msg_dont_send'].'</p>';
+						$this->showForm($post, $filename);
                     }
                 }
             } else {
@@ -210,25 +215,51 @@ class GB {
      */
     private function addSmilieBbCode($msg){
         foreach ($this->smilie['list'] as $key => $value) {
-            $new_msg = str_replace(':'.$value.':', '[smillie]'.$this->path.'hhgb/smilies/'.$this->smilie['folder'].'/'.$value.'[/smillie]', $msg);
+            $new_msg = str_replace('{{'.$value.'}}', '[smillie]'.$this->path.'hhgb/smilies/'.$this->smilie['folder'].'/'.$value.'[/smillie]', $msg);
+			$msg = $new_msg;
         }
-        $new_msg = str_replace("'", "\'", str_replace('"', '\"',$new_msg));
         return $new_msg;
     }
 
     private function sendPost($post){
         $form = getFormDefault();
-        $form['name'] = fixUmlautEntry($post['name']);
+		
+		$_POST['info_msg'] = "<p class=\"alert alert-danger\">";
+		
+        $form['name'] = htmlspecialchars (escape_input($post['name'], $this->getConn(), 2, 20), ENT_NOQUOTES);
         
-        $form['email'] = (isset($post['email'])) ? securityCheck($post['email']) : '';
-        $form['homepage'] = (isset($post['homepage'])) ? securityCheck($post['homepage']) : '';
-        $form['betreff'] = (isset($post['betreff'])) ? fixUmlautEntry($post['betreff']) : '';
-        $form['bild_url'] = (isset($post['bild_url'])) ? securityCheck($post['bild_url']) : '';
+        if (isset($post['email'])){
+			$form['email'] = htmlspecialchars (escape_email($post['email'], $this->getConn()), ENT_NOQUOTES);
+		} else {
+			$form['email'] = "";
+		}
+		if (isset($post['homepage'])){
+			$form['homepage'] = htmlspecialchars (escape_url($post['homepage'], $this->getConn()), ENT_NOQUOTES);
+		} else {
+			$form['homepage'] = "";
+		}
+		if (isset($post['betreff'])){
+			$form['betreff'] = htmlspecialchars (escape_input($post['betreff'], $this->getConn()), ENT_NOQUOTES);
+		} else {
+			$form['betreff'] = "";
+		}
+		if (isset($post['bild_url'])){
+			$form['bild_url'] = htmlspecialchars (escape_input($post['bild_url'], $this->getConn()), ENT_NOQUOTES);
+		} else {
+			$form['bild_url'] = "";
+		}
+
+        $form['nachricht'] = htmlspecialchars($this->scaleImages($post['nachricht']), ENT_NOQUOTES);
+        $form['nachricht'] = $this->addSmilieBbCode(mysqli_escape_string ($this->getConn(), $form['nachricht']));
         
-        $form['nachricht'] = fixUmlautEntry($this->scaleImages($post['nachricht']));
-        $form['nachricht'] = $this->addSmilieBbCode($form['nachricht']);
-        
-        if ($this->db->insertInToPosts($form)) {
+        foreach ($form as $key => $value) {
+			if ($value == FALSE && $key != "public"){
+				$_POST['info_msg'] .= "Ungültige Eingabe in: ".$key."<br>";
+				return false;
+			}
+		}
+		
+		if ($this->db->insertInToPosts($form)) {
             return true;
         } else { 
             return false; 
