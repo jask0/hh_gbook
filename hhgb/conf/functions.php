@@ -113,7 +113,7 @@ function escape_input($data, $c=NULL, $min=2, $max=255){
 }
 
 function escape_email($email, $c=NULL){
-	if (preg_match ('%^[A-Za-z0-9._\%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$%', stripslashes(trim($email)))) {
+	if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 		$e = escape_data($email, $c);
 	} else {
 		$e = FALSE;
@@ -123,7 +123,7 @@ function escape_email($email, $c=NULL){
 }
 
 function escape_url($url, $c=NULL){
-	if (preg_match ('@^(?:http://|https://)?([^/]+)@i', stripslashes(trim($url)))) {
+	if (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$url)) {
 		$e = escape_data($url, $c);
 	} else {
 		$e = FALSE;
