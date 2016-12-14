@@ -231,22 +231,22 @@ class GB {
         if (isset($post['email']) && !empty($post['email'])){
 			$form['email'] = htmlspecialchars (escape_email($post['email'], $this->getConn()), ENT_NOQUOTES);
 		} else {
-			$form['email'] = " ";
+			$form['email'] = "###..";
 		}
 		if (isset($post['homepage']) && !empty($post['homepage'])){
 			$form['homepage'] = htmlspecialchars (escape_url($post['homepage'], $this->getConn()), ENT_NOQUOTES);
 		} else {
-			$form['homepage'] = " ";
+			$form['homepage'] = "###..";
 		}
 		if (isset($post['betreff']) && !empty($post['betreff'])){
 			$form['betreff'] = htmlspecialchars (escape_input($post['betreff'], $this->getConn()), ENT_NOQUOTES);
 		} else {
-			$form['betreff'] = " ";
+			$form['betreff'] = "###..";
 		}
 		if (isset($post['bild_url']) && !empty($post['bild_url'])){
 			$form['bild_url'] = htmlspecialchars (escape_url($post['bild_url'], $this->getConn()), ENT_NOQUOTES);
 		} else {
-			$form['bild_url'] = " ";
+			$form['bild_url'] = "###..";
 		}
 
         $form['nachricht'] = htmlspecialchars($this->scaleImages($post['nachricht']), ENT_NOQUOTES);
@@ -254,8 +254,11 @@ class GB {
         
         foreach ($form as $key => $value) {
 			if ($value == FALSE && $key != "public"){
-				$_POST['info_msg'] .= "Ungültige Eingabe in: ".$key."<br>";
+				$_POST['info_msg'] .= "Ungültige Eingabe in: ".strtoupper($key)."<br>";
 				return false;
+			}
+			if ($value == "###..") {
+				$form[$key] = "";
 			}
 		}
 		
@@ -267,16 +270,16 @@ class GB {
     }
 
     public function getLanguageFileList(){
-	$page = scandir("conf/lang/");
-	$file_list = array();
-	foreach ($page as $key => $value){
-		if(isFileExtension($value,'php')){
-                    echo $value;
-                    $lang = explode('.php', $value);
-                    array_push($file_list, $lang[0]);
+		$page = scandir("conf/lang/");
+		$file_list = array();
+		foreach ($page as $key => $value){
+			if(isFileExtension($value,'php')){
+				echo $value;
+                $lang = explode('.php', $value);
+                array_push($file_list, $lang[0]);
+			}
 		}
-	}
-	return $file_list;
+		return $file_list;
     }
     
     private function fallBackLanguage($l_new){
