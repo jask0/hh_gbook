@@ -40,7 +40,7 @@
 					<div class="col-sm-12">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-picture-o"></i></span>
-							<input type="text" class="form-control" id="bild" name="bild_url" placeholder="<?=$l['image']?>" value="<?php echo $data['bild_url']; ?>">
+							<input type="url" class="form-control" id="bild" name="bild_url" placeholder="<?=$l['image']?>" value="<?php echo $data['bild_url']; ?>">
 						</div>
 					</div>
 				</div>
