@@ -1,50 +1,28 @@
 <?php
-//pokretanje session
-session_start();
-//brisanje cookie
-unset($_SESSION['captcha_code']);
 
-//headeri, koji sprecavaju cache naseg sadrzaja
-header( "Expires: Mon, 26 Jul 1997 05:00:00 GMT" );
-header( "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
-header( "Cache-Control: no-store, no-cache, must-revalidate" );
-header( "Cache-Control: post-check=0, pre-check=0", false );
-header( "Pragma: no-cache" );
+require_once __DIR__ . '/../conf/functions.php';
 
-//header koji kaze ovo je slika
-header('Content-type: image/jpeg');
+handle_errors();
+if (!configured()) {
+    fail(404, 'Guestbook not configured.');
+}
+start_session();
+$alphabet = '2345789ABCDEFHKL';
+$code = '';
+for ($i = 0; $i < 6; $i++) {
+    $code .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+}
+$_SESSION['hhgb_captcha'] = ['hash' => hash('sha256', $code), 'expires' => time() + 300];
+session_write_close();
 
-//stvaranje koda
-$skupZnakova = "2345789ABCDEFHKL";
-$podStr1 = substr(str_shuffle($skupZnakova), 0, 2);
-$podStr2 = substr(str_shuffle($skupZnakova), 0, 2);
-$podStr3 = substr(str_shuffle($skupZnakova), 0, 2);
-$stringCode = $podStr1.$podStr2.$podStr3;
+$image = imagecreatefrompng(__DIR__ . '/pozadina.png');
+$font = __DIR__ . '/Anke_Print.TTF';
+$colors = [imagecolorallocate($image, 0, 0, 0), imagecolorallocate($image, 127, 0, 0), imagecolorallocate($image, 1, 29, 127)];
+imagettftext($image, 18, 15, 3, 24, $colors[0], $font, substr($code, 0, 2));
+imagettftext($image, 16, 0, 33, 17, $colors[1], $font, substr($code, 2, 2));
+imagettftext($image, 14, -15, 63, 18, $colors[2], $font, substr($code, 4, 2));
 
-//memorisanje coda u cookie
-$_SESSION['captcha_code'] = md5($stringCode);
-
-//stvaranje grafika
-
-//lodiranje fonta
-$fontArray = array("Anke_Print.TTF","ASSIMILA.TTF","AUTOMOBI.TTF");
-
-//lodrianje memorije za sliku
-$Slika = imagecreatefrompng("pozadina.png");
-
-//stvaranje boje
-$fontBoja1 = imagecolorallocate($Slika, 0, 0, 0); //crna
-$fontBoja2 = imagecolorallocate($Slika, 127, 0, 0);  //tamno crvena
-$fontBoja3 = imagecolorallocate($Slika, 1, 29, 127);  //pink
-
-//pisanje coda u sliku
-imagettftext($Slika, 18, 15, 3, 24, $fontBoja1, $fontArray[0], $podStr1);
-imagettftext($Slika, 16, 0, 33, 17, $fontBoja2, $fontArray[0], $podStr2);
-imagettftext($Slika, 14, -15, 63, 18, $fontBoja3, $fontArray[0], $podStr3);
-
-//pakovanje slike
-imagejpeg($Slika);
-
-//unistavanje slika i oslobadjanje memorije
-imagedestroy($Slika);
-?>
+header('Cache-Control: no-store');
+header('Content-Type: image/jpeg');
+header('X-Content-Type-Options: nosniff');
+imagejpeg($image);

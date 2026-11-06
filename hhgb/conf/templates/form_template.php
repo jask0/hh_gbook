@@ -1,132 +1,47 @@
-<!-- This is the Template for the submit form, shoud be loaded by showForm() -->
-<div class="row">
-	<div class="gb-overall col-md-8 col-md-offset-2">
-		<?=(isset($_POST['info_msg']))? $_POST['info_msg'] : ''?>
-		<form class="form-horizontal" action="<?php echo $data['action']; ?>" method="post" id="myForm">
-			<div class="form-group <?=$gbs['highlite_field_color']?> ">
-				<label for="name" class="col-sm-2 control-label sr-only custom-form"><?=$l['name']?>*</label>
-				<div class="col-sm-12">
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-user"></i></span>
-						<input type="text" class="form-control jscolor" id="name" name="name" placeholder="<?=$l['name']?>*" value="<?php echo $data['name']; ?>" maxlength="20" >
-					</div>
-				</div>
-			</div>
-			<?php if ($gbs['view_email_input']== "1") { ?>
-				<div class="form-group">
-					<label for="email" class="col-sm-2 control-label sr-only custom-form"><?=$l['email']?></label>
-					<div class="col-sm-12">
-						<div class="input-group">
-							<span class="input-group-addon">@</span>
-							<input type="email" class="form-control" id="email" name="email" placeholder="<?=$l['email']?>" value="<?php echo $data['email']; ?>">
-						</div>
-					</div>
-				</div>
-			<?php }
-			if ((int)$gbs['view_hp_input']) { ?>
-				<div class="form-group">
-					<label for="homepage" class="col-sm-2 control-label sr-only custom-form"><?=$l['homepage']?></label>
-					<div class="col-sm-12">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-home"></i></span>
-							<input type="url" class="form-control" id="homepage" name="homepage" placeholder="<?=$l['homepage']?>" value="<?php echo $data['homepage']; ?>">
-						</div>
-					</div>
-				</div>
-			<?php }
-			if ((int)$gbs['view_img_url_input']) { ?>
-				<div class="form-group">
-					<label for="bild" class="col-sm-2 control-label sr-only custom-form"><?=$l['image']?></label>
-					<div class="col-sm-12">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-picture-o"></i></span>
-							<input type="url" class="form-control" id="bild" name="bild_url" placeholder="<?=$l['image']?>" value="<?php echo $data['bild_url']; ?>">
-						</div>
-					</div>
-				</div>
-			<?php }
-			if ((int)$gbs['view_subject_input']) { ?>
-				<div class="form-group">
-					<label for="betreff" class="col-sm-2 control-label sr-only custom-form"><?=$l['subject']?></label>
-					<div class="col-sm-12">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-							<input type="text" class="form-control" id="betreff" name="betreff" placeholder="<?=$l['subject']?>" value="<?php echo $data['betreff']; ?>">
-						</div>
-					</div>
-				</div>
-			<?php } 
-			if(!isset($_GET['id'])) { ?>
-			<div class="form-group">
-				<div class="col-sm-12">
-					<div class="well well-sm">
-						<center>
-							<?php
-							for ($i = 0; $i < count($smilie['list']); $i++) {
-								if ($i % 12 == 0 && $i != 0) echo '<!--<br>-->';
-							echo '<a href="javascript:insertTheSmiley(\'{{'.$smilie['list'][$i].'}}\', \'nachricht\');void(0)"><img src="'.$path.'hhgb/smilies/'.$smilie['folder'].'/'.$smilie['list'][$i].'" alt="{{'.$smilie['folder'].$i.'}}" ></a>&nbsp;&nbsp;';
-							}
-							?>
-						</center>
-					</div>
-				</div>
-			</div>
-			<?php } ?>
-			<div class="form-group <?=$gbs['highlite_field_color']?> ">
-				<label for="nachricht" class="col-sm-2 control-label sr-only custom-form"><?=$l['msg']?>*</label>
-				<div class="col-sm-12">
-					<textarea class="form-control" name="nachricht" id="nachricht" placeholder="<?=$l['msg']?>*"><?php echo $data['nachricht']; ?></textarea>
-				</div>
-			</div>
-			<?php if(!isset($_GET['id'])) { ?>
-			<div class="form-group <?=$gbs['highlite_field_color']?>">
-					<label for="captcha" class="col-sm-2 control-label sr-only custom-form"><?=$l['captcha']?></label>
-					<div class="col-sm-12">
-						<div class="col-sm-3">
-							<img src="<?=$path?>hhgb/captcha/captcha.php" class="img-thumbnail">
-						</div>
-						<div class="col-sm-7">
-							<div class="input-group">
-								<span class="input-group-addon"><i class="fa fa-lock"></i></span>
-								<input type="text" class="form-control" id="captcha" name="captcha" placeholder="<?=$l['captcha']?>*">
-							</div>
-						</div>
-					</div>
-				</div>
-			<?php }
-				if(isset($data['admin']) && $data['admin'] == 1) { ?>
-				<div class="form-group">
-					<label for="kommentar" class="col-sm-2 control-label sr-only custom-form"><?=$l['comment']?></label>
-					<div class="col-sm-12">
-						<textarea class="form-control" name="kommentar" id="kommentar" placeholder="<?=$l['comment']?>"><?php echo $data['kommentar']; ?></textarea>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-8 col-md-offset-2">
-						<div class="checkbox">
-							<label>
-								<input type="checkbox" value="1" name="public" <?php ($data['public']) ? print 'checked' : print ''; ?>> <?=$l['publish']?>
-							</label>
-						</div>
-						<div class="checkbox">
-							<label>
-								<input type="checkbox" value="1" name="loeschen"> <b style="color:red;"><?=$l['delete']?></b>
-							</label>
-						</div>
-					</div>
-				</div>
-			<?php } ?>
-
-			<div class="form-group">
-				<div class="col-sm-12">
-					<?php if(!isset($data['admin'])) { ?>
-						<p class="<?=$gbs['note_text_color']?> custom-note"><?php echo $l['note_msg']; ?></p>
-					<?php } else {?>
-						<input type="hidden" value="<?php echo date_format($data['datum'], 'Y-m-d H:i:s'); ?>" name="old_datum">
-					<?php } ?>
-					<button type="submit" class="btn <?=$gbs['send_btn_color']?>" id="submit" name="submit"><?=$l['send']?></button>
-				</div>
-			</div>
-		</form>
-	</div><!-- END .gb-overall -->
-</div><!-- END .row -->
+<?php
+if (!isset($gbs, $l, $data, $action)) {
+    http_response_code(404);
+    return;
+}
+?>
+<?php if (isset($flash['key'])): ?>
+    <p class="gb-status" role="status"><?= e($l[$flash['key']]) ?></p>
+<?php endif; ?>
+<form class="gb-form" action="<?= e($action) ?>" method="post">
+    <input type="hidden" name="hhgb_action" value="post">
+    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+    <label><?= e($l['name']) ?> *
+        <input name="name" value="<?= e($data['name']) ?>" required maxlength="50" autocomplete="name">
+    </label>
+    <?php foreach ([
+        'email' => ['email', 'email', 'email', 254],
+        'homepage' => ['hp', 'homepage', 'url', 2048],
+        'bild_url' => ['img_url', 'image', 'url', 2048],
+        'betreff' => ['subject', 'subject', 'text', 100],
+    ] as $key => [$setting, $label, $type, $limit]): ?>
+        <?php if (field($gbs, 'view_' . $setting . '_input', '1') === '1'): ?>
+            <label><?= e($l[$label]) ?>
+                <input name="<?= e($key) ?>" type="<?= e($type) ?>" maxlength="<?= $limit ?>" value="<?= e($data[$key]) ?>">
+            </label>
+        <?php endif; ?>
+    <?php endforeach; ?>
+    <label><?= e($l['msg']) ?> *
+        <textarea name="nachricht" rows="5" maxlength="10000" required><?= e($data['nachricht']) ?></textarea>
+    </label>
+    <?php if ($smilies): ?>
+        <div class="gb-smilies" aria-label="<?= e($l['smilies']) ?>">
+            <?php foreach ($smilies as $name => $file): ?>
+                <button type="button" data-hhgb-smiley="<?= e('{{' . $name . '}}') ?>">
+                    <img src="<?= e($path . 'hhgb/smilies/' . $file) ?>" alt="<?= e($name) ?>">
+                </button>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+    <?php if ($captcha): ?>
+        <label><?= e($l['captcha']) ?> *
+            <img class="gb-captcha" src="<?= e($path . 'hhgb/captcha/captcha.php') ?>" alt="<?= e($l['captcha']) ?>" width="88" height="31">
+            <input name="captcha" required minlength="6" maxlength="6" autocomplete="off" autocapitalize="characters">
+        </label>
+    <?php endif; ?>
+    <button class="gb-button <?= e(field($gbs, 'send_btn_color')) ?>" type="submit"><?= e($l['send']) ?></button>
+</form>

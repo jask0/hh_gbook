@@ -1,0 +1,28 @@
+.hhgb { max-width: 56rem; margin: 1.5rem auto; padding: 0 1rem; color: #24292f; font: 1rem/1.5 system-ui, sans-serif; }
+.hhgb a { color: inherit; }
+.hhgb .gb-form, .hhgb .gb-post { border: 1px solid #c7d0db; border-radius: .4rem; margin-bottom: 1.25rem; }
+.hhgb .gb-form, .hhgb .gb-post-body, .hhgb .gb-post-header, .hhgb .gb-post-footer { padding: .75rem 1rem; }
+.hhgb .gb-form label { display: block; margin-bottom: .75rem; }
+.hhgb .gb-form input:not([type=hidden]), .hhgb textarea { display: block; box-sizing: border-box; width: 100%; padding: .4rem; font: inherit; }
+.hhgb .gb-captcha { display: block; margin: .25rem 0; }
+.hhgb .gb-smilies { display: flex; flex-wrap: wrap; gap: .2rem; margin-bottom: .75rem; }
+.hhgb button { cursor: pointer; }
+.hhgb .gb-smilies button { border: 1px solid #ddd; background: #fff; border-radius: .25rem; }
+.hhgb .gb-button { color: #fff; background: #155b9d; border: 0; border-radius: .25rem; padding: .45rem .9rem; font: inherit; }
+.hhgb .btn-default { background-color: #e8edf3; color: #24292f; }
+.hhgb .btn-primary { background-color: #155b9d; color: #fff; }
+.hhgb .btn-success { background-color: #216b41; color: #fff; }
+.hhgb .btn-info { background-color: #166477; color: #fff; }
+.hhgb .btn-warning { background-color: #8b5515; color: #fff; }
+.hhgb .btn-danger { background-color: #a42f39; color: #fff; }
+.hhgb .btn-link { background-color: transparent; color: inherit; text-decoration: underline; }
+.hhgb .gb-post { overflow: hidden; }
+.hhgb .gb-pending { border-color: #b04048; }
+.hhgb .gb-post-header, .hhgb .gb-post-footer { background-color: #eef3f8; }
+.hhgb .gb-post-header { display: flex; flex-wrap: wrap; gap: .35rem 1rem; align-items: baseline; }
+.hhgb .gb-post-header a { border-radius: .2rem; padding: 0 .3rem; }
+.hhgb .gb-pending .gb-post-header { background-color: #f9e6e8; }
+.hhgb .gb-post-body, .hhgb .gb-post-footer { overflow-wrap: anywhere; }
+.hhgb .gb-post h2 { margin: 0 0 .4rem; font-size: 1.15rem; }
+.hhgb .gb-image { max-width: 100%; height: auto; }
+.hhgb .gb-pages { display: flex; gap: 1rem; }

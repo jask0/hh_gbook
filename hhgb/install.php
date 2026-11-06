@@ -1,222 +1,357 @@
 <?php
-include 'conf/lang/de.php';
-$set_dbc = 1;
-$config_file = 'conf/config.php';
+declare(strict_types=1);
 
-if(!isset($dbc)){
-    $dbc = array(
-                'servername' => 'localhost',
-                'username' => '',
-                'password' => '',
-                'dbname' => '',
-                'table' => '',
-                'installed' => 'no'
-            );
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
 }
 
-function testConn($db_test){
-	if($db_test['username'] != "" and $db_test['dbname'] != ""){
-		$connection = @mysqli_connect($db_test['servername'], $db_test['username'], $db_test['password'], $db_test['dbname']);
-		// Check connection
-		if (!$connection) {
-			return 0;
-		}else {
-			return 1;
-		}
-	}
-	return 0;
+require_once __DIR__ . '/conf/functions.php';
+
+function install_input(string $key, string $label, ?string $default = null, bool $secret = false): string
+{
+    $value = getenv($key);
+    if ($value !== false) {
+        return $value;
+    }
+
+    if (!stream_isatty(STDIN)) {
+        return $default ?? throw new RuntimeException("Set $key for non-interactive setup.");
+    }
+
+    $hint = $default === null || $secret ? '' : " [$default]";
+    fwrite(STDERR, "$label$hint: ");
+    if ($secret) {
+        if (!function_exists('exec')) {
+            throw new RuntimeException("Set $key to enter the password without echo.");
+        }
+        exec('stty -echo 2>/dev/null', $output, $status);
+        if ($status !== 0) {
+            throw new RuntimeException("Set $key to enter the password without echo.");
+        }
+    }
+    try {
+        $line = fgets(STDIN);
+    } finally {
+        if ($secret) {
+            exec('stty echo 2>/dev/null');
+            fwrite(STDERR, PHP_EOL);
+        }
+    }
+    if ($line === false) {
+        throw new RuntimeException('Setup input ended.');
+    }
+    $value = rtrim($line, "\r\n");
+    return $value === '' && $default !== null ? $default : $value;
 }
 
-if(isset($_POST['install']) && $_POST['install']=="dbc" && $_GET['dbc']==1){
-    global $dbc;
-	global $config_file;
-	
-	//change user configuration
-	$dbc['servername'] = $_POST['servername'];
-	$dbc['username'] = $_POST['username'];
-	$dbc['password'] = $_POST['password'];
-	$dbc['dbname'] = $_POST['dbname'];
-	$dbc['table'] = $_POST['table'];
-	
-	
-	if(testConn($dbc)){
-		//write user configuration
-		
-		$content = "<?php\n"
-					. "\$dbc = array(\n"
-					. "'servername' => '$dbc[servername]',\n"
-					. "'username' => '$dbc[username]',\n"
-					. "'password' => '$dbc[password]',\n"
-					. "'dbname' => '$dbc[dbname]',\n"
-					. "'table' => '$dbc[table]',\n"
-					. "'installed' => 'yes');\n";
-		
-		file_put_contents($config_file, $content);
-		$info = "<p class=\"alert alert-success\">$l[dbc_data_successful_saved]</p>";
-		$dbc['installed'] = "yes";
-		#include 'conf/config.php';
-		
-		
-		
-	} else {
-		$info = "<p class=\"alert alert-danger\">$l[dbc_data_not_saved]</p>";
-	}
+function install_db_settings(): array
+{
+    $settings = [
+        'servername' => install_input('HHGB_DB_HOST', 'Database host', 'localhost'),
+        'username' => install_input('HHGB_DB_USER', 'Database user'),
+        'password' => install_input('HHGB_DB_PASSWORD', 'Database password', null, true),
+        'dbname' => install_input('HHGB_DB_NAME', 'Database name'),
+        'table' => install_input('HHGB_DB_PREFIX', 'Existing or new table prefix', 'hhgb_'),
+    ];
+    $port = getenv('HHGB_DB_PORT');
+    if ($port !== false && $port !== '') {
+        $settings['port'] = filter_var($port, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 65535]]);
+        if ($settings['port'] === false) {
+            throw new RuntimeException('HHGB_DB_PORT must be a port from 1 to 65535.');
+        }
+    }
+    $socket = getenv('HHGB_DB_SOCKET');
+    if ($socket !== false && $socket !== '') {
+        $settings['socket'] = $socket;
+    }
+    if (!valid_table_prefix($settings['table'])) {
+        throw new RuntimeException('The table prefix must contain 1–48 ASCII letters, digits or underscores.');
+    }
+    if ($settings['username'] === '' || $settings['dbname'] === '') {
+        throw new RuntimeException('A database user and database name are required.');
+    }
+    return $settings;
 }
 
-if (isset($_GET['dbc']) && $_GET['dbc'] == "1" || isset($dbc) && $dbc['dbname'] !='' && $dbc['installed'] =='yes') {
-    $set_dbc = 0;
-    include 'conf/connect.php';
+function install_password_hash(): string
+{
+    $password = install_input('HHGB_ADMIN_PASSWORD', 'New admin password (12–72 bytes)', null, true);
+    if (strlen($password) < 12 || strlen($password) > 72 || str_contains($password, "\0")) {
+        throw new RuntimeException('Choose an admin password between 12 and 72 bytes without NUL characters.');
+    }
+    if (getenv('HHGB_ADMIN_PASSWORD') === false &&
+        $password !== install_input('HHGB_ADMIN_PASSWORD', 'Repeat the admin password', null, true)) {
+        throw new RuntimeException('The passwords do not match.');
+    }
+    return password_hash($password, PASSWORD_DEFAULT);
 }
 
-if(isset($_POST['install']) && $_POST['install']=="db" && $_GET['db']==1){
-	global $dbc;
-	
-	$set_dbc = 0;
-	include 'conf/connect.php';
-	
-	$conn = $db->getConnection();
-	
-	// sql to create post table
-	$q = "CREATE TABLE ".$dbc['table']."posts (
-	id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	datum TIMESTAMP,
-	name VARCHAR(50) NOT NULL,
-	email VARCHAR(100),
-	homepage VARCHAR(100),
-	betreff VARCHAR(100),
-	bild_url VARCHAR(100),
-	nachricht TEXT NOT NULL,
-	kommentar TEXT,
-	public TINYINT(1),
-	gb TINYINT(1)
-	) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
+function install_stage_config(string $path, array $settings): string
+{
+    $temp = dirname($path) . '/.install-' . bin2hex(random_bytes(12)) . '.php';
+    $file = fopen($temp, 'xb');
+    if ($file === false) {
+        throw new RuntimeException('Could not create a temporary configuration file.');
+    }
 
-	if (mysqli_query($conn, $q)) {
-		$info = "<p class=\"alert alert-success\">".$dbc['table']."post =>$l[tabel_successful_created]</p>";
-	} else {
-		$info= "<p class=\"alert alert-danger\">$l[error_table_not_created]: " . mysqli_error($conn) . "</p>";
-	}
-		// sql to create config table
-	$q = "CREATE TABLE ".$dbc['table']."config (
-	id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	variable VARCHAR(100) NOT NULL UNIQUE,
-	value TEXT,
-	meta TINYINT
-	) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
-
-	if (mysqli_query($conn, $q)) {
-		$info .= "<p class=\"alert alert-success\">".$dbc['table']."config =>$l[tabel_successful_created]!</p>"
-					   . "<p class=\"alert alert-info\">Login Info:<br>&ensp;&ensp;&ensp;&bull;&ensp;Username: admin<br>&ensp;&ensp;&ensp;&bull;&ensp;Password: 123456</p>";
-	} else {
-		$info .= "<p class=\"alert alert-danger\">$l[error_table_not_created]: " . mysqli_error($conn) . "</p>";
-	}
-		
-	// sql to import first config data
-	$salt = time();
-	$default_pw = sha1("123456"+$salt+"#+abhGD.!aseivtrn457AGFDH");
-	$qd = array();
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('user', 'admin', '1');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('email', 'email@email.de', '1');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('password', '".$default_pw."', '1');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('mail_msg', '0', '1');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('user_language', 'de', '1');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('salt', '".$salt."', '0');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('captcha_on', '1', '0');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('gb_title', 'MyGB', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('info', 'My Info for you!', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('note', 'My Info for you!', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('gb_language', 'de', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('view_email_input', '1', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('view_hp_input', '1', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('view_img_url_input', '1', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('view_subject_input', '1', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('posts_on_page', '5', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('scale_image', '1', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('post_instant_online', '0', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('send_btn_color', 'btn-success', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('link_btn_color', 'btn-default', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('highlite_field_color', 'has-success', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('note_text_color', 'text-success', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('use_custom_css', '0', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('custom_css', '{\".custom-panel\":{\"border-color\":\"A7093E\"},\".custom-heading\":{\"background-color\":\"650213\",\"color\":\"FFB027\"},\".custom-body\":{\"background-color\":\"840A12\",\"color\":\"EAD72D\"},\".custom-footer\":{\"background-color\":\"81060A\",\"color\":\"B1A714\"},\".custom-thumbnail\":{\"background-color\":\"EC2438\",\"border-color\":\"EC2438\"}}', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('smilies_on', '1', '2');");
-	array_push($qd, "INSERT INTO ".$dbc['table']."config (`variable`, `value`, `meta`) VALUES ('smilies', '{\"list\":[\"icon_(1).gif\",\"icon_(10).gif\",\"icon_(11).gif\",\"icon_(12).gif\",\"icon_(13).gif\" ,\"icon_(14).gif\",\"icon_(15).gif\",\"icon_(16).gif\",\"icon_(17).gif\",\"icon_(18).gif\" ,\"icon_(19).gif\",\"icon_(2).gif\",\"icon_(20).gif\",\"icon_(21).gif\",\"icon_(22).gif\" ,\"icon_(23).gif\",\"icon_(24).gif\",\"icon_(3).gif\",\"icon_(4).gif\",\"icon_(5).gif\", \"icon_(6).gif\",\"icon_(7).gif\",\"icon_(8).gif\",\"icon_(9).gif\"], \"folder\":\"yellow\",\"ext\":\"gif\"}', '2');");
-
-	foreach ($qd as $key => $query) {
-		if (mysqli_query($conn, $query)) {
-			$info .= "<p class=\"alert alert-success config-info\">".$query."</p>";
-		} else {
-			$info .= "<p class=\"alert alert-danger\">$l[error_table_not_created]: " . mysqli_error($conn) . "</p>";
-		}
-	}
-	 
+    $contents = "<?php\nreturn " . var_export($settings, true) . ";\n";
+    try {
+        if (fwrite($file, $contents) !== strlen($contents) || !fflush($file)) {
+            throw new RuntimeException('Could not write the configuration.');
+        }
+    } catch (Throwable $error) {
+        unlink($temp);
+        throw $error;
+    } finally {
+        fclose($file);
+    }
+    return $temp;
 }
-?>
-<!DOCTYPE html>
-<html>
-<head>
-<title><?=$l['install']?></title>
-<!-- Font-Awesome CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-<!-- Extern Bootstrap CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-<!-- Bootstrap JavaScript -->
-<script src="conf/js/bootstrap.min.js"></script>
-</head>
-<body>
-<br><br><br><br>
-   <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <div class="login-panel panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><?=$l['gb']?> <?=$l['install']?></h3>
-                    </div>
-                    <div class="panel-body">
-						<?php
-							if($set_dbc){
-								if(isset($_POST['install']) && $_POST['install']=="dbc"){ echo $info;}
-						?>
-							<form role="form" action="install.php?dbc=1" method="post" >
-								<fieldset>
-									<!-- Change this to a button or input when using this as a form -->
-									<b>Servername:</b>
-									<input type="text" name="servername" value="localhost" class="form-control"><br>
-									<b>Username:</b>
-									<input type="text" name="username" placeholder="root" class="form-control"><br>
-									<b>Password:</b>
-									<input type="password" name="password" class="form-control"><br>
-									<b>Database Name:</b>
-									<input type="text" name="dbname" class="form-control"><br>
-									<br>
-									<b>Table Name Prefix:</b>
-									<input type="text" name="table" value="hhgb_" class="form-control"><br>
-									<br>
-									<input type="hidden" name="install" value="dbc" >
-									<button type="submit" name="submit" class="btn btn-success"><?=$l['save']?></button>
-								</fieldset>
-							</form>
-						
-						<?php } else {
-							if(isset($_POST['install']) && $_POST['install']=="db"){ echo $info;} ?>
-							<form role="form" action="install.php?db=1" method="post" >
-								<fieldset>
-									<!-- Change this to a button or input when using this as a form -->
-									<?php if(!isset($_GET['db'])){ ?>
-									
-									<button type="submit" name="submit" class="btn btn-lg btn-success btn-block"><?=$l['install']?></button>
-									<input type="hidden" name="install" value="db" >
-									<?php } else { ?>
-									<a href="../" class="btn btn-lg btn-info btn-block"><?=$l['to_gb']?></a>
-									<?php } ?>
-								</fieldset>
-							</form>
-						<?php } ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-</body>
-</html>
+
+function install_defaults(string $admin, string $hash): array
+{
+    return [
+        0 => ['captcha_on' => '1', 'schema_version' => '1.6'],
+        1 => [
+            'user' => $admin, 'password' => $hash, 'email' => '', 'mail_msg' => '0',
+            'user_language' => 'de',
+        ],
+        2 => [
+            'gb_title' => 'MyGB', 'info' => '', 'note' => '', 'gb_language' => 'de',
+            'view_email_input' => '1', 'view_hp_input' => '1', 'view_img_url_input' => '1',
+            'view_subject_input' => '1', 'posts_on_page' => '5', 'scale_image' => '1',
+            'post_instant_online' => '0', 'send_btn_color' => 'btn-success',
+            'link_btn_color' => 'btn-default', 'highlite_field_color' => 'has-success',
+            'note_text_color' => 'text-success', 'use_custom_css' => '0',
+            'custom_css' => json_encode([
+                '.custom-panel' => ['border-color' => 'A7093E'],
+                '.custom-heading' => ['background-color' => '650213', 'color' => 'FFB027'],
+                '.custom-body' => ['background-color' => '840A12', 'color' => 'EAD72D'],
+                '.custom-footer' => ['background-color' => '81060A', 'color' => 'B1A714'],
+                '.custom-thumbnail' => ['background-color' => 'EC2438', 'border-color' => 'EC2438'],
+            ], JSON_THROW_ON_ERROR),
+            'smilies_on' => '1',
+            'smilies' => '{"folder":"yellow","ext":"gif"}',
+        ],
+    ];
+}
+
+function install_create(mysqli $db, string $prefix, string $admin, string $hash, array &$created): void
+{
+    $posts = $prefix . 'posts';
+    $config = $prefix . 'config';
+    $existing = $db->execute_query(
+        'SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN (?, ?)',
+        [$posts, $config]
+    )->fetch_row();
+    if ((int) $existing[0] !== 0) {
+        throw new RuntimeException('Guestbook tables already exist. Use upgrade for a 1.5 database or choose a new prefix.');
+    }
+
+    $db->query("CREATE TABLE `$posts` (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        datum TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        name VARCHAR(50) NOT NULL,
+        email VARCHAR(254),
+        homepage VARCHAR(2048),
+        betreff VARCHAR(100),
+        bild_url VARCHAR(2048),
+        nachricht TEXT NOT NULL,
+        kommentar TEXT,
+        public TINYINT(1) NOT NULL DEFAULT 0,
+        gb TINYINT(1) NOT NULL DEFAULT 1
+    ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+    $created[] = $posts;
+    $db->query("CREATE TABLE `$config` (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        variable VARCHAR(100) NOT NULL UNIQUE,
+        value TEXT,
+        meta TINYINT NOT NULL
+    ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+    $created[] = $config;
+
+    $db->begin_transaction();
+    try {
+        $insert = $db->prepare("INSERT INTO `$config` (variable, value, meta) VALUES (?, ?, ?)");
+        foreach (install_defaults($admin, $hash) as $category => $settings) {
+            foreach ($settings as $key => $value) {
+                $insert->execute([$key, $value, $category]);
+            }
+        }
+        $db->commit();
+    } catch (Throwable $error) {
+        $db->rollback();
+        throw $error;
+    }
+}
+
+function install_check_account(mysqli $db, string $config, bool $lock = false): void
+{
+    $forUpdate = $lock ? ' FOR UPDATE' : '';
+    $account = $db->query("SELECT variable FROM `$config` WHERE meta = 1 AND variable IN ('user', 'password')$forUpdate");
+    if ($account->num_rows !== 2) {
+        throw new RuntimeException('The existing guestbook database does not contain a complete admin account.');
+    }
+}
+
+function install_migration_done(mysqli $db, string $config): bool
+{
+    $version = $db->query("SELECT value FROM `$config` WHERE variable = 'schema_version'")->fetch_row();
+    if ($version === null) {
+        return false;
+    }
+    if ($version[0] !== '1.6') {
+        throw new RuntimeException('The existing database has an unrecognized schema version.');
+    }
+    return true;
+}
+
+function install_upgrade(mysqli $db, string $prefix, string $hash): void
+{
+    $posts = $prefix . 'posts';
+    $config = $prefix . 'config';
+    install_check_account($db, $config);
+    if (!install_migration_done($db, $config)) {
+        // DDL commits independently. Both alterations are safe to repeat after an interrupted upgrade.
+        $db->query("ALTER TABLE `$posts`
+            ENGINE=InnoDB, ROW_FORMAT=DYNAMIC, DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+            MODIFY datum TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+            MODIFY name VARCHAR(50) NOT NULL,
+            MODIFY email VARCHAR(254),
+            MODIFY homepage VARCHAR(2048),
+            MODIFY betreff VARCHAR(100),
+            MODIFY bild_url VARCHAR(2048),
+            MODIFY nachricht TEXT NOT NULL,
+            MODIFY kommentar TEXT");
+        $db->query("ALTER TABLE `$config`
+            ENGINE=InnoDB, ROW_FORMAT=DYNAMIC, DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+            MODIFY variable VARCHAR(100) NOT NULL,
+            MODIFY value TEXT");
+    }
+
+    $db->begin_transaction();
+    try {
+        install_check_account($db, $config, true);
+        if (!install_migration_done($db, $config)) {
+            $read = $db->prepare("SELECT id, name, email, homepage, betreff, bild_url, nachricht, kommentar
+                FROM `$posts` WHERE id > ? ORDER BY id LIMIT 200");
+            $update = $db->prepare("UPDATE `$posts` SET
+                name = ?, email = ?, homepage = ?, betreff = ?, bild_url = ?, nachricht = ?, kommentar = ? WHERE id = ?");
+            $lastId = 0;
+            do {
+                $read->execute([$lastId]);
+                $rows = $read->get_result()->fetch_all(MYSQLI_ASSOC);
+                foreach ($rows as $row) {
+                    $lastId = (int) $row['id'];
+                    unset($row['id']);
+                    $decoded = array_map(
+                        static fn (?string $value): ?string => $value === null
+                            ? null
+                            : html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                        $row
+                    );
+                    if ($decoded !== $row) {
+                        $update->execute([...array_values($decoded), $lastId]);
+                    }
+                }
+            } while (count($rows) === 200);
+
+            $db->query("INSERT INTO `$config` (variable, value, meta) VALUES ('schema_version', '1.6', 0)");
+        }
+        install_reset_password($db, $config, $hash);
+        $db->commit();
+    } catch (Throwable $error) {
+        $db->rollback();
+        throw $error;
+    }
+}
+
+function install_reset_password(mysqli $db, string $config, string $hash): void
+{
+    $db->execute_query("UPDATE `$config` SET value = ? WHERE variable = 'password' AND meta = 1", [$hash]);
+    if ($db->affected_rows !== 1) {
+        throw new RuntimeException('Could not replace the admin password.');
+    }
+}
+
+$action = $argv[1] ?? '--help';
+if ($action === '--help' || $action === '-h') {
+    echo "Usage: php hhgb/install.php install|upgrade|reset-password\n";
+    exit;
+}
+if ($argc !== 2 || !in_array($action, ['install', 'upgrade', 'reset-password'], true)) {
+    fwrite(STDERR, "Usage: php hhgb/install.php install|upgrade|reset-password\n");
+    exit(1);
+}
+if (PHP_VERSION_ID < 80400 || !extension_loaded('mysqli')) {
+    fwrite(STDERR, "PHP 8.4 or later and the MySQLi extension are required.\n");
+    exit(1);
+}
+
+umask(0077);
+$path = local_config_path();
+$created = [];
+$temp = null;
+$status = 0;
+try {
+    $lock = fopen(dirname($path) . '/.install.lock', 'c');
+    if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
+        throw new RuntimeException('Could not lock setup. Check the configuration directory or wait for the current setup to finish.');
+    }
+
+    if ($action === 'reset-password') {
+        if (!configured()) {
+            throw new RuntimeException('No local configuration exists. Complete install or upgrade first.');
+        }
+        $settings = read_local_config();
+        $db = db_connect($settings);
+        $config = $settings['table'] . 'config';
+        install_check_account($db, $config);
+        install_reset_password($db, $config, install_password_hash());
+        echo "The admin password was reset.\n";
+    } else {
+        if (file_exists($path) || is_link($path)) {
+            throw new RuntimeException('A local configuration already exists. Use reset-password to recover admin access.');
+        }
+        $settings = install_db_settings();
+        $hash = install_password_hash();
+        $db = db_connect($settings);
+        $temp = install_stage_config($path, $settings);
+
+        if ($action === 'install') {
+            $admin = trim(install_input('HHGB_ADMIN_USER', 'Admin username'));
+            if (!preg_match('/\A[^\p{C}]{2,60}\z/u', $admin)) {
+                throw new RuntimeException('The admin username must contain 2–60 characters without control characters.');
+            }
+            install_create($db, $settings['table'], $admin, $hash, $created);
+        } else {
+            install_upgrade($db, $settings['table'], $hash);
+        }
+        // Publish only the complete config, and never replace an existing file.
+        if (!link($temp, $path)) {
+            throw new RuntimeException('Could not publish the local configuration.');
+        }
+        echo "hh_gbook " . HHGB_VERSION . " setup completed. Open hhgb/ to sign in.\n";
+    }
+} catch (Throwable $error) {
+    if (isset($db)) {
+        foreach (array_reverse($created) as $table) {
+            try {
+                $db->query("DROP TABLE `$table`");
+            } catch (mysqli_sql_exception $cleanupError) {
+                fwrite(STDERR, "Could not clean up the newly created table $table.\n");
+            }
+        }
+    }
+    fwrite(STDERR, 'Setup failed: ' . $error->getMessage() . PHP_EOL);
+    $status = 1;
+} finally {
+    if ($temp !== null) {
+        unlink($temp);
+    }
+    if (isset($lock) && is_resource($lock)) {
+        fclose($lock);
+    }
+}
+exit($status);
