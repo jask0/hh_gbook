@@ -1,3 +1,6 @@
 /nbproject/*
 /hhgb/conf/test.php
 /hhgb/conf/config.php
+/hhgb/conf/local.php
+/hhgb/conf/.install.lock
+/hhgb/conf/.install-*.php

@@ -1,386 +1,224 @@
 <?php
-if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){
-    require_once 'conf/config.php';
-} else {
-    require_once 'hhgb/conf/config.php';
-}
-if(!isset($dbc)){
-    if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){
-		header('Location: install.php');
-	} else {
-		header('Location: hhgb/install.php');
-	}
-}
-if(strpos($_SERVER['REQUEST_URI'], 'hhgb/') !== false){ 
-    require_once 'conf/functions.php';
-    require_once 'conf/db.php';
-} else {
-    require_once 'hhgb/conf/functions.php';
-    require_once 'hhgb/conf/db.php';
-}
 
+require_once __DIR__ . '/conf/db.php';
 
-class GB {
-    private $gb;
-    private $user;
-    private $db;
-    private $system;
-    private $lang;
-    private $css;
-    public $path;
-    public $smilie;
+class GB
+{
+    private DB $db;
+    private array $gb;
+    private array $user;
+    private array $system;
+    private array $language;
+    private string $languageCode;
+    private string $path = '';
+    private ?array $pagination = null;
 
-    
-    /*
-     * CONSTRUCTOR METHOD
-     */
-    public function __construct() {
-        $this->db = new DB;
+    public function __construct(?DB $db = null)
+    {
+        $this->db = $db ?? new DB();
         $this->gb = $this->db->getGbConfig();
         $this->user = $this->db->getUserConfig();
         $this->system = $this->db->getSystemConfig();
-        $this->setLanguage($this->db->getValue('gb_language'));
-        $this->setSmilies();
-        $this->setCSS();
-        $this->setPath();
-    }
-    
-    
-    /*
-     * PUBLIC METHODS
-     */
-    public function setPath($p="") {
-        $this->path = $p;
+        $this->setLanguage(field($this->gb, 'gb_language', 'en'));
     }
 
-    public function setCSS($css=array()){
-        if(count($css) == 0){
-        $this->css = json_decode($this->gb['custom_css'], true);
-        } else {
-            $this->db->updateConfigTable($css);
-            $this->css = json_decode($this->gb['custom_css'], true);
-        }
+    /** Base URL from the embedding page to the folder containing hhgb/. */
+    public function setPath(string $path = ''): void
+    {
+        $this->path = $path === '' ? '' : rtrim($path, '/') . '/';
     }
 
-    public function setSmilies($update=array()){
-        if(count($update) == 0){
-            $this->smilie  = json_decode($this->gb['smilies'], true);
-        } else {
-            $this->db->updateConfigTable($update);
-            $this->css = json_decode($this->gb['smilies'], true);
-        }
+    public function setLanguage(string $language = ''): void
+    {
+        $language = $language !== '' ? $language : field($this->gb, 'gb_language');
+        $this->languageCode = in_array($language, LANGUAGES, true) ? $language : 'en';
+        $this->language = lang($this->languageCode);
     }
 
-    public function setLanguage($language=''){
-        if ($language != '') {
-            $this->lang = $this->loadLanguage($language);
-        } else {
-            $this->lang = $this->loadLanguage($this->db['gb_language']);
-        }
-    }
-    
-    public function getSalt(){
-        return $this->db->getSalt();
+    public function getLanguage(string $language = ''): array
+    {
+        return $language === '' ? $this->language : lang($language);
     }
 
-    public function getGbSettings($commit=''){
-        if($commit == ''){
-            return $this->gb;
-        } else {
-            return $this->db->getGbConfig();
-        }
-    }
-    
-    public function getUserSettings($commit=''){
-        if($commit == ''){
-            return $this->user;
-        } else {
-            return $this->user->getUserConfig();
-        }
-    }
-    
-    public function getSystemSettings($commit=''){
-        if($commit == ''){
-            return $this->system;
-        } else {
-            return $this->system->getUserConfig();
-        }
-    }
-    
-    public function getLanguage($lang=''){
-        if($lang==''){
-            return $this->lang;
-        }else {
-            return $this->loadLanguage($lang);
-        }
-    }
-    
-    public function getDB(){
-        return $this->db;
-    }
-	
-	public function getConn(){
-        return $this->db->getConn();
-    }
-    
-    public function getCustomCss(){
-        return json_decode($this->gb['custom_css'], true);
-    }
-    
-    /*load meta data like css an javascript
-    # @param:
-    # 		no param
-    # @info:
-    #		custom css is here
-    */
-    public function includeMeta(){
-        $path = $this->path;
-        echo sprintf(file_get_contents('hhgb/conf/templates/meta.html'), $path, $path, $path, $path, $path);
+    public function getLanguageCode(): string { return $this->languageCode; }
+    public function getDB(): DB { return $this->db; }
+    public function getGbSettings(): array { return $this->gb; }
+    public function getUserSettings(): array { return $this->user; }
 
-        if ($this->gb["use_custom_css"] == 1){
-            echo "\n".'<link rel="stylesheet" href="'.$path.'hhgb/conf/css/gb.custom.css">'."\n";
+    public function isLoggedIn(): bool
+    {
+        $credential = admin_credential($this->user);
+        return ($_SESSION['admin'] ?? false) === true && $credential !== ''
+            && ($_SESSION['admin_credential'] ?? '') === $credential;
+    }
+
+    public function includeMeta(): void
+    {
+        $base = e($this->path . 'hhgb/conf/');
+        echo '<link rel="stylesheet" href="' . $base . 'css/guestbook.css">' . "\n";
+        echo '<script defer src="' . $base . 'js/guestbook.js"></script>' . "\n";
+        if (field($this->gb, 'use_custom_css') !== '1') {
+            return;
         }
-    }   
-    
-    /* display submit form and save post to database
-    # @param:
-    # 		$file ->  	url to the file where the GB is displayed
-    */
-    public function showGBookForm($filename){
-        $post = filter_input_array(INPUT_POST);
-        if(!isset($post['submit'])){
-            $this->showForm(getFormDefault(), $filename);
-        } else {
-            if($_SESSION['captcha_code'] == md5($post['captcha']) or $this->db->getValue('captcha_on','0') == '0'){
-                if($post['name'] == "" || $post['nachricht'] == ""){
-                    $_POST['info_msg'] = '<p class="alert alert-danger">'. $this->lang['error'].'<br>'. $this->lang['error_msg_dont_send'] . '</p>';
-                    $this->showForm($post, $filename);
-                } else {
-                    if ($this->sendPost($post)) {
-                        $_POST['info_msg'] = '<p class="alert alert-success">'.$this->lang['msg_successful_send'].'</p>';
-                        if($this->user['mail_msg'] == 1){
-                            mail($this->user['email'], $this->lang['new_gb_msg'], $form['nachricht']);
-                        }
-                        $this->showForm(getFormDefault(), $filename);
-                    } else {
-                        $_POST['info_msg'] .= $this->lang['error_msg_dont_send'].'</p>';
-						$this->showForm($post, $filename);
-                    }
+        $settings = json_decode(field($this->gb, 'custom_css'), true);
+        if (!is_array($settings)) {
+            return;
+        }
+        $rules = [];
+        foreach (['.custom-panel', '.custom-heading', '.custom-body', '.custom-footer', '.custom-thumbnail'] as $selector) {
+            $values = $settings[$selector] ?? null;
+            if (!is_array($values)) {
+                continue;
+            }
+            $declarations = [];
+            foreach (['background-color', 'border-color', 'color'] as $property) {
+                $color = field($values, $property);
+                if (preg_match('/\A[0-9a-f]{6}\z/i', $color)) {
+                    $declarations[] = "$property:#$color";
                 }
-            } else {
-                    $_POST['info_msg'] = '<p class="alert alert-danger">'.$this->lang['error_wrong_captcha'].'</p>';
-                    $this->showForm($post, $filename);
+            }
+            if ($declarations) {
+                $rules[] = '.hhgb ' . $selector . '{' . implode(';', $declarations) . '}';
             }
         }
-    }
-    /* display posts from database to website
-    # @param:
-    # 		no param
-    */
-    public function showGBookPosts(){
-        $get = filter_input_array(INPUT_GET);
-        $page = 1;
-        if(isset($get['page'])){
-            $page = (int)$get['page'];
-        }
-        $offset = ($page - 1) * $this->gb['posts_on_page'];
-        $post_list = $this->db->readPostsForPage($this->gb['posts_on_page'], $offset, $this->isLoggedIn());
-        foreach ($post_list as $post) {
-            $this->showPost($post);
+        if ($rules) {
+            echo '<style>' . implode('', $rules) . '</style>' . "\n";
         }
     }
-    
-    public function displayPost($data, $edit){
-        $this->showPost($data, $edit);
+
+    private function captchaEnabled(): bool
+    {
+        return field($this->system, 'captcha_on', '1') !== '0';
     }
-    
-    public function displayForm($data, $edit){
-        $this->showForm($data, $edit);
-    }
-    
-    /*pruf is the admin loged in
-    # @param:
-    # 		no param, use the session privateiable or cookie
-    */
-    public function isLoggedIn(){
-            if(isset($_SESSION['username']) && $_SESSION['username'] == $this->user['user']){
-                    return true; //' WHERE public*1 in (0,1) '
-            } else {
-                    return false; //' WHERE public = 1 ';
+
+    /** Call before sending HTML so a successful submission can redirect. */
+    public function handleSubmission(string $action): void
+    {
+        if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || field($_POST, 'hhgb_action') !== 'post') {
+            return;
+        }
+        require_csrf();
+        if ($this->captchaEnabled()) {
+            $challenge = $_SESSION['hhgb_captcha'] ?? null;
+            unset($_SESSION['hhgb_captcha']);
+            $answer = strtoupper(trim(field($_POST, 'captcha')));
+            if (!is_array($challenge) || ($challenge['expires'] ?? 0) < time()
+                || !hash_equals(field($challenge, 'hash'), hash('sha256', $answer))) {
+                $this->formError('error_wrong_captcha', $action);
             }
-    }
-    
-    /*
-     * PRIVATE METHODS
-     */
-    private function addSmilieBbCode($msg){
-        foreach ($this->smilie['list'] as $key => $value) {
-            $new_msg = str_replace('{{'.$value.'}}', '[smillie]'.$this->path.'hhgb/smilies/'.$this->smilie['folder'].'/'.$value.'[/smillie]', $msg);
-			$msg = $new_msg;
         }
-        return $new_msg;
+        $input = $_POST;
+        foreach (['email' => 'email', 'homepage' => 'hp', 'bild_url' => 'img_url', 'betreff' => 'subject'] as $key => $setting) {
+            if (field($this->gb, 'view_' . $setting . '_input', '1') !== '1') {
+                unset($input[$key]);
+            }
+        }
+        try {
+            $post = post_fields($input);
+        } catch (InvalidArgumentException) {
+            $this->formError('error_msg_dont_send', $action);
+        }
+        $post['public'] = (int) (field($this->gb, 'post_instant_online') === '1');
+        $this->db->insertPost($post);
+        $email = field($this->user, 'email');
+        if (field($this->user, 'mail_msg') === '1' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            mail($email, $this->language['new_gb_msg'], $post['nachricht']);
+        }
+        $_SESSION['hhgb_flash'] = ['key' => 'msg_successful_send', 'data' => []];
+        redirect($action);
     }
 
-    private function sendPost($post){
-        $form = getFormDefault();
-		
-		$_POST['info_msg'] = "<p class=\"alert alert-danger\">";
-		
-        $form['name'] = htmlspecialchars (escape_input($post['name'], $this->getConn(), 2, 20), ENT_NOQUOTES);
-        
-        if (isset($post['email']) && !empty($post['email'])){
-			$form['email'] = htmlspecialchars (escape_email($post['email'], $this->getConn()), ENT_NOQUOTES);
-		} else {
-			$form['email'] = "###..";
-		}
-		if (isset($post['homepage']) && !empty($post['homepage'])){
-			$form['homepage'] = htmlspecialchars (escape_url($post['homepage'], $this->getConn()), ENT_NOQUOTES);
-		} else {
-			$form['homepage'] = "###..";
-		}
-		if (isset($post['betreff']) && !empty($post['betreff'])){
-			$form['betreff'] = htmlspecialchars (escape_input($post['betreff'], $this->getConn()), ENT_NOQUOTES);
-		} else {
-			$form['betreff'] = "###..";
-		}
-		if (isset($post['bild_url']) && !empty($post['bild_url'])){
-			$form['bild_url'] = htmlspecialchars (escape_url($post['bild_url'], $this->getConn()), ENT_NOQUOTES);
-		} else {
-			$form['bild_url'] = "###..";
-		}
-
-        $form['nachricht'] = htmlspecialchars($this->scaleImages($post['nachricht']), ENT_NOQUOTES);
-        $form['nachricht'] = $this->addSmilieBbCode(mysqli_escape_string ($this->getConn(), $form['nachricht']));
-        
-        foreach ($form as $key => $value) {
-			if ($value == FALSE && $key != "public"){
-				$_POST['info_msg'] .= "Ungültige Eingabe in: ".strtoupper($key)."<br>";
-				return false;
-			}
-			if ($value == "###..") {
-				$form[$key] = "";
-			}
-		}
-		
-		if ($this->db->insertInToPosts($form)) {
-            return true;
-        } else { 
-            return false; 
+    private function formError(string $key, string $action): never
+    {
+        $data = [];
+        foreach (array_keys(empty_post()) as $field) {
+            $data[$field] = substr(field($_POST, $field), 0, 40000);
         }
+        $_SESSION['hhgb_flash'] = ['key' => $key, 'data' => $data];
+        redirect($action);
     }
 
-    public function getLanguageFileList(){
-		$page = scandir("conf/lang/");
-		$file_list = array();
-		foreach ($page as $key => $value){
-			if(isFileExtension($value,'php')){
-				echo $value;
-                $lang = explode('.php', $value);
-                array_push($file_list, $lang[0]);
-			}
-		}
-		return $file_list;
-    }
-    
-    private function fallBackLanguage($l_new){
-        $position = testPosition($_SERVER['REQUEST_URI']);
-	include($this->path.$position."conf/lang/en.php");
-	foreach($l as $key => $value){
-		if (!array_key_exists($key, $l_new)) {
-			$l_new[$key] = $value;
-		}
-	}
-	return $l_new;
-    }
-    
-    private function loadLanguage($filename){
-        $position = testPosition($_SERVER['REQUEST_URI']);
-        @include ($this->path.$position.'conf/lang/'.$filename.'.php');
-        if (!isset($l)){
-            $l = array();
+    /** The selected pack supplies the picker; installed packs can render old posts. */
+    private function smilies(): array
+    {
+        if (field($this->gb, 'smilies_on', '1') === '0') {
+            return [[], []];
         }
-        return $this->fallBackLanguage($l);
-    }
-    
-    /*scale all images in $msg if gbc[scale] is active
-    # @param:
-    # 		$msg, string text with html image tags
-    */
-    private function scaleImages($msg){
-        if ($this->gb['scale_image'] == "1"){
-            return str_replace('<img', '<img class="img-responsive img-thumbnail"',$msg);
-        }
-    }    
-
-    /* display submit form
-    # @param:
-    # 		$data ->  	posted data array to fill the value fields
-    #		$action ->	url for the action atributt
-    */
-    private function showForm($data, $action) {
-        $path = $this->path;
-        $gbs = $this->gb;
-        $smilie = $this->smilie;
-        $l = $this->lang;
-        $form = getFormDefault();
-        $data['action'] = $action;
-        include('conf/templates/form_template.php');
-    }
-    
-    /*display of one post
-    # @param:
-    # 		$data ->  	posted data array to fill the value fields
-    */
-    private function showPost($data, $edit=0) {
-        $path = $this->path;
-        $gbs = $this->gb;
-        $smilie = $this->smilie;
-        $l = $this->lang;
-        $user = $this->user;
-        $form = getFormDefault();
-        if(is_numeric($edit)){
-            $edit='hhgb/index.php?page=edit&id='.$data['id'];
-        }
-        include('conf/templates/post_template.php');
-    }
-    
-    /* display page navigation of GB
-    # @param:
-    # 		no param needed
-    */
-    public function showGBpageNavi(){
-        $gbs = $this->getGbSettings(); 
-        $count = $this->db->getPostCountbyCondition("WHERE public = 1");
-        $p=1;
-        $get = filter_input_array(INPUT_GET);
-        if(isset($get['page']) && ((int)$get['page'] > 1)){
-                $p = ((int)$get['page'])-1;
-        }
-        echo '<div class="row"><div class="col-md-12">
-                        <center><nav><ul class="pagination pagination-custom">
-                                <li><a href="?page='.$p.'" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
-        $x = 0;
-        $last_page = (($count/$gbs['posts_on_page'])+1);
-        for ($x = 1; $x < $last_page; $x++){
-                        $active ='';
-                        $sr_info='';
-                        if(isset($get['page']) && $get['page'] == $x) {
-                                $active =' class="active active-custom"';
-                                $sr_info=' <span class="sr-only">(current)</span>';
-                        }
-                        $nav = '<li'.$active.'><a href="?page='.$x.'">'.$x.$sr_info.'</a></li>';
-                        echo $nav;
+        $sets = [];
+        foreach (glob(__DIR__ . '/smilies/*', GLOB_ONLYDIR) ?: [] as $dir) {
+            if (!is_link($dir)) {
+                $folder = basename($dir);
+                foreach (smiley_files($folder) as $file) {
+                    $sets[$folder][$file] = rawurlencode($folder) . '/' . rawurlencode($file);
                 }
-        if(isset($get['page']) && (((int)$get['page']) < ($x-1))){
-                $p = (int)$get['page']+1;
-        } elseif(!isset($get['page'])) {
-                if($last_page < 2)
-                        $p = 1;
-                else
-                        $p = 2;
-        } else {
-                $p = $x-1;
+            }
         }
-        echo '<li><a href="?page='.$p.'" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li></ul></nav></center></div></div>';
+        $settings = json_decode(field($this->gb, 'smilies'), true);
+        $folder = is_array($settings) ? field($settings, 'folder', 'yellow') : 'yellow';
+        $selected = $sets[$folder] ?? $sets['yellow'] ?? [];
+        $all = $selected;
+        foreach ($sets as $folder => $files) {
+            $all += $files;
+            foreach ($files as $file => $url) {
+                $all[$folder . '/' . $file] = $url;
+            }
+        }
+        return [$selected, $all];
+    }
+
+    public function showGBookForm(string $action): void
+    {
+        $path = $this->path;
+        $gbs = $this->gb;
+        $l = $this->language;
+        $captcha = $this->captchaEnabled();
+        [$smilies] = $this->smilies();
+        $flash = $_SESSION['hhgb_flash'] ?? [];
+        unset($_SESSION['hhgb_flash']);
+        $data = ($flash['data'] ?? []) + empty_post();
+        require __DIR__ . '/conf/templates/form_template.php';
+    }
+
+    private function pagination(): array
+    {
+        if ($this->pagination === null) {
+            $size = positive_int(field($this->gb, 'posts_on_page'), 5, 100);
+            $count = $this->db->countPosts($this->isLoggedIn() ? null : 1);
+            $last = max(1, (int) ceil($count / $size));
+            $page = min(positive_int(field($_GET, 'page'), 1), $last);
+            $this->pagination = [$page, $last, $size];
+        }
+        return $this->pagination;
+    }
+
+    public function showGBookPosts(): void
+    {
+        $admin = $this->isLoggedIn();
+        [$page, , $size] = $this->pagination();
+        $posts = $this->db->readPostsForPage($size, ($page - 1) * $size, $admin);
+        $path = $this->path;
+        $gbs = $this->gb;
+        $l = $this->language;
+        [, $smilies] = $this->smilies();
+        foreach ($posts as $data) {
+            require __DIR__ . '/conf/templates/post_template.php';
+        }
+    }
+
+    public function showGBpageNavi(): void
+    {
+        [$page, $last] = $this->pagination();
+        if ($last === 1) {
+            return;
+        }
+        echo '<nav class="gb-pages" aria-label="Pagination">';
+        if ($page > 1) {
+            echo '<a href="?page=' . ($page - 1) . '" rel="prev">&laquo; ' . e($this->language['previous_page']) . '</a>';
+        }
+        echo '<span>' . $page . ' / ' . $last . '</span>';
+        if ($page < $last) {
+            echo '<a href="?page=' . ($page + 1) . '" rel="next">' . e($this->language['next_page']) . ' &raquo;</a>';
+        }
+        echo '</nav>';
     }
 }

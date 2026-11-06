@@ -1,54 +1,36 @@
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header">
-            <?=$l['admin_area']?>
-            <small><?=$l['edit']?></small>
-        </h1>
-    </div>
-</div>
 <?php
-    if(!isset($_SESSION['username'])){
-            die($l['prohibited_direct_access']);
-    }
-    $id = (int)$_GET['id'];
+defined('HHGB_ADMIN_VIEW') || exit;
 
-    if(isset($_POST['submit'])){
-        if(isset($_POST['loeschen']) and $_POST['loeschen'] == "1"){	
-            if ( $db->deletePost($id) )
-            {
-                echo '<p class="alert alert-success">'.$l['msg_successful_deleted'].'</p>';
-            }else{
-            die($l['bad_query']);
-            }
-        }else{
-            $form = array();
-            $post = filter_input_array(INPUT_POST);
-            $form['datum'] = $post['old_datum'];
-            $form['name'] = $post['name'];
-            $form['email'] = (isset($post['email']))?$post['email']: print"";
-            $form['homepage'] = (isset($post['homepage']))? $post['homepage']:"";
-            $form['betreff'] = (isset($post['betreff']))? $post['betreff']:"";
-            $form['bild_url'] = (isset($post['bild_url']))? $post['bild_url']:"";
-            $form['nachricht'] = str_replace('"','\"',str_replace("'", "\'",$post['nachricht']));
-            $form['kommentar'] = str_replace('"','\"',str_replace("'", "\'",$post['kommentar']));
-            $form['public'] = 0;
-            if(isset($_POST['public']) and $_POST['public'] == "1")
-                $form['public']=1;
-
-            if ( $db->updatePost($id,$form) )
-            {
-                echo '<p class="alert alert-success">'.$l['msg_successful_edited'].'</p>';
-            }else{
-                die($l['bad_query']);
-            }
-        }
-    }
-    $post_list = $db->readPost($id);
-
-    foreach ($post_list as $zeile){
-        $zeile['public']=="1" ? $checked = "checked" : $checked = "";
-        $zeile['admin'] = 1;
-        $gb->displayForm($zeile, '?page=edit&id='.$id);
-    }
-
+$fields = [
+    'name' => ['name', 'text', 50],
+    'email' => ['email', 'email', 254],
+    'homepage' => ['homepage', 'url', 2048],
+    'betreff' => ['subject', 'text', 100],
+    'bild_url' => ['image', 'url', 2048],
+];
+$values = $error === '' ? $entry : $_POST;
 ?>
+<form action="?page=edit&amp;id=<?= (int) $entry['id'] ?>" method="post">
+    <input type="hidden" name="csrf_token" value="<?= $csrf ?>">
+    <?php foreach ($fields as $key => [$label, $type, $max]): ?>
+        <div class="form-group">
+            <label for="<?= e($key) ?>"><?= e($l[$label]) ?></label>
+            <input class="form-control" id="<?= e($key) ?>" name="<?= e($key) ?>" type="<?= e($type) ?>"
+                   maxlength="<?= $max ?>" value="<?= e(field($values, $key)) ?>" <?= $key === 'name' ? 'required' : '' ?>>
+        </div>
+    <?php endforeach; ?>
+    <div class="form-group">
+        <label for="nachricht"><?= e($l['msg']) ?></label>
+        <textarea class="form-control" id="nachricht" name="nachricht" rows="5" required><?= e(field($values, 'nachricht')) ?></textarea>
+    </div>
+    <div class="form-group">
+        <label for="kommentar"><?= e($l['comment']) ?></label>
+        <textarea class="form-control" id="kommentar" name="kommentar" rows="3"><?= e(field($values, 'kommentar')) ?></textarea>
+    </div>
+    <div class="checkbox">
+        <label><input type="checkbox" name="public" value="1" <?= in_array($values['public'] ?? null, [1, '1'], true) ? 'checked' : '' ?>>
+            <?= e($l['publish']) ?></label>
+    </div>
+    <button class="btn btn-primary" name="action" value="save"><?= e($l['save']) ?></button>
+    <button class="btn btn-danger" name="action" value="delete" formnovalidate><?= e($l['delete']) ?></button>
+</form>

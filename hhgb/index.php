@@ -1,206 +1,118 @@
 <?php
-session_start();
-if(!isset($_SESSION['username'])){
-		header('Location: login.php');
+declare(strict_types=1);
+
+require __DIR__ . '/gb.php';
+handle_errors();
+start_session();
+
+if (($_SESSION['admin'] ?? false) !== true) {
+    redirect('login.php');
 }
-require 'gb.php';
-$gb = new GB;
+if (!configured()) {
+    fail(503, 'The guestbook is not set up. Follow the installation instructions in README.md.');
+}
+$gb = new GB();
+if (!$gb->isLoggedIn()) {
+    unset($_SESSION['admin'], $_SESSION['admin_credential']);
+    redirect('login.php');
+}
+
+require __DIR__ . '/conf/admin.php';
+
+$pages = [
+    'index' => [__DIR__ . '/conf/views/view_index.php', 'home'],
+    'offline' => [__DIR__ . '/conf/views/view_index.php', 'unpublished_msg'],
+    'edit' => [__DIR__ . '/conf/views/view_edit.php', 'edit'],
+    'settings' => [__DIR__ . '/conf/views/view_settings.php', 'settings'],
+    'profile' => [__DIR__ . '/conf/views/view_profile.php', 'profile'],
+    'custom' => [__DIR__ . '/conf/views/view_custom.php', 'custom_css'],
+    'smilies' => [__DIR__ . '/conf/views/view_smilies.php', 'smilies'],
+];
+$page = array_key_exists('page', $_GET) ? field($_GET, 'page') : 'index';
+if (!isset($pages[$page])) {
+    fail(404, 'Page not found.');
+}
+
 $db = $gb->getDB();
-$l = $gb->getLanguage($gb->getUserSettings()['user_language']);
 $gbs = $gb->getGbSettings();
 $user = $gb->getUserSettings();
-$unpublic_count = $db->getCountOfUnpablicPosts();
+$language = $user['user_language'] ?? 'en';
+$l = $gb->getLanguage($language);
+$csrf = e(csrf_token());
+
+$entry = null;
+if ($page === 'edit') {
+    $id = filter_var(field($_GET, 'id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+    $entry = $id === false ? null : $db->readPost($id);
+    if ($entry === null) {
+        fail(404, 'Message not found.');
+    }
+}
+
+$notice = field($_SESSION, 'admin_notice');
+unset($_SESSION['admin_notice']);
+$error = '';
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method === 'POST') {
+    require_csrf();
+    if ($page === 'index' || $page === 'offline') {
+        header('Allow: GET, HEAD');
+        fail(405, 'Method not allowed.');
+    }
+    try {
+        $destination = save_admin_page($page, $db, $user, $entry);
+        redirect($destination);
+    } catch (InvalidArgumentException $exception) {
+        http_response_code(422);
+        $error = $exception->getMessage();
+    }
+} elseif ($method !== 'GET' && $method !== 'HEAD') {
+    header('Allow: GET, HEAD, POST');
+    fail(405, 'Method not allowed.');
+}
+
+$unpublished = $db->countPosts(0);
+define('HHGB_ADMIN_VIEW', true);
 ?>
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="<?= e($language) ?>">
 <head>
-	<meta charset="UTF-8">
-	<title><?=$l['gb']?> : <?=$gbs['gb_title']?></title>
-	<!-- Font-Awesome CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-	<!-- Bootstrap Core CSS -->
-	<link href="conf/css/bootstrap.min.css" rel="stylesheet">
-
-	<!-- Custom CSS -->
-	<link href="conf/css/sb-admin.css" rel="stylesheet">
-	<style>
-		.top-nav > li > a.new_msg {
-			color: red;
-		}
-		
-		.top-nav > li > a.new_msg:hover {
-			color:white;
-		}
-	</style>
-	<?=(isset($_GET['page']) && $_GET['page'] == 'custom') ? '<link rel="stylesheet" href="conf/css/gb.custom.css">':''?>
-	<?=(isset($_GET['page']) && $_GET['page'] == 'custom') ? '<script src="conf/js/jscolor.js"></script>':''?>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= e($l[$pages[$page][1]]) ?> | <?= e($l['admin_area']) ?></title>
+    <link rel="stylesheet" href="conf/css/bootstrap.min.css">
 </head>
-
 <body>
-<div id="wrapper">
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                    <span class="sr-only"><?=$l['toggle_navigation']?></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="../"><i class="fa fa-fw fa-desktop"></i> <?=$l['to_gb']?></a>
-            </div>
-            <!-- Top Menu Items -->
-            <ul class="nav navbar-right top-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
-                    <ul class="dropdown-menu message-dropdown">
-			<li class="message-footer">
-                            <a href="#"><strong><?=$l['3_new_msg']?></strong></a>
-                        </li>
-			<?php
-			$abfrage_antwort = $db->getLastPosts();
-						
-			while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
-			{?>
-			<li class="message-preview">
-                            <a href="?page=edit&id=<?php echo $zeile['id']; ?>" title="<?=$l['3_new_msg']?>">
-				<div class="media">
-				<?php if($zeile['bild_url'] != '') {; ?>
-                                    <span class="pull-left">
-					<img class="media-object" style="width:64px;height:64px;" src="<?php echo $zeile['bild_url']; ?>" alt="">
-                                    </span>
-				<?php } ?>
-                                    <div class="media-body">
-                                        <h5 class="media-heading">
-                                            <strong><?php echo $zeile['name']; ?></strong>
-                                        </h5>
-                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> <?php echo $zeile['datum']; ?></p>
-                                        <p><?php echo substr($zeile['nachricht'],0,200).'...'; ?></p>
-                                    </div>
-				</div>
-                            </a>
-			</li>
-			<?php	}
-                            mysqli_free_result( $abfrage_antwort );
-			?>
-                        
-                       
-                        <li class="message-footer">
-                            <a href="../"><?=$l['read_all']?></a>
-                        </li>
-                    </ul>
-                </li>
-		<?php 
-		if($unpublic_count > 0){
-                    $new_msg=1;
-		} else{
-                    $new_msg=0;
-		}?>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle <?php $new_msg ? print 'new_msg': print '';?>" data-toggle="dropdown" title="<?php echo $unpublic_count;?> <?=$l['unpublished_msg']?>">
-                        <i class="fa fa-bell" ></i> <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu alert-dropdown">
-                        <li class="message-footer">
-                            <a href="#"><strong><?=$l['unpublished_msg']?></strong></a>
-                        </li>
-			<li class="divider"></li>
-                        <?php
-			$abfrage_antwort = $db->getLastPosts();
-						
-			while ($zeile = mysqli_fetch_assoc($abfrage_antwort))
-                            {?>	
-                            <li>
-                                <a href="?page=edit&id=<?php echo $zeile['id']; ?>">
-                                    <?php echo $zeile['name']; ?> 
-                                    <span class="label label-warning" style="float:right;"><?=$l['edit']?></span>
-                                </a>
-                            </li>
-			<?php	}
-				mysqli_free_result( $abfrage_antwort );
-			?>
-                        <li class="divider message-footer"></li>
-                        <li>
-                            <a href="?page=offline&id=0"><?=$l['see_all']?></a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo $db->getUserConfig()['user']; ?> <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="index.php?page=profile"><i class="fa fa-fw fa-user"></i> <?=$l['profile']?></a>
-                        </li>
-                        <li>
-                            <a href="?page=offline&id=0"><i class="fa fa-fw fa-envelope"></i> <?php echo $unpublic_count; ?> <?=$l['new_msg']?></a>
-                        </li>
-                        <li>
-                            <a href="index.php?page=settings"><i class="fa fa-fw fa-gear"></i> <?=$l['settings']?></a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="login.php?logout=1"><i class="fa fa-fw fa-power-off"></i> <?=$l['logout']?></a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav side-nav">
-					<li>
-                        <a href="index.php"><i class="fa fa-fw fa-home"></i> <?=$l['home']?></a>
+<main class="container">
+    <h1><?= e($l['admin_area']) ?></h1>
+    <nav aria-label="<?= e($l['admin_area']) ?>">
+        <ul class="nav nav-pills">
+            <li><a href="../"><?= e($l['to_gb']) ?></a></li>
+            <?php foreach ($pages as $route => [, $label]): ?>
+                <?php if ($route !== 'edit'): ?>
+                    <li class="<?= $route === $page ? 'active' : '' ?>">
+                        <a href="?page=<?= e($route) ?>">
+                            <?= e($l[$label]) ?><?= $route === 'offline' ? ' (' . e($unpublished) . ')' : '' ?>
+                        </a>
                     </li>
-					<li>
-                        <a href="?page=settings"><i class="fa fa-fw fa-wrench"></i> <?=$l['settings']?></a>
-                    </li>
-                    <li>
-                        <a href="?page=custom"><i class="fa fa-fw fa-css3"></i> <?=$l['custom_css']?></a>
-                    </li>
-					<li>
-                        <a href="?page=smilies"><i class="fa fa-fw fa-smile-o"></i> <?=$l['smilies']?></a>
-                    </li>
-					<!--
-					<li>
-                        <a href="../"><i class="fa fa-fw fa-desktop"></i> <?=$l['to_gb']?></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-edit"></i> Neues GB anlegen</a>
-                    </li>
-					<li>
-                        <a href="index.php?page=profile"><i class="fa fa-fw fa-user"></i> <?=$l['profile']?></a>
-                    </li>
-					-->
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </nav>
-
-        <div id="page-wrapper">
-
-            <div class="container-fluid">
-			<?php
-			if(isset($_GET['page'])){
-				include('conf/views/view_'.$_GET['page'].'.php');
-			} else {
-				include('conf/views/view_index.php');
-			}
-			?>
-	
-			</div>
-            <!-- /.container-fluid -->
-
-        </div>
-        <!-- /#page-wrapper -->
-
-    </div>
-    <!-- /#wrapper -->
-    <!-- jQuery -->
-    <script src="conf/js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="conf/js/bootstrap.min.js"></script>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            <li>
+                <form action="login.php" method="post">
+                    <input type="hidden" name="csrf_token" value="<?= $csrf ?>">
+                    <button class="btn btn-link" name="action" value="logout"><?= e($l['logout']) ?></button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+    <h2><?= e($l[$pages[$page][1]]) ?></h2>
+    <?php if ($notice !== ''): ?>
+        <p class="alert alert-success" role="status"><?= e($l[$notice]) ?></p>
+    <?php endif; ?>
+    <?php if ($error !== ''): ?>
+        <p class="alert alert-danger" role="alert"><?= e($error) ?></p>
+    <?php endif; ?>
+    <?php require $pages[$page][0]; ?>
+</main>
 </body>
-
 </html>
